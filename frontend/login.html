@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    /* Base Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e0ffe0 0%, #f0f8ff 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container & Card */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#roleTitle {
+    color: #2d3436;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+.subtitle {
+    color: #636e72;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Input Styling */
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #dfe6e9;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #fdfdfd;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Crucial for width */
+}
+
+input:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
+}
+
+/* Button Styling */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background: #219150;
+    transform: translateY(-1px);
+}
+
+/* Links */
+.footer-links {
+    margin-top: 25px;
+    font-size: 13px;
+    color: #636e72;
+}
+
+.footer-links a {
+    color: #27ae60;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+  </style>
+</head>
+<body>
+
+<h2 id="roleTitle"></h2>
+<div class="login-container">
+    <div class="login-card">
+        <h2 id="roleTitle">Welcome Back</h2>
+        <p class="subtitle">Enter your details to access your dashboard</p>
+        
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input id="email" type="email" placeholder="Email Address">
+        </div>
+        
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input id="password" type="password" placeholder="Password">
+        </div>
+
+        <button class="login-btn" onclick="login()">Login</button>
+        
+        <div class="footer-links">
+            <span>Don't have an account?</span>
+            <a href="signup.html">Create Account</a>
+        </div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

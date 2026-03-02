@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="icon" href="images\signup.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        /* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.signup-container {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.signup-form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* Input Fields Styling */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="tel"],
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* Important for padding not to increase total width */
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: #007bff; /* Highlight focus */
+    outline: none;
+}
+
+/* Role Selection Styling (The Key Feature) */
+.role-selection-group {
+    margin-bottom: 25px;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    border-radius: 10px;
+    background: #f9f9f9;
+}
+
+.role-selection-group h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+}
+
+.role-options {
+    display: flex;
+    flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Hide the actual radio button */
+.role-options input[type="radio"] {
+    display: none;
+}
+
+.role-card {
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    flex-grow: 1;
+    min-width: 80px; /* Adjust size */
+    transition: all 0.3s;
+    background: #ffffff;
+}
+
+.role-card:hover {
+    border-color: #a0c9ff;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
+}
+
+.role-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: #007bff; /* Icon color */
+}
+
+.role-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Style for the SELECTED role */
+.role-options input[type="radio"]:checked + .role-card {
+    border-color: #007bff;
+    background-color: #e6f0ff; /* Light blue background for selected */
+    box-shadow: 0 0 0 3px #007bff40; /* Blue glow */
+}
+
+/* Button Styling */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.primary-btn, .secondary-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.primary-btn {
+    background-color: #28a745; /* Green for Sign Up */
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #1e7e34;
+}
+
+.secondary-btn {
+    background-color: #f8f9fa; /* Light gray for Login */
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
+.secondary-btn:hover {
+    background-color: #e2e6ea;
+}
+
+/* Divider */
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 14px;
+    color: #999;
+    position: relative;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #ddd;
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+/* Google Sign Up Button */
+.google-signup-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    color: #444;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.google-signup-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    /* Note: In a real project, you'd link an actual image for the Google logo here */
+}
+    </style>
+</head>
+<body>
+
+        <script type="module">
+  // Import Firebase SDK modules (v9+ modular)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc } 
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ✅ Your Firebase configuration (paste from step 2)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDvsXYVoAOSz15_IfZlLNXTpf9kb006TLg",
+    authDomain: "farm-connect-d7e9c.firebaseapp.com",
+    projectId: "farm-connect-d7e9c",
+    storageBucket: "farm-connect-d7e9c.firebasestorage.app",
+    messagingSenderId: "219909535730",
+    appId: "1:219909535730:web:6e4b3caefbd3d1559b1d6b"
+  };
+
+
+  // ✅ Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ✅ Handle signup form submit
+  const form = document.querySelector('.signup-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const role = document.querySelector('input[name="role"]:checked').value;
+
+    try {
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save additional user info to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        phone,
+        address,
+        role,
+        createdAt: new Date()
+      });
+
+      alert("Account created successfully!");
+
+      // Mark signed in locally
+      localStorage.setItem('signedIn', 'true');
+
+      // Redirect back to intended page
+      const redirectPage = localStorage.getItem('redirectAfterSignup');
+      if (redirectPage) {
+        localStorage.removeItem('redirectAfterSignup');
+        window.location.href = redirectPage;
+      } else {
+        window.location.href = 'index.html';
+      }
+
+    } catch (error) {
+      alert("Signup failed: " + error.message);
+    }
+  });
+
+</script>
+
+    <div class="signup-container">
+        <form class="signup-form">
+            <h2>Create Your Account</h2>
+
+            <div class="role-selection-group">
+                <h3>Select Your Role:</h3>
+                <div class="role-options">
+                    <input type="radio" id="farmer" name="role" value="farmer" required>
+                    <label for="farmer" class="role-card">
+                        <div class="role-icon"><img src="images\farmer.png" alt="seller" width="50" height="50">]</div>
+                        <div class="role-name">Farmer</div>
+                    </label>
+
+                    <input type="radio" id="auctioneer" name="role" value="auctioneer">
+                    <label for="auctioneer" class="role-card">
+                        <div class="role-icon"><img src="images\auctioner.png" alt="auctioner" width="50" height="50"></div>
+                        <div class="role-name">Auctioneer</div>
+                    </label>
+
+                    <input type="radio" id="labour" name="role" value="labour">
+                    <label for="labour" class="role-card">
+                        <div class="role-icon"><img src="images\labour.png" alt="labour" width="50" height="50"></div>
+                        <div class="role-name">Labour</div>
+                    </label>
+                                        
+                    <input type="radio" id="seller-buyer" name="role" value="seller-buyer">
+                    <label for="seller-buyer" class="role-card">
+                        <div class="role-icon"><img src="images\seller.png" alt="seller" width="50" height="50"></div>
+                        <div class="role-name">Seller</div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="email">Gmail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="primary-btn">Sign Up</button>
+                
+                <button type="button" class="secondary-btn" onclick="location.href='login.html'">
+                    Already have an account? Login
+                </button>
+            </div>
+            
+            <div class="divider">OR</div>
+            
+            <button type="button" class="google-signup-btn" onclick="alert('Signing up with Google...')">
+                <img src="google-icon.png" alt="Google Logo" class="google-icon">
+                Sign Up with Google
+            </button>
+
+        </form>
+    </div>
+   
+
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kisan Connect</title>
+  <style>
+  /* Base Theme */
+  :root {
+    --primary: #2e7d32;
+    --primary-dark: #1b5e20;
+    --bg: #f8faf7;
+    --white: #ffffff;
+    --text: #333;
+    --border: #e0e0e0;
+  }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    color: var(--primary);
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Section (The Dashboard Cards) */
+  section {
+    display: none; /* Controlled by your JS */
+    background: var(--white);
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    border: none !important; /* Overrides your inline style */
+  }
+
+  h2 {
+    color: var(--primary);
+    border-bottom: 2px solid #edf2ed;
+    padding-bottom: 10px;
+    margin-top: 0;
+  }
+
+  h3 {
+    color: #555;
+    margin-top: 25px;
+    font-size: 1.1rem;
+  }
+
+  /* Forms & Inputs */
+  input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Crucial for width */
+    transition: all 0.3s ease;
+    background-color: #f9fdf9;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    background-color: #fff;
+  }
+
+  textarea {
+    height: 80px;
+    resize: vertical;
+  }
+
+  /* Buttons */
+  button {
+    background-color: var(--primary);
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  button:hover {
+    background-color: var(--primary-dark);
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  /* Specialized Buttons */
+  .btn-logout {
+    display: block;
+    width: auto;
+    min-width: 150px;
+    margin: 20px auto;
+    background-color: #f5f5f5;
+    color: #d32f2f;
+    border: 1px solid #ffcdd2;
+  }
+
+  .btn-logout:hover {
+    background-color: #ffebee;
+  }
+
+  /* Dynamic Lists (Soil Requests / Labour Jobs) */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+  }
+
+  li b {
+    color: var(--primary);
+    font-size: 1.1rem;
+  }
+
+  hr {
+    border: 0;
+    height: 1px;
+    background-color: #eee;
+    margin: 20px 0;
+  }
+
+  /* Helper to hide <br> spacing if it gets too large */
+  br {
+    content: "";
+    display: block;
+    margin: 5px 0;
+  }
+
+  /* Mobile Optimization */
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    section { padding: 15px; }
+  }
+
+          /* Hide Google top banner & tooltip */
+        iframe.goog-te-banner-frame { display: none !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+
+        /* Google translate dropdown styling */
+        #google_translate_element {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .goog-te-gadget {
+            font-size: 0;
+        }
+
+        .goog-te-gadget .goog-te-combo {
+            font-size: 14px !important;
+            color: #333 !important;
+            padding: 8px;
+            width: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        /* Button styling */
+.translateBtn {
+    background-color: var(--primary); /* Makes it green like your other buttons */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}        #translateBtn:hover {
+            background: #eaeaea;
+        }
+
+</style>
+</head>
+<body>
+<header>
+<h1>Kisan Connect Dashboard</h1> 
+<div id="menu-placeholder"></div>
+<script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+</header>
+<button id="translateBtn">Google Translate</button>
+    <div id="google_translate_element"></div>   
+    <section id="farmer">
+  <h2>Farmer Dashboard</h2>
+  <center><img src="images/farmer.png" width="100px" style="border-radius: 50%;" ></center>
+  <h3>Soil Testing Request</h3>
+  <form id="soilForm">
+    <input id="sf_name" placeholder="Name" required>
+    <input id="sf_phone" placeholder="Phone" required>
+    <textarea id="sf_address" placeholder="Address" required></textarea>
+
+    <select id="sf_slot">
+      <option value="750">750</option>
+      <option value="1000">1000</option>
+      <option value="2000">2000</option>
+    </select>
+
+    <select id="sf_agency"></select>
+
+    <select id="sf_payment">
+      <option>Cash on Delivery</option>
+      <option>Razorpay</option>
+    </select>
+
+    <button>Submit Soil Request</button>
+  </form>
+
+  <hr>
+
+  <h3>Labour Request</h3>
+    <center><img src="images/labour.png" width="100px" style="border-radius: 50%;" ></center>
+  <form id="labourForm">
+    <input id="lf_name" placeholder="Name" required>
+    <input id="lf_phone" placeholder="Phone" required>
+    <textarea id="lf_address" placeholder="Address" required></textarea>
+    <input id="lf_count" type="number" placeholder="Number of labours">
+    <input id="lf_time" type="datetime-local">
+
+    <select id="lf_work">
+      <option>Land Preparation and Cultivation</option>
+      <option>Sowing, Planting, and Irrigation</option>
+      <option>Crop Maintenance</option>
+      <option>Harvesting and Post-Harvest Activities</option>
+      <option>Livestock and Allied Activities</option>
+      <option>General Farm Maintenance and Management</option>
+    </select>
+
+    <button>Submit Labour Request</button>
+  </form>
+</section>
+
+<section id="agency">
+  <h2>Soil Agency Dashboard</h2>
+    <center><img src="images/AGENCY.png" width="100px" style="border-radius: 50%;" ></center>
+  <form id="agencyForm">
+    <input id="company" placeholder="Company Name" required>
+    <input id="owner" placeholder="Owner Name" required>
+    <input id="phone1" placeholder="Phone" required>
+    <input id="phone2" placeholder="Extra Phone">
+    <input id="location" placeholder="Location" required>
+
+    <select id="slabs">
+      <option>750,1000,2000</option>
+      <option>750,2000</option>
+      <option>750</option>
+    </select>
+
+    <button>Register Agency</button>
+  </form>
+
+  <h3>Soil Requests</h3>
+  <ul id="agencyOrders"></ul>
+</section>
+
+<section id="labour">
+  <h2>Labour Dashboard</h2>
+<button id="translateBtn">Google Translate</button>
+    <div id="google_translate_element"></div>
+
+    <br>
+  <ul id="labourJobs"></ul>
+</section>
+<button class="btn-logout" onclick="logout()">Logout</button>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDvsXYVoAOSz15_IfZlLNXTpf9kb006TLg",
+  authDomain: "farm-connect-d7e9c.firebaseapp.com",
+  projectId: "farm-connect-d7e9c",
+});
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.href = "login.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  const role = snap.data().role;
+
+  const roleMap = {
+    farmer: "farmer",
+    agency: "agency",
+    soilAgency: "agency",
+    labour: "labour"
+  };
+
+  const sectionId = roleMap[role];
+  document.getElementById(sectionId).style.display = "block";
+
+  if (sectionId === "farmer") loadAgencies();
+  if (sectionId === "agency") loadAgencyOrders();
+  if (sectionId === "labour") loadLabourJobs();
+
+});
+
+function setupAgencyForm() {
+  const form = document.getElementById("agencyForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      await addDoc(collection(db, "agencies"), {
+        companyName: document.getElementById("company").value,
+        ownerName: document.getElementById("owner").value,
+        phone1: document.getElementById("phone1").value,
+        phone2: document.getElementById("phone2").value,
+        location: document.getElementById("location").value,
+        slabs: document.getElementById("slabs").value,
+        userId: auth.currentUser.uid,
+        createdAt: new Date()
+      });
+
+      alert("Agency registered successfully!");
+      form.reset();
+
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  });
+}
+
+window.completeOrder = async (orderId) => {
+  if (!confirm("Mark this soil test as completed?")) return;
+
+  try {
+    const orderRef = doc(db, "soilRequests", orderId);
+    await updateDoc(orderRef, {
+      status: "Completed",
+      completedAt: new Date()
+    });
+
+    alert("Order marked as Completed! ✅");
+    
+    // Refresh the list to show the green tick
+    const agencyId = await getMyAgencyId();
+    loadAgencyOrders(agencyId); 
+  } catch (err) {
+    console.error("Error updating order:", err);
+    alert("Failed to update order.");
+  }
+};
+
+async function loadAgencies(){
+  const sel = document.getElementById("sf_agency");
+  sel.innerHTML = `<option value="Any">Any</option>`;
+  const snap = await getDocs(collection(db,"agencies"));
+  snap.forEach(d=>{
+    sel.innerHTML += `<option value="${d.id}">${d.data().companyName}</option>`;
+  });
+}
+
+document.getElementById("agencyForm").onsubmit = async (e) => {
+  e.preventDefault();
+
+  // Ensure user is logged in before trying to save
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You must be logged in to register.");
+    return;
+  }
+
+  try {
+    // Correctly fetching values using getElementById
+    const agencyData = {
+      companyName: document.getElementById("company").value,
+      ownerName: document.getElementById("owner").value,
+      phone1: document.getElementById("phone1").value,
+      phone2: document.getElementById("phone2").value || "", // Optional field
+      location: document.getElementById("location").value,
+      slabs: document.getElementById("slabs").value,
+      userId: user.uid,
+      createdAt: new Date()
+    };
+
+    await addDoc(collection(db, "agencies"), agencyData);
+
+    alert("Agency Registered Successfully!");
+    
+    // Optional: Refresh the page or update the UI to show the dashboard
+    location.reload(); 
+
+  } catch (err) {
+    console.error("Error registering agency: ", err);
+    alert("Error: " + err.message);
+  }
+};
+
+document.getElementById("soilForm").onsubmit = async e =>{
+  e.preventDefault();
+  await addDoc(collection(db,"soilRequests"),{
+    farmerName:sf_name.value,
+    phone:sf_phone.value,
+    address:sf_address.value,
+    slot:sf_slot.value,
+    agencyId:sf_agency.value,
+    payment:sf_payment.value,
+    status:"Pending",
+    createdAt:new Date()
+  });
+  alert("Soil request sent");
+};
+
+document.getElementById("labourForm").onsubmit = async e =>{
+  e.preventDefault();
+  await addDoc(collection(db,"labourRequests"),{
+    farmerName:lf_name.value,
+    phone:lf_phone.value,
+    address:lf_address.value,
+    labours:lf_count.value,
+    time:lf_time.value,
+    workType:lf_work.value,
+    status:"Active",
+    createdAt:new Date()
+  });
+  alert("Labour request sent");
+};
+
+async function getMyAgencyId() {
+  const q = query(
+    collection(db, "agencies"),
+    where("userId", "==", auth.currentUser.uid)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) return null;
+
+  return snap.docs[0].id; // agency document ID
+}
+
+async function loadAgencyOrders() {
+  const list = document.getElementById("agencyOrders");
+  list.innerHTML = "<li>Loading orders...</li>";
+
+  try {
+    // 1. Get the current user's Agency Document ID
+    const qAgency = query(
+      collection(db, "agencies"),
+      where("userId", "==", auth.currentUser.uid)
+    );
+    const agencySnap = await getDocs(qAgency);
+
+    if (agencySnap.empty) {
+      list.innerHTML = "<li>Please register your agency above to see orders.</li>";
+      return;
+    }
+
+    const agencyId = agencySnap.docs[0].id;
+
+    // 2. Fetch orders for this specific agency
+    const qOrders = query(
+      collection(db, "soilRequests"),
+      where("agencyId", "==", agencyId)
+    );
+
+    const orderSnap = await getDocs(qOrders);
+    
+    if (orderSnap.empty) {
+      list.innerHTML = "<li>No orders yet</li>";
+      return;
+    }
+
+    list.innerHTML = ""; // Clear "Loading..."
+    orderSnap.forEach(docu => {
+      const d = docu.data();
+      const orderId = docu.id;
+
+      // Show Green Tick if Completed, otherwise show Button
+      const statusUI = d.status === "Completed" 
+        ? `<span style="color: #2e7d32; font-weight: bold;">Completed</span>` 
+        : `<button onclick="completeOrder('${orderId}')" style="width: auto; padding: 5px 10px; margin-top: 5px;">Mark Complete</button>`;
+
+      list.innerHTML += `
+        <li style="border-left: 5px solid ${d.status === 'Completed' ? '#2e7d32' : '#ffa000'};">
+          <b>Farmer:</b> ${d.farmerName}<br>
+          <b>Phone:</b> ${d.phone}<br>
+          <b>Slot:</b> ${d.slot}<br>
+          <b>Status:</b> ${statusUI}
+        </li><hr>
+      `;
+    });
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = "<li>Error loading orders. Check console.</li>";
+  }
+}
+
+async function loadLabourJobs() {
+  const list = document.getElementById("labourJobs");
+  list.innerHTML = "";
+
+  const q = query(
+    collection(db, "labourRequests"),
+    where("status", "==", "Active")
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) {
+    list.innerHTML = "<li>No labour requests available</li>";
+    return;
+  }
+
+  snap.forEach(docu => {
+    const d = docu.data();
+    list.innerHTML += `
+      <li>
+        <b>Farmer:</b> ${d.farmerName}<br>
+        <b>Phone:</b> ${d.phone}<br>
+        <b>Address:</b> ${d.address}<br>
+        <b>Work:</b> ${d.workType}<br>
+        <b>Labours Needed:</b> ${d.labours}<br>
+        <b>Time:</b> ${d.time}
+      </li>
+      <hr>
+    `;
+  });
+}
+
+  window.logout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  }
+
+</script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,mr,ta,te,kn,ml,pa,bn,gu',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        // Button toggle
+        document.getElementById("translateBtn").addEventListener("click", function () {
+            const el = document.getElementById("google_translate_element");
+            el.style.display = el.style.display === "none" ? "block" : "none";
+        });
+
+    </script>
+
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

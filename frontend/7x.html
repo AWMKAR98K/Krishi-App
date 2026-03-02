@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="signup.png" type="image/x-icon">
+    <title data-i18n="title">District & Taluka Selector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Optional: Custom styles for a better look */
+        body {
+            background-color: #ffffff;
+        }
+
+    </style>
+</head>
+<header>
+    <div id="menu-placeholder"></div>
+    <script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+</header>
+<body class="p-8">
+  <div id="menu-placeholder"></div>
+    <div class="max-w-4xl mx-auto container-card p-6 md:p-10">
+
+        <h1 class="text-3xl font-bold mb-6 text-yellow-600" data-i18n="header">Location Search Tool</h1>
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-4">
+            <label for="languageSelect" class="font-medium text-gray-700 mb-2 sm:mb-0" data-i18n="labelLanguage">Select Language:</label>
+            <select id="languageSelect" class="p-2 rounded-lg text-gray-800 bg-white shadow-inner focus:ring-2 focus:ring-yellow-400" onchange="setLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            </select>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-6">
+            <label id="labelDistrict" class="font-medium text-gray-700 whitespace-nowrap" data-i18n="labelDistrict">Select District:</label>
+            <select id="districtSelect" class="p-2 w-full rounded-lg text-gray-800 bg-white shadow-inner focus:ring-2 focus:ring-yellow-400" onchange="updateTalukaOptions(); clearResults();">
+                </select>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-8">
+            <label id="labelTaluka" class="font-medium text-gray-700 whitespace-nowrap" data-i18n="labelTaluka">Select Taluka:</label>
+            <select id="talukaSelect" class="p-2 w-full rounded-lg text-gray-800 bg-white shadow-inner focus:ring-2 focus:ring-yellow-400" onchange="searchAllAddresses()">
+                </select>
+        </div>
+
+        <div id="resultsContainer" class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg hidden">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800" data-i18n="resultsHeader">Search Results:</h2>
+            
+            <div class="mb-5">
+                <h3 class="text-lg font-medium text-yellow-700 mb-2" data-i18n="search1Title">Government Office Address:</h3>
+                <div id="govAddress" class="p-3 bg-white border border-yellow-300 rounded-md text-gray-800 min-h-[40px] flex items-center">
+                    <span class="text-gray-500" data-i18n="msgSelectPrompt">Please select a Taluka to search.</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-lg font-medium text-yellow-700 mb-2" data-i18n="search2Title">Bank Address:</h3>
+                <div id="bankAddress" class="p-3 bg-white border border-yellow-300 rounded-md text-gray-800 min-h-[40px] flex items-center">
+                    <span class="text-gray-500" data-i18n="msgSelectPrompt">Please select a Taluka to search.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. DATA STRUCTURES ---
+
+        // District and Taluka Data (English names are the universal keys)
+        const locationData = {
+            "Thane": ["Thane", "Kalyan", "Murbad", "Bhiwandi", "Shahapur", "Ulhasnagar", "Ambarnath"],
+            "Ratnagiri": ["Ratnagiri", "Sangameshwar", "Lanja", "Rajapur", "Chiplun", "Guhagar", "Dapoli", "Mandangad", "Khed"],
+            "Ahilyanagar": ["Nagar", "Shrigonda", "Karjat", "Jamkhed"],
+            "Mumbai City": ["Mumbai City"],
+            "Dharashiv":["Tuljapur","Dharashiv City"],
+            "Chh. Sambhaji Maharaj Nagar":["Paithan","Khuldabad"],
+            "North Goa":["Bardez", "Tiswadi"],
+            "South Goa":["Salcete","Sanguem"],
+        };
+
+        // Highly Reliable Government Office Addresses (Pre-defined) - KEYS MUST BE ENGLISH NAMES
+        const govOfficeAddresses = {
+            "Ratnagiri": "Collector Office, Near Mandavi Beach, Ratnagiri, 415612 ",
+            "Sangameshwar": "Taluka Administrative Office, Deorukh Road, Sangameshwar, 415804 ",
+            "Lanja": "Tehsil Office, Near Main Bazaar, Lanja, 416701 ",
+            "Rajapur": "Sub-Divisional Office, Near State Bank, Rajapur, 416702 ",
+            "Chiplun": "Taluka Office, Mumbai-Goa Highway (NH 66), Chiplun, 415605 ",
+            "Guhagar": "Tehsil Office, Guhagar Beach Road, Guhagar, 415703 ",
+            "Dapoli": "Taluka Office, Khed-Dapoli Road, Dapoli, 415712 ",
+            "Mandangad": "Tehsil Office, Mandangad Bazar, Mandangad, 415203 ",
+            "Khed": "Taluka Office, Near ST Bus Stand, Khed, 415707 ",
+            "Nagar": "PWD, behind Govt. Rest House, Sawli Housing Society, Anand Nagar East, Ahilyanagar, Maharashtra 414003", 
+            "Shrigonda": "Near Police Quarters & Shani Mandir, Wadali Road, Shrigonda-413701", 
+            "Karjat": "Tahsil Office,, Mudre, Karjat, Maharashtra 410201",
+            "Jamkhed": "Tahasil Office Jamkhed, Jamkhed, Maharashtra 413201",
+            "Mumbai City":"5, Mahapalika Marg, Dhobi Talao, Chhatrapati Shivaji Terminus Area, Fort, Mumbai, Maharashtra 400001",
+            "Thane":"Court Naka, Ad Prabhakar Hegde Rd, Kharkar Alley, Thane West, Thane, Maharashtra 400601", 
+            "Kalyan":"Kalyan Dombivili Municipal Corporation D ward, Vijay Nagar, Kalyan, Maharashtra 421306",
+            "Murbad":"Registration Office and Tehsildar Office, Murbad, B-7/1, Additional MIDC, Shirgaon, Murbad, Maharashtra 421401", 
+            "Bhiwandi":" New Building, Old SP Stand, Juna St Rd, opp. Rajiv Gandhi Flyover, Old Zakat Naka, Gokul Nagar, Bhiwandi, Maharashtra 421302", 
+            "Shahapur":"Sub Registrar office (Registration Office) Shahapur Taluka, Shahapur, Maharashtra 421601", 
+            "Ulhasnagar":"Ulhasnagar Municipal Corporation, Chopra rd, Vitthalwadi, Ulhasnagar 421002", 
+            "Ambarnath":"Ambernath Municipal Corporation",
+            "Tuljapur":"Tahsil Office, Tuljapur Road, near the Police Station & Mangalwar Peth, Tuljapur - 413601",
+            "Dharashiv City":"Tahsil Office Dharashiv, Samarth Nagar, Lakshmi Nagar, Dharashiv, Maharashtra 413501",
+            "Paithan":"Tehsildar Office, Court Road, Nagar Palika, Paithan - 431107",
+            "Khuldabad":"Khultabad Tahsil Office, Phulmbri Road, Khultabad, Chhatrapati Sambhajinagar-431001",
+            "Bardez":"Office Of The Mamlatdar, Bardez-Goa. Mapusa. 7-Saligao, Ms. Jenisa Pereira, Joint Mamlatdar-Iii, Bardez 403507",
+            "Tiswadi":"Office Of The Mamlatdar, Bardez-Goa. Mapusa. 11-Panaji, Shri. Dattaprasad S. Toraskar, Mamlatdar Tiswadi, 403507",
+            "Salcete":"Mamlatdar of Salcete, Govt. office complex, Margao,Pajifond, Madgaon, Goa 403601",
+            "Salguem":"Mamlatdar Office Sanguem, Sanguem Rd, Sanguem, Goa 403704",
+    };
+
+        // Place Name Translations (English Key -> {Language Code: Local Name})
+        const placeNameTranslations = {
+            "Thane": { "mr": "ठाणे", "hi": "ठाणे", "ml": "താനെ", "te": "థానే", "kn": "ಠಾಣೆ", "ta": "தானே", "bn": "থানে", "gu": "ઠાણે", "pa": "ਥਾਣੇ" },
+            "Kalyan": { "mr": "कल्याण", "hi": "कल्याण", "ml": "കല്യാൺ", "te": "కళ్యాణ్", "kn": "ಕಲ್ಯಾಣ", "ta": "கல்யாண்", "bn": "কল্যাণ", "gu": "કલ્યાણ", "pa": "ਕਲਿਆਣ" },
+            "Murbad": { "mr": "मुरबाड", "hi": "मुरबाड", "ml": "മുർബാദ്", "te": "ముర్బాద్", "kn": "ಮುರ್ಬಾದ್", "ta": "முர்பாத்", "bn": "মুরবাড", "gu": "મુરબાડ", "pa": "ਮੁਰਬਾਦ" },
+            "Bhiwandi": { "mr": "भिवंडी", "hi": "भिवंडी", "ml": "ഭിവാണ്ടി", "te": "భివాండి", "kn": "ಭಿವಂಡಿ", "ta": "பிவண்டி", "bn": "ভিওয়ান্ডি", "gu": "ભિવંડી", "pa": "ਭਿਵੰਡੀ" },
+            "Shahapur": { "mr": "शहापूर", "hi": "शहापूर", "ml": "ഷഹാപ്പൂർ", "te": "షహాపుర్", "kn": "ಶಹಾಪುರ", "ta": "சஹாப்பூர்", "bn": "শাহাপুর", "gu": "શાહપુર", "pa": "ਸ਼ਾਹਾਪੁਰ" },
+            "Ulhasnagar": { "mr": "उल्हासनगर", "hi": "उल्हासनगर", "ml": "ഉൾഹാസ്നഗർ", "te": "ఉల్హాస్నగర్", "kn": "ಉಲ್ಹಾಸನಗರ", "ta": "உல்லாஸ்நகர்", "bn": "উলহাসনগর", "gu": "ઉલ્હાસનગર", "pa": "ਉਲਹਾਸਨਗਰ" },
+            "Ambarnath": { "mr": "अंबरनाथ", "hi": "अंबरनाथ", "ml": "അംബർനാഥ്", "te": "అంబర్‌నాథ్", "kn": "ಅಂಬರನಾಥ್", "ta": "அம்பர்நாத்", "bn": "অম্বরনাথ", "gu": "અંબરનાથ", "pa": "ਅੰਬਰਨਾਥ" },
+            "Ratnagiri": { "mr": "रत्नागिरी", "hi": "रत्नागिरी", "ml": "രത്നഗിരി", "te": "రత్నగిరి", "kn": "ರತ್ನಗಿರಿ", "ta": "ரத்னகிரி", "bn": "রত্নগিরি", "gu": "રત્નાગિરી", "pa": "ਰਤਨਾਗਿਰੀ" },
+            "Sangameshwar": { "mr": "संगमेश्वर", "hi": "संगमेश्वर", "ml": "സംഗമേശ്വർ", "te": "సంగమేశ్వర్", "kn": "ಸಂಗಮೇಶ್ವರ", "ta": "சங்கமேஷ்வர்", "bn": "সঙ্গমেশ্বর", "gu": "સંગમેશ્વર", "pa": "ਸੰਗਮੇਸ਼ਵਰ" },
+            "Lanja": { "mr": "लांजा", "hi": "लांजा", "ml": "ലാൻജാ", "te": "లాంజా", "kn": "ಲಾಂಜಾ", "ta": "லாஞ்சா", "bn": "লাঞ্জা", "gu": "લાંજા", "pa": "ਲਾਂਜਾ" },
+            "Rajapur": { "mr": "राजापूर", "hi": "राजापूर", "ml": "രാജാപുർ", "te": "రాజాపూర్", "kn": "ರಾಜಾಪುರ", "ta": "ராஜாப்பூர்", "bn": "রাজাপুর", "gu": "રાજાપુર", "pa": "ਰਾਜਾਪੁਰ" },
+            "Chiplun": { "mr": "चिपळूण", "hi": "चिपळूण", "ml": "ചിപ്ലൂൺ", "te": "చిప్లూన్", "kn": "ಚಿಪ್ಲೂಣ", "ta": "சிப்லூன்", "bn": "চিপলুন", "gu": "ચિપળૂણ", "pa": "ਚਿਪਲੂਨ" },
+            "Guhagar": { "mr": "गुहागर", "hi": "गुहागर", "ml": "ഗുഹാഗർ", "te": "గుహాగర్", "kn": "ಗುಹಾಗರ", "ta": "குஹாகர்", "bn": "গুহাগড়", "gu": "ગુહાગર", "pa": "ਗੁਹਾਗਰ" },
+            "Dapoli": { "mr": "दापोली", "hi": "दापोली", "ml": "ദാപോളി", "te": "దాపోలి", "kn": "ದಾಪೋಲಿ", "ta": "தாபோலி", "bn": "দাপোলি", "gu": "દાપોલી", "pa": "ਦਾਪੋਲੀ" },
+            "Mandangad": { "mr": "मंडणगड", "hi": "मंडणगड", "ml": "മാണ്ഡൻഗഡ്", "te": "మాండన్‌గడ్", "kn": "ಮಂಡನಗಡ", "ta": "மண்டங்கட்", "bn": "মান্ডানগড়", "gu": "મંડણગડ", "pa": "ਮੰਡਨਗੜ੍ਹ" },
+            "Khed": { "mr": "खेड", "hi": "खेड", "ml": "ഖേഡ്", "te": "ఖేడ్", "kn": "ಖೇಡ", "ta": "கேட்", "bn": "খেদ", "gu": "ખેડ", "pa": "ਖੇਡ" },
+            "Ahilyanagar": { "mr": "अहिल्यानगर", "hi": "अहिल्यानगर", "ml": "അഹില്യാനഗർ", "te": "అహిల్యానగర్", "kn": "ಅಹಿಲ್ಯಾನಗರ", "ta": "அகில்யநகர்", "bn": "অহিল্যানগর", "gu": "અહિલ્યાનગર", "pa": "ਅਹਿਲਿਆਨਗਰ" },
+            "Nagar": { "mr": "नगर", "hi": "नगर", "ml": "നഗർ", "te": "నగర్", "kn": "ನಗರ", "ta": "நகர்", "bn": "নগর", "gu": "નગર", "pa": "ਨਗਰ" },
+            "Shrigonda": { "mr": "श्रीगोंदा", "hi": "श्रीगोंदा", "ml": "ശ്രീഗോണ്ട", "te": "శ్రీగోండ", "kn": "ಶ್ರೀಗೋಂಡಾ", "ta": "ஸ்ரீகோண்டா", "bn": "শ্রীগোন্ডা", "gu": "શ્રીગોંડા", "pa": "ਸ਼੍ਰੀਗੋਂਡਾ" },
+            "Karjat": { "mr": "कर्जत", "hi": "कर्जत", "ml": "കർജത്", "te": "కర్జత్", "kn": "ಕರ್ಜತ್", "ta": "கர்ஜத்", "bn": "કર્જત", "gu": "કર્જત", "pa": "ਕਰਜਤ" },
+            "Jamkhed": { "mr": "जामखेड", "hi": "जामखेड", "ml": "ജാംഖേഡ്", "te": "జాంఖేడ్", "kn": "ಜಾಮ್ಖೇಡ್", "ta": "ஜாம்கேட்", "bn": "জামখেড", "gu": "જામખેડ", "pa": "ਜਾਮਖੇਡ" },
+            "Mumbai City": { "mr": "मुंबई शहर", "hi": "मुंबई शहर", "ml": "മുംബൈ സിറ്റി", "te": "ముంబై నగరం", "kn": "ಮುಂಬೈ ನಗರ", "ta": "மும்பை நகரம்", "bn": "মুম্বাই সিটি", "gu": "મુંબઈ શહેર", "pa": "ਮੁੰਬਈ ਸ਼ਹਿਰ" },
+            "Bardez": { "mr": "बारदेश", "hi": "बारदेज़", "ml": "ബാർദേസ്", "te": "బార్దేస్", "kn": "ಬಾರ್ಡೆಜ್", "ta": "பார்தெஸ்", "bn": "বার্দেজ", "gu": "બાર્ડેઝ", "pa": "ਬਾਰਦੇਜ਼" },
+            "Tiswadi": { "mr": "तिसवाडी", "hi": "तिसवाड़ी", "ml": "തിസ്വാദി", "te": "టిస్వాడి", "kn": "ತಿಸ್ವಾಡಿ", "ta": "திஸ்வாடி", "bn": "তিসওয়াড়ি", "gu": "તિસવાડી", "pa": "ਤਿਸਵਾੜੀ" },
+            "Salcete": { "mr": "साल्सेट", "hi": "साल्सेट", "ml": "സാൽസെറ്റ്", "te": "సాల్సెట్", "kn": "ಸಾಲ್ಸೆಟ್", "ta": "சால்செட்", "bn": "সালসেট", "gu": "સાલ્સેટ", "pa": "ਸਾਲਸੇਟ" },
+            "Sanguem": { "mr": "सांगुएम", "hi": "सांगुएम", "ml": "സാംഗ്യൂം", "te": "సంగూమ్", "kn": "ಸಂಗುಯೆಂ", "ta": "சங்குயம்", "bn": "সাঙ্গুয়েম", "gu": "સંગુએમ", "pa": "ਸਾਂਗੁਏਮ" },
+            "Tuljapur": { "mr": "तुळजापूर", "hi": "तुलजापुर", "ml": "തുളജാപുർ", "te": "తులజాపూర్", "kn": "ತುಳಜಾಪುರ", "ta": "துளஜாபூர்", "bn": "তুলজাপুর", "gu": "તુલજાપુર", "pa": "ਤੁਲਜਾਪੁਰ" },
+            "Dharashiv City": { "mr": "धाराशिव शहर", "hi": "धाराशिव शहर", "ml": "ധാരാശിവ് സിറ്റി", "te": "ధారాశివ్ సిటీ", "kn": "ಧಾರಾಶಿವ್ ಸಿಟಿ", "ta": "தாராஷிவ் சிட்டி", "bn": "ধারাশিভ সিটি", "gu": "ધારાશિવ સિટી", "pa": "ਧਾਰਾਸ਼ਿਵ ਸਿਟੀ" },
+            "Paithan": { "mr": "पैठण", "hi": "पैठण", "ml": "പൈഠൺ", "te": "పైఠాన్", "kn": "ಪೈಠಣ", "ta": "பைத்தான்", "bn": "पैठन", "gu": "પૈઠણ", "pa": "ਪੈਠਣ" },
+            "Khuldabad": { "mr": "खुल्दाबाद", "hi": "खुल्दाबाद", "ml": "ഖുൽദാബാദ്", "te": "ఖుల్దాబాద్", "kn": "ಖುಲ್ದಾಬಾದ್", "ta": "குல்தாபாத்", "bn": "খুলদাবাদ", "gu": "ખુલ્દાબાદ", "pa": "ਖੁਲਦਾਬਾਦ" },
+            "Chh. Sambhaji Maharaj Nagar": { "mr": "छ. संभाजी महाराज नगर", "hi": "छत्रपति संभाजी महाराज नगर", "ml": "ഛത്രപതി സംഭാജി മഹാരാജ് നഗർ", "te": "ఛత్రపతి సంభాజీ మహారాజ్ నగర్", "kn": "ಛತ್ರಪತಿ ಸಂಭಾಜಿ ಮಹಾರಾಜ ನಗರ", "ta": "சத்ரபதி சம்பாஜி மகாராஜ் நகர்", "bn": "ছত্রপতি সম্ভাজি মহারাজ নগর", "gu": "છત્રપતિ સંભાજી મહારાજ નગર", "pa": "ਛਤਰਪਤੀ ਸੰਭਾਜੀ ਮਹਾਰਾਜ ਨਗਰ" },
+            "Dharashiv": { "mr": "धाराशिव", "hi": "धाराशिव", "ml": "ധാരാശിവ്", "te": "ధారాశివ్", "kn": "ಧಾರಾಶಿವ್", "ta": "தாராஷிவ்", "bn": "ধারাশিভ", "gu": "ધારાશિવ", "pa": "ਧਾਰਾਸ਼ਿਵ" },
+            "North Goa": { "mr": "उत्तर गोवा", "hi": "उत्तरी गोवा", "ml": "നോർത്ത് ഗോവ", "te": "ఉత్తర గోవా", "kn": "ಉತ್ತರ ಗೋವಾ", "ta": "வட கோவா", "bn": "উত্তর গোয়া", "gu": "ઉત્તર ગોવા", "pa": "ਉੱਤਰੀ ਗੋਆ" },
+            "South Goa": { "mr": "दक्षिण गोवा", "hi": "दक्षिणी गोवा", "ml": "സൗത്ത് ഗോവ", "te": "దక్షిణ గోవా", "kn": "ದಕ್ಷಿಣ ಗೋವಾ", "ta": "தென் கோவா", "bn": "দক্ষিণ গোয়া", "gu": "દક્ષિણ ગોવા", "pa": "ਦੱਖਣੀ ਗੋਆ" },
+};
+        
+
+        // Translations for Labels and Messages (i18n)
+        const translations = {
+            // English - Default
+            "en": {
+                "title": "District & Taluka Selector",
+                "header": "Location Search Tool",
+                "labelLanguage": "Select Language:",
+                "labelDistrict": "Select District:",
+                "labelTaluka": "Select Taluka:",
+                "placeholderDistrict": "Select a District",
+                "placeholderTaluka": "Select a Taluka",
+                "resultsHeader": "Search Results:",
+                "search1Title": "Government Office Address:",
+                "search2Title": "Bank Address:",
+                "msgSelectPrompt": "Please select a Taluka to search.",
+                "msgSearching": (type, t, d) => `🔍 Searching for the nearest ${type} in ${t}, ${d}...`,
+                "msgFound": "✅ Address Found:",
+                "msgFoundPredefined": "✅ Address Found (Pre-defined):",
+                "msgNotFoundGov": (type, t, d) => `❌ Could not find a precise ${type} address for ${t}, ${d}.`,
+                "msgNotFoundBank": (type, t, d) => `❌ Could not find a precise ${type} address for ${t}, ${d}.`,
+                "msgFetchError": "⚠️ Error fetching address data. Please try again later.",
+            },
+            // Marathi (All placeholders must be present)
+            "mr": {
+                "title": "जिल्हा आणि तालुका निवडक",
+                "header": "स्थान शोध साधन",
+                "labelLanguage": "भाषा निवडा:",
+                "labelDistrict": "जिल्हा निवडा:",
+                "labelTaluka": "तालुका निवडा:",
+                "placeholderDistrict": "एक जिल्हा निवडा",
+                "placeholderTaluka": "एक तालुका निवडा",
+                "resultsHeader": "शोध परिणाम:",
+                "search1Title": "शासकीय कार्यालयाचा पत्ता:",
+                "search2Title": "बँकांचा पत्ता:",
+                "msgSelectPrompt": "कृपया शोधण्यासाठी तालुका निवडा.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} मध्ये जवळच्या ${type} साठी शोधत आहे...`,
+                "msgFound": "✅ पत्ता सापडला:",
+                "msgFoundPredefined": "✅ पत्ता सापडला (पूर्व-परिभाषित):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} साठी अचूक ${type} पत्ता सापडला नाही.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} साठी अचूक ${type} पत्ता सापडला नाही.`,
+                "msgFetchError": "⚠️ पत्ता डेटा आणताना त्रुटी. कृपया नंतर पुन्हा प्रयत्न करा.",
+            },
+            // Hindi (All placeholders must be present)
+            "hi": {
+                "title": "जिला और तालुका चयनकर्ता",
+                "header": "स्थान खोज उपकरण",
+                "labelLanguage": "भाषा चुनें:",
+                "labelDistrict": "जिला चुनें:",
+                "labelTaluka": "तालुका चुनें:",
+                "placeholderDistrict": "एक जिला चुनें",
+                "placeholderTaluka": "एक तालुका चुनें",
+                "resultsHeader": "खोज परिणाम:",
+                "search1Title": "सरकारी कार्यालय का पता:",
+                "search2Title": "बैंक का पता:",
+                "msgSelectPrompt": "कृपया खोज के लिए एक तालुका चुनें।",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} में निकटतम ${type} के लिए खोज रहा है...`,
+                "msgFound": "✅ पता मिला:",
+                "msgFoundPredefined": "✅ पता मिला (पूर्व-परिभाषित):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} के लिए सटीक ${type} पता नहीं मिल सका।`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} के लिए सटीक ${type} पता नहीं मिल सका।`,
+                "msgFetchError": "⚠️ पता डेटा लाने में त्रुटि। कृपया बाद में पुनः प्रयास करें।",
+            },
+            // Malayalam (All placeholders must be present)
+            "ml": {
+                "title": "ജില്ലാ, താലൂക്ക് തിരഞ്ഞെടുപ്പ്",
+                "header": "സ്ഥലം തിരയൽ ഉപകരണം",
+                "labelLanguage": "ഭാഷ തിരഞ്ഞെടുക്കുക:",
+                "labelDistrict": "ജില്ല തിരഞ്ഞെടുക്കുക:",
+                "labelTaluka": "താലൂക്ക് തിരഞ്ഞെടുക്കുക:",
+                "placeholderDistrict": "ഒരു ജില്ല തിരഞ്ഞെടുക്കുക",
+                "placeholderTaluka": "ഒരു താലൂക്ക് തിരഞ്ഞെടുക്കുക",
+                "resultsHeader": "തിരയൽ ഫലങ്ങൾ:",
+                "search1Title": "സർക്കാർ ഓഫീസിന്റെ വിലാസം:",
+                "search2Title": "ബാങ്കിന്റെ വിലാസം:",
+                "msgSelectPrompt": "തിരയാൻ ഒരു താലൂക്ക് തിരഞ്ഞെടുക്കുക.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} ലെ ഏറ്റവും അടുത്തുള്ള ${type} തിരയുന്നു...`,
+                "msgFound": "✅ വിലാസം കണ്ടെത്തി:",
+                "msgFoundPredefined": "✅ വിലാസം കണ്ടെത്തി (മുൻകൂട്ടി നിർവചിച്ചത്):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} നായി കൃത്യമായ ${type} വിലാസം കണ്ടെത്താനായില്ല.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} നായി കൃത്യമായ ${type} വിലാസം കണ്ടെത്താനായില്ല.`,
+                "msgFetchError": "⚠️ വിലാസം എടുക്കുന്നതിൽ പിശക്. വീണ്ടും ശ്രമിക്കുക.",
+            },
+            // Telugu (All placeholders must be present)
+            "te": {
+                "title": "జిల్లా మరియు తాలూకా సెలెక్టర్",
+                "header": "స్థానం శోధన సాధనం",
+                "labelLanguage": "భాషను ఎంచుకోండి:",
+                "labelDistrict": "జిల్లాను ఎంచుకోండి:",
+                "labelTaluka": "తాలూకాను ఎంచుకోండి:",
+                "placeholderDistrict": "ఒక జిల్లాను ఎంచుకోండి",
+                "placeholderTaluka": "ఒక తాలూకాను ఎంచుకోండి",
+                "resultsHeader": "శోధన ఫలితాలు:",
+                "search1Title": "ప్రభుత్వ కార్యాలయ చిరునామా:",
+                "search2Title": "బ్యాంకు చిరునామా:",
+                "msgSelectPrompt": "దయచేసి శోధించడానికి ఒక తాలూకాను ఎంచుకోండి.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} లో సమీపంలోని ${type} కోసం శోధిస్తోంది...`,
+                "msgFound": "✅ చిరునామా దొరికింది:",
+                "msgFoundPredefined": "✅ చిరునామా దొరికింది (ముందే నిర్వచించబడిన):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} కోసం కచ్చితమైన ${type} చిరునామా దొరకలేదు.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} కోసం కచ్చితమైన ${type} చిరునామా దొరకలేదు.`,
+                "msgFetchError": "⚠️ చిరునామా డేటాను తీసుకురావడంలో లోపం. దయచేసి తర్వాత మళ్ళీ ప్రయత్నించండి.",
+            },
+            // Kannada (All placeholders must be present)
+            "kn": {
+                "title": "ಜಿಲ್ಲೆ ಮತ್ತು ತಾಲೂಕು ಆಯ್ಕೆಗಾರ",
+                "header": "ಸ್ಥಳ ಹುಡುಕಾಟ ಸಾಧನ",
+                "labelLanguage": "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ:",
+                "labelDistrict": "ಜಿಲ್ಲೆ ಆಯ್ಕೆಮಾಡಿ:",
+                "labelTaluka": "ತಾಲೂಕು ಆಯ್ಕೆಮಾಡಿ:",
+                "placeholderDistrict": "ಒಂದು ಜಿಲ್ಲೆ ಆಯ್ಕೆಮಾಡಿ",
+                "placeholderTaluka": "ಒಂದು ತಾಲೂಕು ಆಯ್ಕೆಮಾಡಿ",
+                "resultsHeader": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು:",
+                "search1Title": "ಸರ್ಕಾರಿ ಕಚೇರಿಯ ವಿಳಾಸ:",
+                "search2Title": "ಬ್ಯಾಂಕ್ ವಿಳಾಸ:",
+                "msgSelectPrompt": "ದಯವಿಟ್ಟು ಹುಡುಕಲು ತಾಲೂಕು ಆಯ್ಕೆಮಾಡಿ.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} ನಲ್ಲಿ ಹತ್ತಿರದ ${type} ಗಾಗಿ ಹುಡುಕಲಾಗುತ್ತಿದೆ...`,
+                "msgFound": "✅ ವಿಳಾಸ ಕಂಡುಬಂದಿದೆ:",
+                "msgFoundPredefined": "✅ ವಿಳಾಸ ಕಂಡುಬಂದಿದೆ (ಪೂರ್ವ ನಿರ್ಧರಿತ):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} ಗಾಗಿ ನಿಖರವಾದ ${type} ವಿಳಾಸ ಕಂಡುಬಂದಿಲ್ಲ.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} ಗಾಗಿ ನಿಖರವಾದ ${type} ವಿಳಾಸ ಕಂಡುಬಂದಿಲ್ಲ.`,
+                "msgFetchError": "⚠️ ವಿಳಾಸ ಡೇಟಾವನ್ನು ಪಡೆಯುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+            },
+            // Tamil (All placeholders must be present)
+            "ta": {
+                "title": "மாவட்டம் மற்றும் தாலுகா தேர்வாளர்",
+                "header": "இருப்பிடம் தேடல் கருவி",
+                "labelLanguage": "மொழியைத் தேர்ந்தெடுக்கவும்:",
+                "labelDistrict": "மாவட்டத்தைத் தேர்ந்தெடுக்கவும்:",
+                "labelTaluka": "தாலுகாவைத் தேர்ந்தெடுக்கவும்:",
+                "placeholderDistrict": "ஒரு மாவட்டத்தைத் தேர்ந்தெடுக்கவும்",
+                "placeholderTaluka": "ஒரு தாலுகாவைத் தேர்ந்தெடுக்கவும்",
+                "resultsHeader": "தேடல் முடிவுகள்:",
+                "search1Title": "அரசு அலுவலகத்தின் முகவரி:",
+                "search2Title": "வங்கி முகவரி:",
+                "msgSelectPrompt": "தேடுவதற்கு ஒரு தாலுகாவைத் தேர்ந்தெடுக்கவும்.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} இல் அருகிலுள்ள ${type} தேடுகிறது...`,
+                "msgFound": "✅ முகவரி கண்டறியப்பட்டது:",
+                "msgFoundPredefined": "✅ முகவரி கண்டறியப்பட்டது (முன்னரே வரையறுக்கப்பட்டது):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} க்கு துல்லியமான ${type} முகவரி கிடைக்கவில்லை.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} க்கு துல்லியமான ${type} முகவரி கிடைக்கவில்லை.`,
+                "msgFetchError": "⚠️ முகவரித் தரவைப் பெறுவதில் பிழை. பின்னர் மீண்டும் முயற்சிக்கவும்.",
+            },
+            // Bengali (All placeholders must be present)
+            "bn": {
+                "title": "জেলা ও তালুকা নির্বাচনকারী",
+                "header": "অবস্থান অনুসন্ধান সরঞ্জাম",
+                "labelLanguage": "ভাষা নির্বাচন করুন:",
+                "labelDistrict": "জেলা নির্বাচন করুন:",
+                "labelTaluka": "তালুকা নির্বাচন করুন:",
+                "placeholderDistrict": "একটি জেলা নির্বাচন করুন",
+                "placeholderTaluka": "একটি তালুকা নির্বাচন করুন",
+                "resultsHeader": "অনুসন্ধানের ফলাফল:",
+                "search1Title": "সরকারী অফিসের ঠিকানা:",
+                "search2Title": "ব্যাংকের ঠিকানা:",
+                "msgSelectPrompt": "অনুসন্ধানের জন্য একটি তালুকা নির্বাচন করুন।",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} তে নিকটতম ${type} এর জন্য অনুসন্ধান করছে...`,
+                "msgFound": "✅ ঠিকানা পাওয়া গেছে:",
+                "msgFoundPredefined": "✅ ঠিকানা পাওয়া গেছে (পূর্ব-নির্ধারিত):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} এর জন্য সঠিক ${type} ঠিকানা খুঁজে পাওয়া যায়নি।`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} এর জন্য সঠিক ${type} ঠিকানা খুঁজে পাওয়া যায়নি।`,
+                "msgFetchError": "⚠️ ঠিকানা ডেটা আনয়নে ত্রুটি। পরে আবার চেষ্টা করুন।",
+            },
+            // Gujarati (All placeholders must be present)
+            "gu": {
+                "title": "જિલ્લો અને તાલુકો પસંદગીકાર",
+                "header": "સ્થાન શોધ સાધન",
+                "labelLanguage": "ભાષા પસંદ કરો:",
+                "labelDistrict": "જિલ્લો પસંદ કરો:",
+                "labelTaluka": "તાલુકો પસંદ કરો:",
+                "placeholderDistrict": "એક જિલ્લો પસંદ કરો",
+                "placeholderTaluka": "એક તાલુકો પસંદ કરો",
+                "resultsHeader": "શોધ પરિણામો:",
+                "search1Title": "સરકારી કચેરીનું સરનામું:",
+                "search2Title": "બેંકનું સરનામું:",
+                "msgSelectPrompt": "કૃપા કરીને શોધવા માટે તાલુકો પસંદ કરો.",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} માં નજીકની ${type} માટે શોધી રહ્યું છે...`,
+                "msgFound": "✅ સરનામું મળ્યું:",
+                "msgFoundPredefined": "✅ સરનામું મળ્યું (પૂર્વ-નિર્ધારિત):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} માટે ચોક્કસ ${type} સરનામું મળ્યું નથી.`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} માટે ચોક્કસ ${type} સરનામું મળ્યું નથી.`,
+                "msgFetchError": "⚠️ સરનામું ડેટા મેળવવામાં ભૂલ. કૃપા કરીને પછીથી ફરી પ્રયાસ કરો.",
+            },
+            // Punjabi (All placeholders must be present)
+            "pa": {
+                "title": "ਜ਼ਿਲ੍ਹਾ ਅਤੇ ਤਾਲੁਕਾ ਚੋਣਕਾਰ",
+                "header": "ਟਿਕਾਣਾ ਖੋਜ ਸਾਧਨ",
+                "labelLanguage": "ਭਾਸ਼ਾ ਚੁਣੋ:",
+                "labelDistrict": "ਜ਼ਿਲ੍ਹਾ ਚੁਣੋ:",
+                "labelTaluka": "ਤਾਲੁਕਾ ਚੁਣੋ:",
+                "placeholderDistrict": "ਇੱਕ ਜ਼ਿਲ੍ਹਾ ਚੁਣੋ",
+                "placeholderTaluka": "ਇੱਕ ਤਾਲੁਕਾ ਚੁਣੋ",
+                "resultsHeader": "ਖੋਜ ਨਤੀਜੇ:",
+                "search1Title": "ਸਰਕਾਰੀ ਦਫਤਰ ਦਾ ਪਤਾ:",
+                "search2Title": "ਬੈਂਕ ਦਾ ਪਤਾ:",
+                "msgSelectPrompt": "ਕਿਰਪਾ ਕਰਕੇ ਖੋਜ ਕਰਨ ਲਈ ਇੱਕ ਤਾਲੁਕਾ ਚੁਣੋ।",
+                "msgSearching": (type, t, d) => `🔍 ${t}, ${d} ਵਿੱਚ ਨਜ਼ਦੀਕੀ ${type} ਲਈ ਖੋਜ ਰਿਹਾ ਹੈ...`,
+                "msgFound": "✅ ਪਤਾ ਲੱਭਿਆ:",
+                "msgFoundPredefined": "✅ ਪਤਾ ਲੱਭਿਆ (ਪੂਰਵ-ਪਰਿਭਾਸ਼ਿਤ):",
+                "msgNotFoundGov": (type, t, d) => `❌ ${t}, ${d} ਲਈ ਸਹੀ ${type} ਪਤਾ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਿਆ।`,
+                "msgNotFoundBank": (type, t, d) => `❌ ${t}, ${d} ਲਈ ਸਹੀ ${type} ਪਤਾ ਨਹੀਂ ਲੱਭਿਆ ਜਾ ਸਕਿਆ।`,
+                "msgFetchError": "⚠️ ਪਤਾ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਗਲਤੀ। ਕਿਰਪਾ ਕਰਕੇ ਬਾਅਦ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+            }
+        };
+
+
+        // --- 2. JAVASCRIPT LOGIC ---
+
+        // Helper functions
+        function getTranslations() {
+            const langCode = document.getElementById('languageSelect').value;
+            return translations[langCode] || translations['en'];
+        }
+
+        function getPlaceName(englishName, langCode) {
+            const translations = placeNameTranslations[englishName];
+            if (translations && translations[langCode]) {
+                return translations[langCode];
+            }
+            // Fallback to English name if translation is missing
+            return englishName;
+        }
+
+        // --- Core Functions ---
+
+        function populateDistrictOptions() {
+            const districtSelect = document.getElementById('districtSelect');
+            const langCode = document.getElementById('languageSelect').value;
+            const t = getTranslations();
+            
+            districtSelect.innerHTML = `<option value="" disabled selected>${t['placeholderDistrict']}</option>`;
+
+            Object.keys(locationData).forEach(district => {
+                const option = document.createElement('option');
+                option.value = district; // Store English name as value for API search
+                option.textContent = getPlaceName(district, langCode); // Display local name
+                districtSelect.appendChild(option);
+            });
+            updateTalukaOptions();
+        }
+
+        function updateTalukaOptions() {
+            const districtSelect = document.getElementById('districtSelect');
+            const talukaSelect = document.getElementById('talukaSelect');
+            const selectedDistrict = districtSelect.value; // English name is stored here
+            const langCode = document.getElementById('languageSelect').value;
+            const t = getTranslations();
+            
+            talukaSelect.innerHTML = `<option value="" disabled selected>${t['placeholderTaluka']}</option>`;
+            
+            if (selectedDistrict && locationData[selectedDistrict]) {
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                locationData[selectedDistrict].forEach(taluka => {
+                    const option = document.createElement('option');
+                    option.value = taluka; // Store English name as value for API search
+                    option.textContent = getPlaceName(taluka, langCode); // Display local name
+                    talukaSelect.appendChild(option);
+                });
+            } else {
+                 document.getElementById('resultsContainer').classList.add('hidden');
+            }
+        }
+
+        function setLanguage(langCode) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            const langDict = translations[langCode];
+            
+            if (!langDict) return;
+
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (langDict[key] && typeof langDict[key] === 'string') {
+                    el.textContent = langDict[key];
+                }
+            });
+
+            // Update placeholders and dependent options (District/Taluka names)
+            populateDistrictOptions();
+            
+            // Clear and reset result messages to the new language prompt
+            clearResults();
+        }
+
+        function clearResults() {
+             const t = getTranslations();
+             document.getElementById('govAddress').innerHTML = `<span class="text-gray-500">${t.msgSelectPrompt}</span>`;
+             document.getElementById('bankAddress').innerHTML = `<span class="text-gray-500">${t.msgSelectPrompt}</span>`;
+        }
+
+
+        // --- Search Functions ---
+
+        /**
+         * Fetches address data using pre-defined data or Nominatim API.
+         */
+        async function fetchAddress(type, district, taluka, queryTerm, addressElement) {
+            const t = getTranslations();
+            // Get local names for display in status messages
+            const localTaluka = getPlaceName(taluka, document.getElementById('languageSelect').value);
+            const localDistrict = getPlaceName(district, document.getElementById('languageSelect').value);
+            
+            // --- 1. Check Pre-defined Data for Government Offices ---
+            if (type === 'Government Office') {
+                const predefinedAddress = govOfficeAddresses[taluka];
+                if (predefinedAddress) {
+                    addressElement.innerText = `${t.msgFoundPredefined} ${predefinedAddress}`;
+                    addressElement.classList.remove('animate-pulse');
+                    return;
+                }
+            }
+
+
+            // --- 2. Fallback to Nominatim API Fetch (for Banks and missing Gov Offices) ---
+            // NOTE: We use English names for the API query for reliability.
+            const q = `${queryTerm} in ${taluka}, ${district}`; 
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
+            
+            // Set loading state (translated) using local names
+            addressElement.innerText = t.msgSearching(type, localTaluka, localDistrict);
+            addressElement.classList.add('animate-pulse');
+
+            try {
+                const res = await fetch(url, { headers: { 'User-Agent': 'gov-app-v1' } });
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    // Handle no results found (translated) using local names
+                    const notFoundMsg = (type === 'Bank') ? t.msgNotFoundBank(type, localTaluka, localDistrict) : t.msgNotFoundGov(type, localTaluka, localDistrict);
+                    addressElement.innerText = notFoundMsg;
+                } else {
+                    // Success: display the address (address content remains in original language from API)
+                    const address = data[0].display_name;
+                    addressElement.innerText = `${t.msgFound} ${address}`;
+                }
+            } catch (error) {
+                console.error("Error fetching address for", type, error);
+                addressElement.innerText = t.msgFetchError;
+            } finally {
+                addressElement.classList.remove('animate-pulse');
+            }
+        }
+
+        /**
+         * Triggers the search for both Government Office and Bank addresses.
+         */
+        function searchAllAddresses() {
+            const districtSelect = document.getElementById('districtSelect');
+            const talukaSelect = document.getElementById('talukaSelect');
+            const district = districtSelect.value; // English Key
+            const taluka = talukaSelect.value;   // English Key
+
+            if (!district || !taluka) {
+                clearResults();
+                return;
+            }
+
+            // 1. Search for Government Office
+            const govAddressElement = document.getElementById('govAddress');
+            fetchAddress('Government Office', district, taluka, 'Government Office', govAddressElement);
+
+            // 2. Search for Bank
+            const bankAddressElement = document.getElementById('bankAddress');
+            fetchAddress('Bank', district, taluka, 'Bank', bankAddressElement);
+        }
+
+        // --- 3. INITIALIZATION ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set the initial language to English
+            document.getElementById('languageSelect').value = 'en';
+            setLanguage('en'); 
+            
+            // Ensure search is triggered when Taluka changes
+            document.getElementById('talukaSelect').addEventListener('change', searchAllAddresses);
+        });
+
+    </script>
+
+</body>
+</html>

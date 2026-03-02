@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images\ico.png" type="image/x-icon">  
+<title>AI Farming App</title>
+
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+/* Body stylings*/
+ body {
+    font-family: 'Poppins', sans-serif;
+      background-color: #f0f8ff;
+      padding: 20px;
+      margin: 0;
+    }
+img{
+  width: 10%;
+border-radius:50%;
+}
+
+@media (max-width: 764px) {
+img {
+    width: 40%;
+    border-radius:50%;
+padding:3%;
+  }
+}
+    header {
+      background-color: #63ef55;
+      color: white;
+      padding: 1%;
+      text-align: center;
+      font-size: 80%;
+      border-radius: 7px;
+    }
+
+    select {
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    #features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    #features button {
+      padding: 10px;
+      font-size: 18px;
+      background-color: #e0ffe0;
+      border: 1px solid #90ee90;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #features button:hover {
+      background-color: #ccffcc;
+    }
+
+    #voiceOrText {
+      margin-top: 20px;
+    }
+
+    #voiceOrText input {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+
+    #voiceOrText button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    #response {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<header>
+  <div id="menu-placeholder"></div>
+<script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+
+<img src="images\icon.png" width="100px">
+<h1>AI Farming assistant</h1>
+  <div id="google_translate_element" style="float:right;"></div>
+  <label for="languageSelector">🌐 Choose Language/भाषा:</label>
+  <select id="languageSelector">
+  <option value="en-IN">English</option>
+  <option value="hi-IN">Hindi(हिन्दी)</option>
+	<option value="bn-IN">Bangla(বাংলা)</option>
+	<option value="gu-IN">Gujarati(ગુજરાતી)</option>
+	<option value="kn-IN">Kannada(ಕನ್ನಡ)</option>
+	<option value="mr-IN">Marathi(मराठी)</option>
+	<option value="ml-IN">Malayalam(മലയാളം)</option>
+	<option value="pa-IN">Punjabi(ਪੰਜਾਬੀ)</option>
+	<option value="ta-IN">Tamil(தமிழ்)</option>
+	<option value="te-IN">Telugu(తెలుగు)</option>
+  </select>
+</header>
+
+<section id="features">
+  <button id="btn1" onclick="location.href='1.html'">1. Land Info & Crop Suggestion</button>
+  <button id="btn2" onclick="location.href='2.html'">2. Animal Husbandry & Others</button>
+  <button id="btn3" onclick="location.href='https://scan-crop-ai-tyit.streamlit.app/'">3. Scan Crop (AI)</button>
+  <button id="btn4" onclick="checkLogin('wholesaler.html')">4. Sell Farm Products (Mini Auction)</button>
+  <button id="btn5" onclick="checkLogins('5.html')">5. Soil Test & Labour</button>
+  <button id="btn6" onclick="checkLogin('farmer.html')">6. Buy Seeds & Equipments for cultivation</button>
+  <button id="btn7" onclick="location.href='7.html'">7. Govt Schemes & Loans</button>
+</section>
+
+<section id="voiceOrText">
+  <input type="text" id="textInput" placeholder="Type your query here...">
+  <button onclick="startVoiceRecognition()">🎙️ Voice Input </button>
+  <button onclick="processText()">Submit</button>
+  <div id="response"></div>
+</section>
+  <script>
+
+  function checkLogin(targetPage) {
+    // Check if the user is signed in (you can customize this logic)
+    const isSignedIn = localStorage.getItem('signedIn');
+
+    if (isSignedIn === 'true') {
+      // User is signed in — go directly to the target page
+      window.location.href = targetPage;
+    } else {
+      // Not signed in — save the target page and go to signup
+      localStorage.setItem('redirectAfterSignup', targetPage);
+      window.location.href = 'login.html';
+    }
+  }
+
+function checkLogins(targetPage) {
+    // Check if the user is signed in (you can customize this logic)
+    const isSignedIn = localStorage.getItem('signedIn');
+
+    if (isSignedIn === 'true') {
+      // User is signed in — go directly to the target page
+      window.location.href = targetPage;
+    } else {
+      // Not signed in — save the target page and go to signup
+      localStorage.setItem('redirectAfterSignup', targetPage);
+      window.location.href = 'logins.html';
+    }
+  }
+
+
+const translations = {
+    "en-IN": {
+      title: "AI Farming Assistant",
+      feature1: "1. Land Info & Crop Suggestion",
+      feature2: "2. Animal Husbandry & Others",
+      feature3: "3. Scan Crop (AI)",
+      feature4: "4. Sell Farm Products (Mini Auction)",
+      feature5: "5. Soil Test & Labour",
+      feature6: "6. Buy Seeds & Equipments for cultivation",
+      feature7: "7. Govt Schemes & Loans",
+      voiceInput: "🎙️ Voice Input",
+      submit: "Submit",
+      inputPlaceholder: "Type your query here..."
+    },
+    "hi-IN": {
+      title: "कृषि सहायक ऐप",
+      feature1: "1. भूमि जानकारी और फसल सुझाव",
+      feature2: "2. पशुपालन और अन्य",
+      feature3: "3. फसल स्कैन (AI)",
+      feature4: "4. कृषि उत्पाद बेचें (मिनी नीलामी)",
+      feature5: "5. मृदा परीक्षण और मज़दूर",
+      feature6: "6. खेती के लिए बीज और उपकरण खरीदें",
+      feature7: "7. सरकारी योजनाएं और ऋण",
+      voiceInput: "🎙️ आवाज इनपुट",
+      submit: "जमा करें",
+      inputPlaceholder: "अपना प्रश्न यहाँ टाइप करें..."
+    },
+      "bn-IN": {
+      title: "এআই কৃষি সহকারী",
+      feature1: "১. জমির তথ্য ও ফসলের পরামর্শ",
+      feature2: "২. পশুপালন ও অন্যান্য",
+      feature3: "৩. স্ক্যান ক্রপ (এআই)",
+      feature4: "৪. খামারের পণ্য বিক্রি করুন (ছোট নিলাম)",
+      feature5: "৫. মাটি পরীক্ষা ও শ্রম",
+      feature6: "৬. চাষের জন্য বীজ ও সরঞ্জাম কিনুন",
+      feature7: "৭. সরকারি প্রকল্প ও ঋণ",
+      voiceInput: "🎙️ প্রশ্ন বলুন",
+      submit: "জিজ্ঞাসা",
+      inputPlaceholder: "আপনার প্রশ্নটি এখানে টাইপ করুন..."
+    },
+    "ta-IN": {
+     title: "விவசாய உதவி செயலி",
+      feature1: "1. நில தகவல் மற்றும் பயிர் பரிந்துரை",
+      feature2: "2. மாடுப் பராமரிப்பு மற்றும் பிறவை",
+      feature3: "3. பயிர் ஸ்கேன் (AI)",
+      feature4: "4. பண்ணை பொருட்களை விற்கவும் (சிறு ஏலம்)",
+      feature5: "5. மண் சோதனை மற்றும் தொழிலாளர்கள்",
+      feature6: "6. சாகுபடிக்கு விதைகள் மற்றும் உபகரணங்களை வாங்கவும்",
+      feature7: "7. அரசு திட்டங்கள் மற்றும் கடன்கள்",
+      voiceInput: "🎙️ குரல் உள்ளீடு",
+      submit: "சமர்ப்பிக்க",
+      inputPlaceholder: "உங்கள் கேள்வியை இங்கே பதிவு செய்க..."
+    },
+     "gu-IN": {
+      title: "એઆઈ ફાર્મિંગ આસિસ્ટન્ટ",
+      feature1: "૧. જમીનની માહિતી અને પાક સૂચન",
+      feature2: "૨. પશુપાલન અને અન્ય",
+      feature3: "3. સ્કેન ક્રોપ (AI)",
+      feature4: "૪. ખેત ઉત્પાદનો વેચો (હરાજી)",
+      feature5: "૫. માટી પરીક્ષણ અને શ્રમ",
+      feature6: "6. ખેતી માટે બીજ અને સાધનો ખરીદો",
+      feature7: "૭. સરકારી યોજનાઓ અને લોન",
+      voiceInput: "🎙️ પ્રશ્ન કહો",
+      submit: "પૂછો",
+      inputPlaceholder: "તમારી ક્વેરી અહીં લખો..."
+    },
+    "kn-IN": {
+      title: "AI ಕೃಷಿ ಸಹಾಯಕ",
+      feature1: "1. ಭೂ ಮಾಹಿತಿ ಮತ್ತು ಬೆಳೆ ಸಲಹೆ",
+      feature2: "2. ಪಶುಸಂಗೋಪನೆ ಮತ್ತು ಇತರೆ",
+      feature3: "3. ಸ್ಕ್ಯಾನ್ ಕ್ರಾಪ್ (AI)",
+      feature4: "4. ಕೃಷಿ ಉತ್ಪನ್ನಗಳನ್ನು ಮಾರಾಟ ಮಾಡಿ (ಹರಾಜು)",
+      feature5: "5. ಮಣ್ಣು ಪರೀಕ್ಷೆ ಮತ್ತು ಕಾರ್ಮಿಕ",
+      feature6: "6. ಕೃಷಿಗಾಗಿ ಬೀಜಗಳು ಮತ್ತು ಸಲಕರಣೆಗಳನ್ನು ಖರೀದಿಸಿ",
+      feature7: "7. ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಾಲಗಳು",
+      voiceInput: "🎙️ ಪ್ರಶ್ನೆ ಹೇಳು",
+      submit: "ಕೇಳು",
+      inputPlaceholder: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ..."
+    },
+    "te-IN": {
+      title: "AI వ్యవసాయ సహాయకుడు",
+      feature1: "1. భూమి సమాచారం & పంట సూచన",
+      feature2: "2. పశుసంవర్ధకం & ఇతరులు",
+      feature3: "3. స్కాన్ పంట (AI)",
+      feature4: "4. వ్యవసాయ ఉత్పత్తులను అమ్మండి (వేలం)",
+      feature5: "5. నేల పరీక్ష & శ్రమ",
+      feature6: "6. సాగు కోసం విత్తనాలు & పరికరాలు కొనండి",
+      feature7: "7. ప్రభుత్వ పథకాలు & రుణాలు",
+      voiceInput: "🎙️ ప్రశ్న చెప్పండి",
+      submit: "అడగండి",
+      inputPlaceholder: "మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి..."
+    },
+    "mr-IN": {
+      title: "AI शेती सहाय्यक",
+      feature1: "१. जमिनीची माहिती आणि पीक सूचना",
+      feature2: "२. पशुपालन आणि इतर",
+      feature3: "३. स्कॅन (एआय)",
+      feature4: "4. शेती उत्पादने विक्री करा (लिलाव)",
+      feature5: "5. जमिनीची चाचनी व मजूर",
+      feature6: "6. लागवडीसाठी बियाणे आणि उपकरणे खरेदी करा",
+      feature7: "7. सरकारी योजना आणि कर्जे",
+      voiceInput: "🎙️ व्हॉइस इनपुट",
+      submit: "सबमिट करा",
+      inputPlaceholder: "तुमची समस्या येथे टाइप करा..."
+    },
+    "pa-IN": {
+      title: "ਏਆਈ ਖੇਤੀ ਸਹਾਇਕ",
+      feature1: "1. ਜ਼ਮੀਨ ਦੀ ਜਾਣਕਾਰੀ ਅਤੇ ਫਸਲ ਸੁਝਾਅ",
+      feature2: "2. ਪਸ਼ੂ ਪਾਲਣ ਅਤੇ ਹੋਰ",
+      feature3: "3. ਸਕੈਨ ਕਰੋਪ (AI)",
+      feature4: "4. ਖੇਤੀ ਉਤਪਾਦ ਵੇਚੋ (ਨਿਲਾਮੀ)",
+      feature5: "5. ਮਿੱਟੀ ਪਰਖ ਅਤੇ ਲੇਬਰ",
+      feature6: "6. ਕਾਸ਼ਤ ਲਈ ਬੀਜ ਅਤੇ ਉਪਕਰਣ ਖਰੀਦੋ",
+      feature7: "7. ਸਰਕਾਰੀ ਸਕੀਮਾਂ ਅਤੇ ਕਰਜ਼ੇ",
+      voiceInput: "🎙️ Voice Input",
+      submit: "Submit",
+      inputPlaceholder: "Type your query here..."
+    },
+    "ml-IN": {
+      title: "AI ഫാമിംഗ് അസിസ്റ്റൻ്റ്",
+      feature1: "1. ഭൂമി വിവരങ്ങളും വിള നിർദ്ദേശവും",
+      feature2: "2. മൃഗസംരക്ഷണവും മറ്റുള്ളവയും",
+      feature3: "3. ക്രോപ്പ് സ്കാൻ ചെയ്യുക",
+      feature4: "4. കാർഷിക ഉൽപ്പന്നങ്ങൾ വിൽക്കുക (ലേലം)",
+      feature5: "5. മണ്ണ് പരിശോധനയും തൊഴിലും",
+      feature6: "6. കൃഷിക്ക് വിത്തുകളും ഉപകരണങ്ങളും വാങ്ങുക",
+      feature7: "7. സർക്കാർ പദ്ധതികളും വായ്പകളും",
+      voiceInput: "🎙️ Voice Input",
+      submit: "Submit",
+      inputPlaceholder: "Type your query here..."
+    },
+}
+
+  function updateUIByLanguage(lang) {
+    const t = translations[lang];
+    if (!t) return;
+
+    document.querySelector('header h1').innerText = t.title;
+    document.querySelectorAll('#features button')[0].innerText = t.feature1;
+    document.querySelectorAll('#features button')[1].innerText = t.feature2;
+    document.querySelectorAll('#features button')[2].innerText = t.feature3;
+    document.querySelectorAll('#features button')[3].innerText = t.feature4;
+    document.querySelectorAll('#features button')[4].innerText = t.feature5;
+    document.querySelectorAll('#features button')[5].innerText = t.feature6;
+    document.querySelectorAll('#features button')[6].innerText = t.feature7;
+    document.querySelector('#voiceOrText button').innerText = t.voiceInput;
+    document.querySelector('#textInput').placeholder = t.inputPlaceholder;
+    document.querySelectorAll('#voiceOrText button')[1].innerText = t.submit;
+  }
+
+  document.getElementById('languageSelector').addEventListener('change', function () {
+    updateUIByLanguage(this.value);
+  });
+
+  updateUIByLanguage(document.getElementById('languageSelector').value);
+
+  function startVoiceRecognition() {
+    const lang = document.getElementById('languageSelector').value;
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = lang;
+    recognition.start();
+
+    recognition.onresult = function (event) {
+      const text = event.results[0][0].transcript;
+      document.getElementById('textInput').value = text;
+      processVoiceCommand(text);
+    };
+
+    recognition.onerror = function (event) {
+      alert('Voice error: ' + event.error);
+    };
+  }
+
+  function processText() {
+    const text = document.getElementById('textInput').value;
+    processVoiceCommand(text);
+  }
+
+  function speak(text, langCode) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = langCode;
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang === langCode);
+    if (voice) utterance.voice = voice;
+    speechSynthesis.speak(utterance);
+  }
+
+  function processVoiceCommand(text) {
+    const lowerText = text.toLowerCase();
+    let message = '';
+    const lang = document.getElementById('languageSelector').value;
+      
+      if (lowerText.includes("ಭೂಮಿಯ") || lowerText.includes("ಸಲಹೆ") || lowerText.includes("ಮಾಹಿತಿ") || lowerText.includes("ഭൂമി")) {
+      message = translations[lang].feature1;
+      location.href='1.html';
+    } else if (lowerText.includes("animal") || lowerText.includes("પશુપાલન") || lowerText.includes("बेचना") || lowerText.includes("விற்க")) {
+      message = translations[lang].feature2;
+      location.href='2.html';
+    } else if (lowerText.includes("crop") || lowerText.includes("quintal") || lowerText.includes("बेचना") || lowerText.includes("விற்க")) {
+      message = translations[lang].feature3;
+      location.href='https://scan-crop-ai-tyit.streamlit.app/';
+    } else if (lowerText.includes("sell") ||  lowerText.includes("বিক্রি") || lowerText.includes("products") || lowerText.includes("बेचना") || lowerText.includes("விற்க")|| lowerText.includes("शेत काम")  ) {
+      message = translations[lang].feature4;
+      location.href='wholesaler.html';
+    } else if (lowerText.includes("soil") || lowerText.includes("test") || lowerText.includes("चाचणी")) {
+      message = translations[lang].feature5;
+      location.href='5.html';
+    } else if (lowerText.includes("seeds") || lowerText.includes("खरीद") || lowerText.includes("விதைகள்") ) {
+      message = translations[lang].feature6;
+      location.href='farmer.html';
+    } else if (lowerText.includes("government") || lowerText.includes("scheme") || lowerText.includes("सरकारी योजनाएं")||lowerText.includes("அரசு")) {
+      message = translations[lang].feature7;
+      location.href='7.html';
+    } else {
+      message = (lang === 'hi-IN') ? "माफ करें, मैं समझ नहीं पाया।" :
+                (lang === 'ta-IN') ? "மன்னிக்கவும், புரியவில்லை." :
+                "Sorry, I didn’t understand.";
+    }
+
+    document.getElementById('response').innerText = message;
+    speak(message, lang);
+  }
+
+  function selectFeature(index) {
+    //alert("Opening section: " + index);
+    // This could link to another screen or tab
+  }
+
+  window.speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>

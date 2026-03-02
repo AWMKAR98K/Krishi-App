@@ -1,0 +1,59 @@
+const path = require("path");
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// 1. Import Routes
+const yieldRoutes = require("./routes/yieldRoutes");
+const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
+const bidRoutes = require("./routes/bidRoutes");
+const marketRoutes = require('./routes/market');
+
+
+
+// 2. Middleware
+
+app.use("/api/bid", bidRoutes);
+app.use('/api/market', marketRoutes);
+
+// 3. Static File Serving
+// This serves your HTML, CSS, and JS from the frontend folder
+app.use(express.static(path.join(__dirname, "../frontend")));
+// This serves your uploaded crop images/videos
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// 4. API Route Mounting
+// Note: Frontend should call http://localhost:5000/api/yield/...
+app.use("/api/yield", yieldRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+
+// 5. Root Route (Serves the landing page)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+});
+
+// 6. Database Connection
+const dbURI = "mongodb+srv://atharvmerz_db_user:DDn.JoGL3S0iMoOt5@clustere.emtbvrf.mongodb.net/KrishiDB?retryWrites=true&w=majority&appName=Cluster";
+
+mongoose.connect(dbURI)
+  .then(() => console.log("✅ Connected to MongoDB Atlas Cloud!"))
+  .catch((err) => console.log("❌ Connection Error: ", err));
+
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected successfully");
+    // 7. Start Server (ONLY ONCE)
+    const PORT = 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:5000`);
+    });
+  })
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err);
+  });

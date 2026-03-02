@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="images\an.png" type="image/x-icon">
+  <title>Animal Husbandry & Others</title>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f2f2f2;
+}
+
+header {
+  background: purple;
+  color: white;
+  padding: 1%;
+  text-align: center;
+  margin: 4%;
+  border-radius: 7px;
+}
+
+#language-selector {
+  text-align: center;
+  margin-top: -30px;
+  padding-right: 1rem;
+}
+
+/* ⭐ ALWAYS EXACTLY 5 CARDS PER ROW */
+.grid {
+  display: flex;
+  flex-wrap: nowrap;      /* ❗ no wrapping allowed */
+  overflow-x: auto;       /* horizontal scroll if needed */
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.card {
+  flex: 0 0 200px;        /* ❗ fixed width for exactly 5 cards */
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ⭐ CONSISTENT IMAGE SIZE */
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-title {
+  padding: 0.7rem;
+  font-weight: bold;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* DETAILS */
+#details {
+  padding: 1rem;
+  background: white;
+  max-width: 800px;
+  margin: 1rem auto;
+  display: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#details h2 {
+  margin-top: 0;
+  color:violet ;
+}
+
+#details video,
+#details img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: 1rem auto;
+  border-radius: 5px;
+  height: auto;
+    display: block;
+}
+
+.back-btn {
+  background: #025e06;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 1rem;
+  display: block;
+}
+
+.back-btn:hover {
+  background: #2e7d32;
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div id="menu-placeholder"></div>
+    <script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+<img src="images/ani.png" width="100px" style="border-radius: 50%;" >
+<h1 id="mainTitle">Animal Husbandry and Others</h1>
+<label for="languageSelector">🌐 Choose Language/भाषा:</label>
+<select id="languageSelector">
+<option value="en-IN">English</option>
+<option value="hi-IN">Hindi(हिन्दी)</option>
+<option value="bn-IN">Bangla(বাংলা)</option>
+  <option value="gu-IN">Gujarati(ગુજરાતી)</option>
+  <option value="kn-IN">Kannada(ಕನ್ನಡ)</option>
+  <option value="mar-IN">Marathi(मराठी)</option>
+  <option value="ml-IN">Malayalam(മലയാളം)</option>
+  <option value="pa-IN">Punjabi(ਪੰਜਾਬੀ)</option>
+  <option value="ta-IN">Tamil(தமிழ்)</option>
+  <option value="te-IN">Telugu(తెలుగు)</option>
+</select>
+</header>
+
+<div id="main-content"><div class="grid" id="optionsGrid"></div>
+<div id="details">
+<button class="back-btn" id="backBtn" onclick="goBackToGrid()">← Back</button>
+<h2 id="detailsTitle"></h2>
+<div id="detailsContent">
+<p id="d_content_p1"></p>
+<p id="d_content_p2"></p>
+<p id="d_content_p3"></p>
+<img id="detailsImage" alt="Relevant image for the topic" style="display: none;"/>
+<iframe id="detailsVideo" width="100%" height="315" frameborder="0" allowfullscreen></iframe></div></div></div>
+
+<script>
+  updateDetailsContent()
+    const optionsData = {
+    'Animal Husbandry': {
+img: "images/3.jpeg",
+type: 'sub-menu',
+subOptions: {
+    'Cow':              { title_key: 't_cow',       content_key: 'c_cow',       video_key: 'video_cow',     img: "images/cow.jpg",                   img_key: 'img_cow_health', },
+    'Buffalo':          { title_key: 't_buffalo',   content_key: 'c_buffalo',   video_key: 'video_buffalo', img: "images/buffalo.jpg",               img_key: 'img_buffalo_health', },
+    'Goat':             { title_key: 't_goat',      content_key: 'c_goat',      video_key: 'video_goat',    img: "images/goat.jpg" ,                 img_key:'img_goat_health',},
+    'Pig':              { title_key: 't_pig',       content_key: 'c_pig',       video_key: 'video_pig',     img: "images/pig.jpg",                   img_key:'img_pig_health',},
+    'Sheep':            { title_key: 't_sheep',     content_key: 'c_sheep',     video_key: 'video_sheep',   img: "images/sheep.jpg",                 img_key:'img_sheep_health' ,},
+},},
+
+    'Poultry Farming': {
+img: "images/4.jpg",
+type: 'sub-menu',
+subOptions: {
+    'Chicken':          { title_key: 't_chicken',   content_key: 'c_chicken',   video_key: 'video_chicken', img: "images/chicken.jpg",  img_key:"img_chicken_health", },
+    'Duck':             { title_key: 't_duck',      content_key: 'c_duck',      video_key: 'video_duck',    img: "images/duck.jpg",   img_key:"img_duck_health",},
+},},
+    'Fish Farming':     { title_key: 't_fish',      content_key: 'c_fish',      video_key: 'video_fish',    img: "images/5.jpg",   type:"details" ,img_key:"img_fish_health",},
+    'floriculture':      { title_key: 't_flor',       content_key: 'c_flor',    video_key: 'video_flor',     img: "images/8.jpg",   type: 'details',img_key:"img_flor_health" ,},
+    'Manure Making':    { title_key: 't_manure',    content_key: 'c_manure',    video_key: 'video_manure',  img: "images/6.jpg",  type: 'details',img_key:"img_manure_health", },
+    'Oil Extraction':   { title_key: 't_oil',       content_key: 'c_oil',       video_key: 'video_oil',     img: "images/17.jpg",   type: 'details',img_key:"img_oil_health", },
+    'Jaggery Making':   { title_key: 't_jaggery',   content_key: 'c_jaggery',   video_key: 'video_jaggery', img: "images/20.jpg",   type: 'details',img_key:"img_jaggery_health", },
+    'Agroforestry':     { title_key: 't_agro',      content_key: 'c_agro',      video_key: 'video_agro',    img: "images/19.jpg",   type: 'details' ,img_key:"img_agro_health",},
+    'Sericulture':      { title_key: 't_seri',      content_key: 'c_seri',      video_key: 'video_seri',    img: "images/13.jpg",   type: 'details' ,img_key:"img_pottery_health",},
+    'Pottery':          { title_key: 't_pottery',   content_key: 'c_pottery',   video_key: 'video_pottery', img: "images/14.jpg",   type: 'details',img_key:"img_seri_health",},
+};
+
+    const translations = {
+        "en-IN": {
+            // Page Elements
+            mainTitle: "Animal Husbandry and Others",
+            backBtn: "← Back",
+            backToMain: "← Back to Main",
+            'Animal Husbandry': "Animal Husbandry",
+            'Poultry Farming': "Poultry Farming",
+            'Fish Farming': "Fish Farming",
+            'floriculture': "floriculture",
+            'Manure Making': "Manure Making",
+            'Oil Extraction': "Oil Extraction",
+            'Jaggery Making': "Jaggery Making",
+            'Agroforestry': "Agroforestry",
+            'Sericulture': "Sericulture",
+            'Pottery': "Pottery",
+            'Cow': "Cow",
+            'Buffalo': "Buffalo",
+            'Goat': "Goat",
+            'Pig': "Pig",
+            'Sheep': "Sheep",
+            'Chicken': "Chicken",
+            'Duck': "Duck",
+            t_cow: "Animal Husbandry → Cow Health",
+            t_buffalo:"Animal husbandry -> buffalo health",
+          t_goat:"Animal husbandry -> goat health",
+            t_pig:"Animal husbandry -> pig health",
+            t_sheep:"animal husbandry-> sheep health",
+           t_chicken:"Poultry farming ->chicken Health ",
+            t_duck: 'Poultry Farming → Duck Rearing',
+              t_fish:"fish farming-> pisciculture",
+              t_flor:"floriculture-> Flower Agriculture",
+              t_manure:"manure making -> composting",
+              t_oil:"oil extraction ->Petroleum extraction",
+              t_jaggery:"jaggery making -> gur",
+              t_agro:"Agroforesty -> Farm forestry",
+            t_seri: 'Sericulture -> Silk farming',
+              t_pottery:"pottery ->Ceramics",
+
+            // Content (Cow, Duck, Sericulture - as requested)
+            c_cow_p1: "<b>Top 5 Common Health Issues & Cures:</b>",
+            c_buffalo_p1:"<b>Top 5 common health issues & cures:</b>",
+             c_goat_p1:"<b>Top 5 common health issues & cures:<b>",
+             c_pig_p1:"<b>Top 5 common health issues &cures</b> :",
+             c_sheep_p1:"<b>Top 5 commo health issues & cures:</b>",
+             c_chicken_p1:"<b>Top 5 common health  issues & cures</b>",
+             c_duck_p1:"<b>Top 5 common health issues &cures</b>",
+
+            c_cow_p2: "1. Mastitis: Use of antibiotics and proper udder hygiene. <br>2. FMD: Regular vaccination.<br> 3. Bloat: Avoid overfeeding. <br>4. Milk Fever: Administer calcium. <br>5. Ticks/Parasites: Regular deworming.",
+            c_buffalo_p2:"1. Mastitis: Udder infection that reduces milk.<br>2.FMD: Fever and mouth sores; milk drops suddenly.<br>3.HS: High fever and swelling; needs yearly vaccine.<br>4.Bloat: Stomach gas causing sudden swelling.<br>5.Parasites: Worms/lice causing weakness and low milk.",
+            c_goat_p2:"1.PPR (Goat Plague): Fever, diarrhea, mouth sores; highly contagious.<br>2.Foot Rot: Hoof infection causing swelling and lameness.<br>3.Pneumonia: Cough, fever, and breathing difficulty.<br>4.Internal Parasites: Worms causing weight loss and anemia.<br>5.Mastitis: Udder infection reducing milk and causing pain.",
+            c_pig_p2:"1.Swine Fever (CSF/ASF): High fever, bleeding, sudden death.<br>2.Pneumonia: Coughing, fever, fast or difficult breathing.<br>3.Gastroenteritis: Diarrhea and dehydration, common in piglets.<br>4.Parasites: Worms causing weight loss and poor growth.<br>5.Foot and Mouth Issues: Lameness, mouth sores, reduced feeding.",
+            c_sheep_p2:"1.PPR (Sheep Plague): High fever, diarrhea, and mouth/nose discharge.<br>2.Foot Rot: Hoof infection causing lameness and foul smell.<br>3.Pneumonia: Coughing, fever, and breathing difficulty.<br>4.Internal Parasites: Worms causing anemia, weakness, and weight loss.<br>5.Mastitis: Udder infection leading to swollen udder and low milk.",
+            c_chicken_p2:"1. Newcastle Disease – Viral, fast-spreading, causes breathing issues and sudden death.<br>2. Fowl Pox – Skin scabs from virus; spread by mosquitoes.<br>3. Coccidiosis – Bloody diarrhea due to parasites in gut.<br>4. Marek’s Disease – Paralysis and weight loss; viral.<br>5. Salmonellosis – Bacterial diarrhea and low egg production.",
+            c_duck_p2: "1.Duck Viral Enteritis (DVE) – Causes sudden death, diarrhea, and weakness; highly contagious.<br>ulism – Paralysis from toxin in dirty water or rotten feed.<br>3. Riemerella Infection – Swollen eyes, nasal discharge, and breathing problems.<br>4. Duck Plague – Viral disease causing bleeding and sudden mortality.<br>5. Worm Infestation – Weight loss, poor growth, and diarrhea due to internal worms.",
+            c_fish_p1:"<b>Five step in Fish Farming </b><br><br>1.Clean & Lime: Dry the pond, remove weeds/predators, and apply lime to balance pH.<br>2.Fertilize: Add cow dung or poultry waste to grow natural green algae (plankton).<br>3.Stock: Release healthy fingerlings (Rohu/Catla/Mrigal) during the cool hours of the day.<br>4.Feed: Give daily rice bran or oil cake supplements to boost growth speed.",
+            c_flor_p1:"<b>Five step in floriculture </b><br><br>1.Soil Prep: Plough the land and mix with cow dung for loose, fertile soil.<br>2.Planting: Sow seeds or plant saplings (Marigold/Rose) in raised beds or ridges.<br>3.Irrigation: Use drip or light canal irrigation to keep the soil consistently moist.<br>4.Care: Pinch off early buds to boost growth and spray organic pesticides (Neem oil).<br>5.Plucking: Harvest flowers in the early morning to keep them fresh for the market.",
+           c_manure_p1:"<b>Five step in manure maikng</b><br><br>1.Ploughing: Turn the soil using a tractor or bullocks to airy it.<br>2.Manuring: Add cow dung or compost to make the soil fertile.<br>3.Sowing: Plant quality seeds at the right depth after the first rain.<br>4.Irrigation: Water the fields using drip, canal, or monsoon rain<br>5.Harvesting: Cut the mature crop and thresh it to collect the grain.",
+           c_oil_p1:"<b>Five step in oil extraction</b><br><br>1.Drying: Sun-dry the seeds (Mustard/Groundnut) to remove all moisture.<br>2.Crushing: Feed the seeds into a wooden or stone Ghani/Chekku.<br>3.Pressing: Extract oil slowly at a low temperature to keep it healthy.<br>4.Settling: Leave the oil for a day so the dust settles at the bottom.<br>5.Bottling: Filter through a clean cloth and pour into bottles.",
+          c_jaggery_p1:"<b>Five step in jaggery making </b><br><br>1.Crushing: Extract juice from fresh sugarcane using a crusher.<br>2.Cleaning: Boil juice and remove scum using natural cleansers.<br>3.Boiling: Cook on high heat until the juice turns into a thick paste.<br>4.Stirring: Cool the paste in a pit while stirring to gain texture.<br>5.Molding: Pour into blocks or molds to harden into solid jaggery.",
+          c_agro_p1:"<b>Five step in Agroforesty</b><br><br>1.Selection: Choose native trees like Neem, Teak, or Babul that suit your soil.<br>2.Layout: Space trees in rows (Alley Cropping) or on borders to allow crops in between.<br>3.Planting: Plant trees with seasonal crops (like Turmeric or Gram) during the Monsoon.<br>4.Maintenance: Prune tree branches regularly to ensure sunlight reaches the ground crops.<br>5.Harvesting: Harvest seasonal food crops yearly and timber trees after 8–10 years for profit.",
+         c_pottery_p1:"<b>Five step in Pottery</b><br><br>1.Clay: Clean, soak, and knead the clay to make it smooth.<br>2.Wheel: Shape the pot on a traditional manual or electric wheel.<br>3.Beating: Use a paddle to thin the walls and perfect the shape.<br>4.Drying: Air-dry the pots in the shade to avoid cracks.<br>5.Firing: Bake them in a wood-fired kiln (Bhatti) for strength.",
+          c_seri_p1:"<b>five step in sericulture</b><br><br>1.Mulberry: Grow mulberry trees to provide fresh leaves for the silkworms.<br>2.Rearing: Hatch and feed silkworms chopped leaves on trays for 25-30 days.<br>3.Mounting: Move mature worms to bamboo frames (Chandrika) to start spinning.<br>4.Spinning: Worms secrete silk thread to form a protective cocoon within 3 days.<br>5.Harvesting: Collect cocoons and steam them to prepare the silk for reeling.",
+            
+            img_cow_health: "images/27.jpg",
+            img_buffalo_health: "images/26.jpg",
+            img_goat_health:"images/31.jpg",
+            img_pig_health:"images/24.jpg",
+            img_sheep_health:"images/41.jpg",
+            img_chicken_health:"images/28.jpg",
+            img_duck_health:"images/29.jpg",
+            img_fish_health:"images/30.jpg",
+            img_flor_health:"images/32.jpg",
+            img_manure_health:"images/33.jpg",
+            img_oil_health:"images/34.jpg",
+            img_jaggery_health:"images/35.jpg",
+            img_agro_health:"images/37.jpg",
+            img_pottery_health:"images/39.jpg",
+            img_seri_health:"images/40.jpg",
+            
+            // Video Links
+            video_goat:"https://www.youtube.com/embed/XYub-glENac?si=dP52pdChiCCRSvMX",//Pregnancy toxemia
+            video_pig:"https://www.youtube.com/embed/yh_sSNyzxJQ?si=VdV_Sy1OqmHG7f2-",// Piglet anemia 
+            video_sheep:"https://www.youtube.com/embed/ZH9UREP-hqM?si=lQ7IRAW6uRTfoJpv",//foot rot
+            video_chicken:"https://www.youtube.com/embed/vqGcxQn0qEA?si=bGYUa2mebqNs7aJ8",//Newcastle disease 
+            video_agro:"https://www.youtube.com/embed/r5-hPTnmeG0?si=UwKvE_TFg_FfJOnp",//Integration farmin gsystems
+            video_seri: "https://www.youtube.com/embed/Ed1FmTSQS2Q?si=DabJh8u6AVprjStv", 
+            video_oil:"https://www.youtube.com/embed/xKRQ3ZFH7LI?si=EE0yK0BVRBAFlQz_",
+            video_jaggery:"https://www.youtube.com/embed/wBcyK1qEE9k?si=gS9-qB2xZS0k9Z7Y",
+            video_manure:"https://www.youtube.com/embed/zy70DAaeFBI?si=Q2E4MlMDOY2grKr7",
+            video_fish:"https://www.youtube.com/embed/sdHW9mEZLv8?si=GqXFiHzY-SYHpGRf",
+            video_duck:"https://www.youtube.com/embed/jccDNUnzZrI?si=jqTdQKUghmXRb920",
+            video_buffalo:"https://www.youtube.com/embed/HBFMfbMPl3s?si=NtjlieCZAY_plzB8",
+            video_cow:"https://www.youtube.com/embed/wzm7rnrZ7ok?si=m9moL3BQG7Su2Dl9",
+
+        },
+        "hi-IN": {
+            mainTitle: "पशुपालन और अन्य",
+            backBtn: "← वापस जाएँ",
+           backToMain: "← मुख्य मेनू पर वापस जाएँ",
+            'Animal Husbandry': "पशुपालन",
+            'Poultry Farming': "मुर्गीपालन",
+            'Fish Farming': "मछली पालन",
+            'floriculture': "फूलों की खेती",
+            'Manure Making': "खाद बनाना",
+            'Oil Extraction': "तेल निष्कर्षण",
+            'Jaggery Making': "गुड़ बनाना",
+            'Milling': "पिसाई",
+            'Agroforestry': "कृषि वानिकी",
+            'Sericulture': "रेशम कीट पालन",
+            'Pottery': "मिट्टी के बर्तन",
+            'Lac Cultivation': "लाख की खेती",
+            // Sub-Option Titles
+            'Cow': "गाय",
+            'Buffalo': "भैंस",
+            'Goat': "बकरी",
+            'Pig': "सूअर",
+            'Sheep': "भेड़",
+            'Chicken': "मुर्गी",
+            'Duck': "बत्तख",
+            // Details Titles
+            t_cow: 'पशुपालन → गाय का स्वास्थ्य',
+            t_buffalo:"पशुपालन -> भैंस का स्वास्थ्य",
+            t_goat:"पशुपालन -> बकरी स्वास्थ्य",
+            t_pig:"पशुपालन -> सूअर स्वास्थ्य",
+            t_sheep:"पशुपालन-> भेड़ स्वास्थ्य",
+            t_chicken:"पोल्ट्री फार्मिंग ->चिकन हेल्थ ",
+            t_duck: 'मुर्गीपालन → बत्तख पालन',
+             t_fish:"मछली पालन-> मछली पालन",
+             t_flor:"फूलों की खेती-> पुष्प कृषि",
+             t_manure:"खाद बनाना -> कम्पोस्टिंग",
+             t_oil:"तेल निष्कर्षण ->पेट्रोलियम निष्कर्षण",
+             t_jaggery:"गुड़ बनाना -> गुड़",
+             t_agro:"कृषि वानिकी -> फार्म वानिकी",
+             t_seri: 'रेशम उत्पादन -> रेशम की खेती',
+             t_pottery:"मिट्टी के बर्तन -> सिरेमिक",
+            // Content
+            c_cow_p1: '<b>5 सामान्य स्वास्थ्य समस्याएं और उनका इलाज:</b>',
+            c_buffalo_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार:</b>",
+            c_goat_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार:</b>",
+             c_pig_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार:</b>",
+             c_sheep_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार:</b>",
+             c_chicken_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार</b>",
+             c_duck_p1:"<b>शीर्ष 5 सामान्य स्वास्थ्य समस्याएं और उपचार</b>",
+             //content
+            c_cow_p2: "1. थनैला रोग: एंटीबायोटिक और थन की सफाई।<br> 2. खुरपका-मुंहपका रोग: नियमित टीकाकरण।<br> 3. आफरा: अधिक हरा चारा देने से बचें।<br> 4. दुग्ध ज्वर: कैल्शियम चढ़ाएं। <br>5. किलनी/परजीवी: नियमित कृमिनाशक दवा और स्वच्छ बाड़ा।",
+           c_buffalo_p2:"1.स्तनशोथ: थनों में संक्रमण जिससे दूध कम हो जाता है।<br>2.एफएमडी: बुखार और मुँह के छाले; दूध अचानक कम हो जाता है।<br>3.एचएस: तेज़ बुखार और सूजन; सालाना टीकाकरण की ज़रूरत।<br>4.ब्लोट: पेट में गैस के कारण अचानक सूजन।<br>5.परजीवी: कीड़े/जूँ जो कमज़ोरी और दूध कम होने का कारण बनते हैं।",
+           c_goat_p2:"1.पीपीआर (बकरी प्लेग): बुखार, दस्त, मुँह के छाले; अत्यधिक संक्रामक।<br>2.फुट रॉट: खुरों में संक्रमण जिससे सूजन और लंगड़ापन होता है।<br>3.निमोनिया: खाँसी, बुखार और साँस लेने में कठिनाई।<br>4.आंतरिक परजीवी: कृमि जो वजन कम करते हैं और एनीमिया का कारण बनते हैं।<br>5.मैस्टाइटिस: थनों में संक्रमण जिससे दूध कम हो जाता है और दर्द होता है।",
+           c_pig_p2:"1. स्वाइन फीवर (सीएसएफ/एएसएफ): तेज़ बुखार, रक्तस्राव, अचानक मृत्यु।<br>2.निमोनिया: खाँसी, बुखार, तेज़ या साँस लेने में कठिनाई।<br>3.गैस्ट्रोएंटेराइटिस: दस्त और निर्जलीकरण, जो सूअर के बच्चों में आम है।<br>4.परजीवी: कीड़े जो वज़न कम करते हैं और विकास में बाधा डालते हैं।<br>5.खुरपका और मुँहपका संबंधी समस्याएँ: लंगड़ापन, मुँह में छाले, कम खाना।",
+           c_sheep_p2:"1.पीपीआर (भेड़ प्लेग): तेज़ बुखार, दस्त और मुँह/नाक से स्राव।<br>2.फुट रॉट: खुरों का संक्रमण जिससे लंगड़ापन और दुर्गंध आती है।<br>3.निमोनिया: खाँसी, बुखार और साँस लेने में कठिनाई।<br>4.आंतरिक परजीवी: कृमि जो एनीमिया, कमज़ोरी और वज़न कम होने का कारण बनते हैं।<br>5.मास्टाइटिस: थनों का संक्रमण जिसके कारण थन सूज जाते हैं और दूध कम निकलता है।.",
+           c_chicken_p2:"1. न्यूकैसल रोग - वायरल, तेज़ी से फैलने वाला, साँस लेने में तकलीफ़ और अचानक मौत का कारण बनता है।<br>2. फाउल पॉक्स - वायरस से त्वचा पर पपड़ी; मच्छरों द्वारा फैलता है।<br>3. कोक्सीडियोसिस - आंत में परजीवियों के कारण खूनी दस्त।<br>4. मारेक रोग - लकवा और वज़न घटना; वायरल।<br>5. साल्मोनेलोसिस - जीवाणुजनित दस्त और कम अंडा उत्पादन।",
+           c_duck_p2:"1.बत्तख वायरल आंत्रशोथ (डीवीई) - अचानक मृत्यु, दस्त और कमज़ोरी का कारण बनता है; अत्यधिक संक्रामक।<br>2. बोटुलिज़्म - गंदे पानी या सड़े हुए चारे में मौजूद विष से लकवा।<br>3. रीमेरेला संक्रमण - आँखों में सूजन, नाक से स्राव और साँस लेने में समस्या।<br>4. बत्तख प्लेग - रक्तस्राव और अचानक मृत्यु का कारण बनने वाला वायरल रोग।<br>5. कृमि संक्रमण - आंतरिक कृमियों के कारण वजन कम होना, विकास में कमी और दस्त।",
+            c_fish_p1:"<b> मछली पालन में पाँच चरण<br><br></b>1.तालाब की तैयारी: सफाई करें, चूना डालें और प्राकृतिक खाद (गोबर) से पानी तैयार करें।<br>2.बीज चयन: अच्छी गुणवत्ता वाले रोहू, कतला और मृगल के उंगली जैसे बड़े बच्चे (fingerlings) चुनें।<br>3.स्टाकिंग: मछली के बच्चों को सुबह या शाम के ठंडे समय में तालाब में डालें।<br>4.खिलाना: चावल की भूसी और तेल की खली जैसे पूरक आहार प्रतिदिन दें।<br>5.कटाई: मछली का वजन 1 किलो होने पर जाल डालकर उन्हें बाजार के लिए निकालें।",
+            c_flor_p1:"<b>पुष्पपालन के पाँच चरण</b><br><br>1. मिट्टी की तैयारी: खेत को जोतकर उसमें गोबर मिलाएँ ताकि मिट्टी ढीली और उपजाऊ हो जाए।<br>2. रोपण: क्यारियों या मेड़ों में बीज बोएँ या पौधे (गेंदा/गुलाब) लगाएँ।<br>3. सिंचाई: मिट्टी को लगातार नम रखने के लिए ड्रिप सिंचाई या हल्की नहर सिंचाई का उपयोग करें।<br>4. देखभाल: पौधों की वृद्धि बढ़ाने के लिए शुरुआती कलियों को तोड़ दें और जैविक कीटनाशकों (नीम का तेल) का छिड़काव करें।<br>5. तुड़ाई: बाजार के लिए फूलों को ताजा रखने के लिए उन्हें सुबह जल्दी तोड़ लें।",
+            c_manure_p1:"<b>खाद बनाने के पाँच चरण</b><br><br>1. जुताई: मिट्टी को हवादार बनाने के लिए ट्रैक्टर या बैलों का उपयोग करके उसे पलटें।<br>2. खाद डालना: मिट्टी को उपजाऊ बनाने के लिए उसमें गोबर या कम्पोस्ट डालें।<br>3. बुवाई: पहली बारिश के बाद उचित गहराई पर अच्छी गुणवत्ता वाले बीज बोएं।<br>4. सिंचाई: ड्रिप सिंचाई, नहर सिंचाई या मानसूनी सिंचाई का उपयोग करके खेतों में पानी दें।<br>5. कटाई: पकी हुई फसल को काटें और अनाज इकट्ठा करने के लिए उसे थ्रेस करें।",
+             c_oil_p1:"<b>तेल निकालने की पाँच प्रक्रियाएँ</b><br><br>1. सुखाना: बीजों (सरसों/मूंगफली) को धूप में सुखाकर सारा पानी निकाल दें।<br>2. कुचलना: बीजों को लकड़ी या पत्थर के घानी/चेक्कू में डालें।<br>3. दबाना: तेल को कम तापमान पर धीरे-धीरे निकालें ताकि वह स्वस्थ रहे।<br>4. जमना: तेल को एक दिन के लिए छोड़ दें ताकि धूल नीचे बैठ जाए।<br>5. बोतलों में भरना: एक साफ कपड़े से छानकर बोतलों में भरें।",
+            c_jaggery_p1:"<b>गुड़ बनाने की पाँच विधियाँ</b><br><br>1. कुचलना: गन्ने को कुचलने वाली मशीन से रस निकालें।<br>2. सफाई: रस को उबालें और प्राकृतिक सफाई करने वाले पदार्थों से झाग हटा दें।<br>3. उबालना: रस के गाढ़ा पेस्ट बनने तक तेज़ आँच पर पकाएँ।<br>4. हिलाना: गाढ़ापन लाने के लिए पेस्ट को हिलाते हुए एक गड्ढे में ठंडा होने दें।<br>5. सांचे में डालना: ठोस गुड़ बनने तक ब्लॉक या सांचों में डालें।",
+             c_agro_p1:"<b>कृषि वानिकी के पाँच चरण</b><br><br>1. चयन: नीम, सागौन या बबूल जैसे देशी वृक्ष चुनें जो आपकी मिट्टी के अनुकूल हों।<br>2. लेआउट: वृक्षों को पंक्तियों में (गली-खेती) या किनारों पर इस प्रकार लगाएं कि उनके बीच फसलें लगाई जा सकें।<br>3. रोपण: मानसून के दौरान मौसमी फसलों (जैसे हल्दी या चना) वाले वृक्ष लगाएं।<br>4. रखरखाव: जमीन पर उगी फसलों तक सूर्य की रोशनी पहुँचने के लिए वृक्षों की शाखाओं की नियमित रूप से छंटाई करें।<br>5. कटाई: लाभ के लिए मौसमी खाद्य फसलों की वार्षिक कटाई करें और लकड़ी के वृक्षों की 8-10 साल बाद कटाई करें।",
+            c_pottery_p1:"<b>मिट्टी के बर्तन बनाने की पाँच प्रक्रियाएँ</b><br><br>1. मिट्टी: मिट्टी को साफ करें, भिगोएँ और चिकना होने तक गूंधें।<br>2. चाक: पारंपरिक हाथ से चलने वाले या बिजली से चलने वाले चाक पर बर्तन को आकार दें।<br>3. पीटना: दीवारों को पतला करने और आकार को परिपूर्ण बनाने के लिए पैडल का उपयोग करें।<br>4. सुखाना: दरारें पड़ने से बचने के लिए बर्तनों को छाया में हवा में सुखाएँ।<br>5. पकाना: मजबूती के लिए उन्हें लकड़ी से चलने वाले भट्ठे (भट्टी) में पकाएँ।",
+            c_seri_p1:"<b>रेशम उत्पादन के पाँच चरण</b><br><br>1. शहतूत: रेशम के कीड़ों के लिए ताज़ी पत्तियाँ उपलब्ध कराने के लिए शहतूत के पेड़ उगाएँ।<br>2. पालन-पोषण: रेशम के कीड़ों को ट्रे में रखकर 25-30 दिनों तक कटी हुई पत्तियाँ खिलाएँ।<br>3. माउंटिंग: परिपक्व कीड़ों को बांस के फ्रेम (चंद्रिका) में स्थानांतरित करें ताकि वे कताई शुरू कर सकें।<br>4. कताई: कीड़े 3 दिनों के भीतर रेशम का धागा स्रावित करके एक सुरक्षात्मक कोकून बनाते हैं।<br>5. कटाई: कोकून एकत्र करें और रेशम को रीलिंग के लिए तैयार करने के लिए उन्हें भाप दें।",
+
+            //image
+            img_cow_health: "images/26.jpg",
+            img_buffalo_health:"images/buffalo_health.png",
+            img_goat_health:"",
+            img_pig_health:"images/24.jpg",
+            img_sheep_health:"images/25.jpg",
+            img_chicken_health:"images/28.jpg",
+
+            // Video Links
+            video_cow: "https://www.youtube.com/embed/_WaG--l_Vx8?si=v8fVuGnYka_fy8ak", // Hindi
+           video_buffalo:"https://www.youtube.com/embed/s-oR0SZDuMM?si=65fOPB0CQreezeUR",//(mastitis)
+           video_goat:"https://www.youtube.com/embed/t0kPDP579_Y?si=COUx16zsRWmSba_M",//Parasites
+           video_pig:"https://www.youtube.com/embed/p_l25T2_sDg?si=UBv7jOmNz-vGTAyU",//Piglet anemia
+           video_sheep:"https://www.youtube.com/embed/Si8ol3INNV0?si=CYbuFctD86QGixin",//foot rot
+            video_duck: "https://www.youtube.com/embed/30Ci7nDyGO4?si=v_XQ0YvJg6n-akyZ", // Hindi
+            video_chicken:"https://www.youtube.com/embed/zwnIZhFmsZI?si=Dp5HicoF3hDZkwv1",//Newcastle disease
+            video_fish:"https://www.youtube.com/embed/4TlXBtefrIg?si=mYAFl0C3NIRIaRQK",//fungal infection 
+            video_flor:"https://www.youtube.com/embed/eL1Ltl1eIMw?si=N3TK_DC8r0_HyMGf",//marigold disease 
+            video_manure:"https://www.youtube.com/embed/zNVk-zFiiZY?si=nTkH7Jp-Sgo_LrND",//compost manure
+            video_oil:"https://www.youtube.com/embed/dmanyt358EM?si=lom4SaJ8HqSiMBth",//Extraction method Cold
+            video_jaggery:"https://www.youtube.com/embed/0h7yKPiAXK0?si=SwcDyFnwUqsv-KKn",//how to work 
+            video_agro:"https://www.youtube.com/embed/ghYxaOF9z0c?si=wl-4LsIoH8UkrkHP",//Integration farming systems
+            video_pottery:"https://www.youtube.com/embed/vTjdIgwRrJM?si=exY_DXd8GHAo7YTf",//
+            video_seri:"https://www.youtube.com/embed/s6Z0eemmWbk?si=RpWRFmmS-V73miPS",//Cocoon formation
+        },
+        // ADD ALL OTHER 8 LANGUAGES HERE (BN, GU, KN, MAR, ML, PA, TA, TE)
+        
+        "bn-IN": {
+            mainTitle: "পশুপালন এবং অন্যান্য", backBtn: "← ফিরে যান", backToMain: "← মূল মেনুতে ফিরে যান", 
+            'Animal Husbandry': "পশুপালন", 'Poultry Farming': "হাঁস-মুরগি পালন", 'Fish Farming': "মৎস্য চাষ", 'floriculture': "ফুলের চাষ", 'Manure Making': "সার তৈরি", 'Oil Extraction': "তেল নিষ্কাশন", 'Jaggery Making': "গুড় তৈরি", 'Milling': "মিলিং", 'Agroforestry': "কৃষি বনায়ন", 'Sericulture': "রেশম চাষ", 'Pottery': "মাটির পাত্র", 'Lac Cultivation': "লাক্ষা চাষ",
+            'Cow': "গরু", 'Buffalo': "মহিষ", 'Goat': "ছাগল", 'Pig': "শূকর", 'Sheep': "ভেড়া", 'Chicken': "মুরগি", 'Duck': "হাঁস",
+
+            t_cow: 'পশুপালন → গরুর স্বাস্থ্য', 
+           t_buffalo:"পশুপালন -> মহিষের স্বাস্থ্য",
+            t_goat:"পশুপালন -> ছাগলের স্বাস্থ্য",
+           t_pig:"পশুপালন -> শূকরের স্বাস্থ্য",
+          t_sheep:"পশুপালন-> ভেড়ার স্বাস্থ্য",
+           t_chicken:"পোল্ট্রি পালন ->মুরগির স্বাস্থ্য ",
+           t_duck: 'হাঁস-মুরগি পালন → হাঁস পালন',
+           t_fish:"মাছ চাষ-> মৎস্যচাষ",
+           t_flor:"ফুলের চাষ-> ফুলের কৃষি",
+           t_marure:"সার তৈরি -> কম্পোস্টিং",
+           t_oil:"तेल निष्कर्षण ->पेट्रोलियम निष्कर्षण",
+           t_jaggery:"গুড় তৈরি -> গুড়",
+           t_agro:"কৃষিবনবিদ্যা -> খামার বনবিদ্যা",
+           t_seri: 'রেশম চাষ -> রেশম চাষ',
+           t_pottery:"মৃৎশিল্প ->সিরামিক",
+           t_lac:"লাখা চাষ -> লাখা চাষ",
+
+            c_cow_p1: '<b>5 টি সাধারণ স্বাস্থ্য সমস্যা ও প্রতিকার:</b>', 
+           c_buffalo_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার:</b>",
+            c_goat_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার:</b>",
+            c_pig_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার:</b>",
+            c_sheep_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার:</b>",
+            c_chicken_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার</b>",
+            c_duck_p1:"<b>শীর্ষ ৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার</b>",
+
+
+
+            c_cow_p2: '1. মাস্টাইটিস: অ্যান্টিবায়োটিক এবং পরিষ্কার-পরিচ্ছন্নতা।<br> 2. এফএমডি: নিয়মিত টিকা।<br> 3. পেট ফাঁপা: অতিরিক্ত সবুজ ঘাস পরিহার করুন।<br> 4. মিল্ক ফিভার: ক্যালসিয়াম দিন।<br> 5. উকুন/পরজীবী: নিয়মিত কৃমিনাশক ও পরিষ্কার স্থান।',
+            c_buffalo_p2:"1.ম্যাস্টাইটিস: উডারের সংক্রমণ যা দুধ কমিয়ে দেয়।<br>2.এফএমডি: জ্বর এবং মুখের ঘা; হঠাৎ দুধ ঝরে পড়ে।<br>3.এইচএস: উচ্চ জ্বর এবং ফোলা; বার্ষিক টিকা প্রয়োজন।<br>4.ফোলা: পেটে গ্যাসের কারণে হঠাৎ ফুলে যায়।<br>5.পরজীবী: কৃমি/উকুন দুর্বলতা সৃষ্টি করে এবং দুধ কম দেয়।",
+             c_goat_p2:"1.পিপিআর (ছাগলের প্লেগ): জ্বর, ডায়রিয়া, মুখের ঘা; অত্যন্ত সংক্রামক।<br>2.পা পচা: খুরের সংক্রমণের ফলে ফোলাভাব এবং খোঁড়াভাব দেখা দেয়।<br>3.নিউমোনিয়া: কাশি, জ্বর এবং শ্বাসকষ্ট।<br>4.অভ্যন্তরীণ পরজীবী: কৃমি ওজন হ্রাস এবং রক্তাল্পতা সৃষ্টি করে।<br>5.মাস্টাইটিস: তলপেটের সংক্রমণ দুধ হ্রাস করে এবং ব্যথা সৃষ্টি করে।",
+             c_pig_p2:"1.সোয়াইন ফিভার (CSF/ASF): উচ্চ জ্বর, রক্তপাত, আকস্মিক মৃত্যু।<br>2.নিউমোনিয়া: কাশি, জ্বর, দ্রুত বা কঠিন শ্বাস।<br>গ্3.যাস্ট্রোএন্টেরাইটিস: ডায়রিয়া এবং পানিশূন্যতা, যা শূকরের মধ্যে সাধারণ।<br>4.পরজীবী: কৃমি ওজন হ্রাস এবং দুর্বল বৃদ্ধির কারণ।<br>5.পা ও মুখের সমস্যা: খোঁড়া, মুখের ঘা, কম খাওয়ানো।",
+             c_sheep_p2:"1.পিপিআর (ভেড়ার প্লেগ): উচ্চ জ্বর, ডায়রিয়া এবং মুখ/নাক দিয়ে পানি পড়া।<br>2.পা পচা: খুরের সংক্রমণের ফলে খোঁড়া হয়ে যাওয়া এবং দুর্গন্ধ হয়।<br>3.নিউমোনিয়া: কাশি, জ্বর এবং শ্বাসকষ্ট।<br>4.অভ্যন্তরীণ পরজীবী: কৃমি রক্তাল্পতা, দুর্বলতা এবং ওজন হ্রাস ঘটায়।<br>5.মাস্টাইটিস: তলপেটের সংক্রমণের ফলে তলপেট ফুলে যায় এবং দুধ কম হয়।",
+            c_chicken_p2:"১. নিউক্যাসল রোগ - ভাইরাসজনিত, দ্রুত ছড়িয়ে পড়া, শ্বাসকষ্ট এবং আকস্মিক মৃত্যুর কারণ হয়।<br>২. ফাউল পক্স - ভাইরাসজনিত ত্বকের খোসা; মশার মাধ্যমে ছড়িয়ে পড়ে।<br>৩. কক্সিডিওসিস - অন্ত্রে পরজীবীর কারণে রক্তাক্ত ডায়রিয়া।<br>৪. মারেকের রোগ - পক্ষাঘাত এবং ওজন হ্রাস; ভাইরাসজনিত।<br>৫. সালমোনেলোসিস - ব্যাকটেরিয়াজনিত ডায়রিয়া এবং কম ডিম উৎপাদন।",
+            c_duck_p2:"১. হাঁসের ভাইরাল এন্টারাইটিস (DVE) - হঠাৎ মৃত্যু, ডায়রিয়া এবং দুর্বলতা সৃষ্টি করে; অত্যন্ত সংক্রামক।<br>২. বোটুলিজম - নোংরা জল বা পচা খাবারের বিষক্রিয়া থেকে পক্ষাঘাত।<br>৩. রিমেরেলা সংক্রমণ - চোখ ফোলা, নাক দিয়ে পানি বের হওয়া এবং শ্বাসকষ্ট।<br>৪. হাঁসের প্লেগ - রক্তপাত এবং হঠাৎ মৃত্যু ঘটায় এমন ভাইরাসজনিত রোগ।<br>৫. কৃমির উপদ্রব - ওজন হ্রাস, দুর্বল বৃদ্ধি এবং অভ্যন্তরীণ কৃমির কারণে ডায়রিয়া।",
+            c_fish_p1:"<b>মাছ চাষের পাঁচ ধাপ<br><br></b>1.পুকুর প্রস্তুতি: পুকুর পরিষ্কার করে চুন ও সার দিয়ে জল তৈরি করুন।<br>2.পোণা নির্বাচন: উন্নত জাতের রুই, কাতলা ও মৃগেল মাছের পোণা সংগ্রহ করুন।<br>3.পোণা ছাড়া: সকাল বা সন্ধ্যার ঠান্ডা সময়ে পুকুরে মাছের পোণা ছাড়ুন।<br>4.খাবার দেওয়া: নিয়মিত চালের কুঁড়ো ও খৈল জাতীয় সম্পূরক খাবার দিন।<br>5.মাছ ধরা: মাছের ওজন ১ কেজি বা তার বেশি হলে জাল টেনে বাজারে বিক্রি করুন।",
+            c_flor_p1:"<b>ফুলচাষের পাঁচ ধাপ </b><br><br>১.মাটি প্রস্তুতকরণ: আলগা, উর্বর মাটির জন্য জমি চাষ করুন এবং গোবর মিশিয়ে নিন।<br>২.রোপণ: উঁচু বিছানা বা ঢালুতে বীজ বপন করুন বা চারা (গাঁদা/গোলাপ) লাগান।<br>৩.সেচ: মাটি ধারাবাহিকভাবে আর্দ্র রাখতে ফোঁটা বা হালকা খাল সেচ ব্যবহার করুন।<br>৪.যত্ন: বৃদ্ধি বৃদ্ধির জন্য প্রথম দিকের কুঁড়ি চিমটি করে নিন এবং জৈব কীটনাশক (নিম তেল) স্প্রে করুন।<br>৫.উপাদান: বাজারের জন্য তাজা রাখার জন্য ভোরে ফুল সংগ্রহ করুন।",
+            c_manure_p1:"<b>সার তৈরির পাঁচ ধাপ</b><br><br>১. চাষ: ট্র্যাক্টর বা বলদ দিয়ে মাটি উল্টে বাতাস চলাচল করুন।<br>২. সার: মাটি উর্বর করতে গোবর বা কম্পোস্ট যোগ করুন।<br>৩. বপন: প্রথম বৃষ্টির পর সঠিক গভীরতায় উন্নতমানের বীজ রোপণ করুন।<br>৪. সেচ: ফোঁটা, খাল বা বর্ষার বৃষ্টি ব্যবহার করে জমিতে জল দিন<br>৫. ফসল কাটা: পরিপক্ক ফসল কেটে শস্য সংগ্রহের জন্য মাড়াই করুন।",
+             c_oil_p1:"<b>তেল নিষ্কাশনের পাঁচ ধাপ</b><br><br>১.শুকানো: সমস্ত আর্দ্রতা দূর করার জন্য বীজ (সরিষা/চীনাবাদাম) রোদে শুকিয়ে নিন।<br>২.চূর্ণ করা: কাঠ বা পাথরের ঘানি/চেক্কুতে বীজ খাওয়ান।<br>৩.চাপা: সুস্থ রাখতে কম তাপমাত্রায় ধীরে ধীরে তেল বের করুন।<br>৪.পরিমাপ: তেল একদিনের জন্য রেখে দিন যাতে ধুলো নীচে জমে যায়।<br>৫.বোতল ভর্তি: একটি পরিষ্কার কাপড় দিয়ে ফিল্টার করে বোতলে ঢেলে দিন।",
+            c_jaggery_p1:"<b>গুড় তৈরির পাঁচ ধাপ </b><br><br>১. গুঁড়ো করা: ক্রাশার ব্যবহার করে তাজা আখ থেকে রস বের করুন।<br>২. পরিষ্কার করা: প্রাকৃতিক ক্লিনজার ব্যবহার করে রস ফুটিয়ে ময়লা অপসারণ করুন।<br>৩. ফুটানো: রস ঘন পেস্টে পরিণত না হওয়া পর্যন্ত উচ্চ আঁচে রান্না করুন।<br>৪. নাড়াচাড়া: জমিন তৈরি করতে নাড়াচাড়া করার সময় পেস্টটি একটি গর্তে ঠান্ডা করুন।<br>৫. ছাঁচনির্মাণ: শক্ত গুড় তৈরি করতে ব্লক বা ছাঁচে ঢেলে দিন।",
+            c_agro_p1:"<b>কৃষি বনায়নের পঞ্চম ধাপ</b><br><br>১. নির্বাচন: আপনার মাটির সাথে মানানসই নিম, সেগুন বা বাবুলের মতো স্থানীয় গাছ বেছে নিন।<br>২. বিন্যাস: সারিবদ্ধভাবে গাছ লাগান (গলি থেকে ফসল কাটা) অথবা সীমানায় যাতে ফসল কাটার সুযোগ থাকে।<br>৩. রোপণ: বর্ষাকালে মৌসুমি ফসল (যেমন হলুদ বা ছোলা) দিয়ে গাছ লাগান।<br>৪. রক্ষণাবেক্ষণ: সূর্যালোক মাটির ফসলে পৌঁছাতে নিয়মিত গাছের ডাল ছাঁটাই করুন।<br>৫. ফসল কাটা: বার্ষিক মৌসুমি খাদ্য ফসল এবং ৮-১০ বছর পর কাঠের গাছ কাটা লাভের জন্য।",
+             c_pottery_p1:"<b>মৃৎশিল্পের পঞ্চম ধাপ</b><br><br>১.কাদামাটি: পরিষ্কার করুন, ভিজিয়ে রাখুন এবং মাটি মসৃণ করার জন্য মাখুন।<br>২.চাকা: ঐতিহ্যবাহী ম্যানুয়াল বা বৈদ্যুতিক চাকার উপর পাত্রটি আকৃতি দিন।<br>৩.পিটানো: দেয়াল পাতলা করতে এবং আকৃতি নিখুঁত করতে একটি প্যাডেল ব্যবহার করুন।<br>৪.শুকনো: ফাটল এড়াতে পাত্রগুলিকে ছায়ায় বাতাসে শুকিয়ে নিন।<br>৫.ফায়ারিং: শক্তপোক্ত করার জন্য কাঠের ভাটিতে (ভাট্টি) বেক করুন।",
+              c_seri_p1:"<b>রেশম চাষের পঞ্চম ধাপ</b><br><br>১.তুঁত: রেশম পোকার জন্য তাজা পাতা সরবরাহের জন্য তুঁত গাছ লাগান।<br>২.পালন: ২৫-৩০ দিনের জন্য ট্রেতে কাটা পাতা রেশম পোকার পোকামাকড় বের করে খাওয়ান।<br>৩.মাউন্টিং: পরিপক্ক পোকামাকড়কে বাঁশের ফ্রেমে (চন্দ্রিকা) ঘুরতে শুরু করতে সরান।<br>৪.কাটা: পোকামাকড় ৩ দিনের মধ্যে একটি প্রতিরক্ষামূলক কোকুন তৈরি করতে রেশমের সুতো নিঃসরণ করে।<br>৫.কাটা: কোকুন সংগ্রহ করুন এবং বাষ্প দিয়ে সিল্ককে ঘূর্ণনের জন্য প্রস্তুত করুন।",
+
+
+            video_cow: "https://www.youtube.com/embed/5U2fL7W8y9E", 
+            video_buffalo:"https://www.youtube.com/embed/UQ8quR2d7wc?si=9--Ozc67fRYQdk10",//brucellosis
+            video_goat:"https://www.youtube.com/embed/2vRfogayEx8?si=TGsbuwAuYYduXNd9",//Parasites
+             video_pig:"https://www.youtube.com/embed/g9wLI0b-xbQ?si=PLk9fjkhkZTUdeb-",//Swine Fever
+             video_sheep:"https://www.youtube.com/embed/MgC46_rTxdA?si=eMnCTm64tJwSwVs5",//foot rot 
+            video_duck: "https://www.youtube.com/embed/id4sbwUndXg?si=D_scTfx3hNDft4B1", 
+            video_chicken:"https://www.youtube.com/embed/LJQIk47jNkk?si=CPkSH9KldiF7lkfN",//Newcastle disease 
+            video_fish:"https://www.youtube.com/embed/mZ3OykH80tE?si=zAG5Utcntywar2Uj",//fungal infection 
+            video_flor:"https://www.youtube.com/embed/2SWq7drts9o?si=FKUnud8NUjfN46zn",//marigold disease 
+            video_manure:"https://www.youtube.com/embed/nsOobsJiv04?si=pod-oK0EAVYnOEOq",//green manure
+            video_oil:"https://www.youtube.com/embed/Db9vkatXyxU?si=IzpPM5stELA7KRTd",//Ground nut
+            video_jaggery:"https://www.youtube.com/embed/P8A6NBl_VG8?si=pwR2BHgeJ9u1j0hZ",//hoe to work 
+            video_agro:"https://www.youtube.com/embed/nTDy1O8taSg?si=508QIChkUbSY-pUM",//Agroforesty
+            video_pottery:"https://www.youtube.com/embed/wDrBC2ubaFo?si=7ALljmVKfU9yCZvJ",
+              video_seri:"https://www.youtube.com/embed/d_dohCC-21E?si=i8L7W_XhGJ0HiIMP",//Silk farming
+        },
+
+        "gu-IN": {
+            mainTitle: "પશુપાલન અને અન્ય", backBtn: "← પાછા જાઓ", backToMain: "← મુખ્ય મેનૂ પર પાછા જાઓ", 
+            'Animal Husbandry': "પશુપાલન", 'Poultry Farming': "મરઘાપાલન", 'Fish Farming': "મત્સ્યપાલન", 'floriculture': "ફ્લોરીકલ્ચર", 'Manure Making': "ખાતર બનાવવું", 'Oil Extraction': "તેલ કાઢવું", 'Jaggery Making': "ગોળ બનાવવો", 'Milling': "મિલિંગ", 'Agroforestry': "કૃષિ વનસંવર્ધન", 'Sericulture': "રેશમ ઉછેર", 'Pottery': "માટીના વાસણો", 'Lac Cultivation': "લાખની ખેતી",
+            'Cow': "ગાય", 'Buffalo': "ભેંસ", 'Goat': "બકરી", 'Pig': "ડુક્કર", 'Sheep': "ઘેટાં", 'Chicken': "મરઘી", 'Duck': "બતક",
+
+            t_cow: 'પશુપાલન → ગાયનું સ્વાસ્થ્ય',
+           t_buffalo:"પશુપાલન -> ભેંસનું સ્વાસ્થ્ય",
+         t_goat:"પશુપાલન -> બકરીનું સ્વાસ્થ્ય",
+          t_pig:"પશુપાલન -> ડુક્કરનું આરોગ્ય",
+          t_sheep:"પશુપાલન-> ઘેટાંનું આરોગ્ય",
+           t_chicken:"મરઘાં ઉછેર ->ચિકન આરોગ્ય ",
+              t_duck: 'મ રઘાપાલન → બતક ઉછેર',
+              t_fish:"માછલી ઉછેર-> મત્સ્યઉદ્યોગ",
+              t_flor:"ફ્લોરિકલ્ચર-> ફૂલોની ખેતી",
+              t_manure:"ખાતર બનાવવું -> ખાતર બનાવવું",
+              t_oil:"તેલ નિષ્કર્ષણ ->પેટ્રોલિયમ નિષ્કર્ષણ",
+              t_jaggery:"ગોળ બનાવવો -> ગુડ",
+              t_agro:"કૃષિવનશાસ્ત્ર -> ખેત વનીકરણ",
+              t_seri: 'રેશમ ઉછેર -> રેશમ ખેતી',
+              t_pottery:"માટીકામ ->સિરામિક્સ",
+
+
+            c_cow_p1: '<b>5 સામાન્ય આરોગ્ય સમસ્યાઓ અને ઉપચાર:</b>',
+            c_buffalo_p1:"<b>ટોચની 5 સામાન્ય સ્વાસ્થ્ય સમસ્યાઓ અને ઉપચાર:</b>",
+            c_goat_p1:"<b>ટોચની 5 સામાન્ય સ્વાસ્થ્ય સમસ્યાઓ અને ઉપચાર:</b>",
+             c_pig_p1:"<b>ટોચની 5 સામાન્ય સ્વાસ્થ્ય સમસ્યાઓ અને ઉપચાર:</b>",
+             c_sheep_p1:"<b>ટોચની 5 સામાન્ય સ્વાસ્થ્ય સમસ્યાઓ અને ઉપચાર</b>",
+             c_chicken_p1:"<b>৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার</b>",
+             c_duck_p1:"<b>৫টি সাধারণ স্বাস্থ্য সমস্যা এবং প্রতিকার</b>",
+             c_fish_p1:"<b>ટોચની 5 સામાન્ય સ્વાસ્થ્ય સમસ્યાઓ અને સારવાર</b>",
+
+             c_cow_p2: '1. મસ્ટાઇટિસ: એન્ટિબાયોટિક્સ અને સ્વચ્છતા.<br> 2. એફએમડી: નિયમિત રસીકરણ.<br> 3. બ્લોટ: વધુ પડતું ઘાસ ટાળો.<br> 4. મિલ્ક ફીવર: કેલ્શિયમ આપો.<br> 5. જૂ/પરજીવી: નિયમિત ડિવર્મિંગ અને સ્વચ્છ શેડ. ',
+           c_buffalo_p2:"1.માસ્ટાઇટિસ: આંચળનો ચેપ જે દૂધ ઓછું કરે છે.<br>2.FMD: તાવ અને મોઢામાં ચાંદા; દૂધ અચાનક ટપકવું.<br>3.HS: ખૂબ તાવ અને સોજો; વાર્ષિક રસીની જરૂર છે.<br>4.પેટનું ફૂલવું: પેટમાં ગેસ થવાથી અચાનક સોજો આવે છે.<br>5.પરોપજીવી: કૃમિ/જૂ નબળાઈ અને ઓછું દૂધ ઉત્પન્ન કરે છે.",
+            c_goat_p2:"1.પીપીઆર (બકરીનો પ્લેગ): તાવ, ઝાડા, મોઢામાં ચાંદા; અત્યંત ચેપી.<br>2.પગનો સડો: ખુરનો ચેપ સોજો અને લંગડાપણું પેદા કરે છે.<br>3.ન્યુમોનિયા: ખાંસી, તાવ અને શ્વાસ લેવામાં તકલીફ.<br>4.આંતરિક પરોપજીવી: કૃમિ વજન ઘટાડતા અને એનિમિયાનું કારણ બને છે.<br>5.માસ્ટાઇટિસ: આંચળનો ચેપ દૂધ ઘટાડે છે અને દુખાવો કરે છે.",
+           c_pig_p2:"1.ડુક્કર તાવ (CSF/ASF): ખૂબ તાવ, રક્તસ્ત્રાવ, અચાનક મૃત્યુ.<br>2.ન્યુમોનિયા: ખાંસી, તાવ, ઝડપી અથવા શ્વાસ લેવામાં તકલીફ.<br>3.ગેસ્ટ્રોએન્ટેરિટિસ: ઝાડા અને ડિહાઇડ્રેશન, જે બચ્ચામાં સામાન્ય છે.<br>4.પરોપજીવી: કૃમિ જે વજન ઘટાડે છે અને નબળી વૃદ્ધિનું કારણ બને છે.<br>5.પગ અને મોંની સમસ્યાઓ: લંગડાપણું, મોઢામાં ચાંદા, ખોરાક ઓછો આપવો.",
+            c_sheep_p2:"1.પીપીઆર (ઘેટાંનો પ્લેગ): ખૂબ તાવ, ઝાડા અને મોં/નાકમાંથી પાણી નીકળવું.<br>2.પગનો સડો: ખુરનો ચેપ લંગડાપણું અને દુર્ગંધનું કારણ બને છે.<br>3.ન્યુમોનિયા: ખાંસી, તાવ અને શ્વાસ લેવામાં તકલીફ.<br>4.આંતરિક પરોપજીવી: કૃમિ એનિમિયા, નબળાઇ અને વજન ઘટાડાનું કારણ બને છે.<br>5.માસ્ટાઇટિસ: આંચળનો ચેપ જેના કારણે આંચળમાં સોજો આવે છે અને દૂધ ઓછું આવે છે.",
+            c_chicken_p2:"૧. ન્યુકેસલ રોગ - વાયરલ, ઝડપથી ફેલાતો, શ્વાસ લેવામાં તકલીફ અને અચાનક મૃત્યુનું કારણ બને છે.<br>૨. ફાઉલ પોક્સ - વાયરસથી ત્વચા પર ખંજવાળ; મચ્છરો દ્વારા ફેલાય છે.<br>૩. કોક્સિડિયોસિસ - આંતરડામાં પરોપજીવીઓને કારણે લોહીવાળા ઝાડા.<br>૪. મારેક રોગ - લકવો અને વજન ઘટાડવું; વાયરલ<br>૫. સાલ્મોનેલોસિસ - બેક્ટેરિયલ ઝાડા અને ઇંડાનું ઓછું ઉત્પાદન.",
+            c_duck_p2: "૧. ડક વાયરલ એન્ટેરાઇટિસ (DVE) - અચાન<ક મૃત્યુ, ઝાડા અને નબળાઇનું કારણ બને છે; ખૂબ જ ચેપી.<br>૨. બોટ્યુલિઝમ - ગંદા પાણી અથવા સડેલા ખોરાકમાં ઝેરી તત્વોથી લકવો.<br>૩. રીમેરેલા ચેપ - આંખોમાં સોજો, નાકમાંથી સ્રાવ અને શ્વાસ લેવામાં તકલીફ.<br>૪. ડક પ્લેગ - વાયરલ રોગ જે રક્તસ્રાવ અને અચાનક મૃત્યુનું કારણ બને છે.<br>૫. કૃમિનો ઉપદ્રવ - વજનમાં ઘટાડો, નબળી વૃદ્ધિ અને આંતરિક કૃમિને કારણે ઝાડા.",
+             c_fish_p1:"<b>માછલી ઉછેરના પાંચ પગલાં<br><br></b>1.તળાવની તૈયારી: સફાઈ કરી, ચૂનો અને છાણિયું ખાતર નાખી પાણી તૈયાર કરો.<br>2.બીજ પસંદગી: રોહુ, કતલા અને મૃગલ જેવી સારી જાતના માછલીના બીજ પસંદ કરો.<br>3.સ્ટોકિંગ: સવાર કે સાંજની ઠંડકમાં માછલીના બચ્ચાંને તળાવમાં છોડો.<br>4.ખોરાક: માછલીના ઝડપી વિકાસ માટે ચોખાનું કુશકી અને ખોળનો ખોરાક આપો.<br>5.લણણી: માછલી ૧ કિલોની થાય એટલે જાળ નાખીને વેચાણ માટે બહાર કાઢો.",
+             c_flor_p1:"<b>ફૂલ ખેતીના પાંચ પગલાં </b><br><br>૧.માટીની તૈયારી: છૂટક, ફળદ્રુપ જમીન માટે જમીનને ખેડવી અને ગાયના છાણ સાથે ભેળવી દો.<br>૨.વાવેતર: ઊંચા પથારી અથવા પટ્ટાઓમાં બીજ વાવો અથવા રોપા (મેરીગોલ્ડ/ગુલાબ) વાવો.<br>૩.સિંચાઈ: જમીનને સતત ભેજવાળી રાખવા માટે ટપક અથવા હળવી નહેર સિંચાઈનો ઉપયોગ કરો.<br>૪.કાળજી: વૃદ્ધિ વધારવા માટે શરૂઆતની કળીઓને કાપી નાખો અને કાર્બનિક જંતુનાશકો (લીમડાનું તેલ) છાંટો.<br>૫.તોડવું: બજાર માટે તાજા રાખવા માટે વહેલી સવારે ફૂલો કાપો.",
+            c_manure_p1:"<b>ખાતર બનાવવાના પાંચ પગલાં</b><br><br>૧.ખેડાણ: જમીનને હવાદાર બનાવવા માટે ટ્રેક્ટર અથવા બળદનો ઉપયોગ કરીને તેને ફેરવો.<br>૨.ખાતર: જમીનને ફળદ્રુપ બનાવવા માટે ગાયનું છાણ અથવા ખાતર ઉમેરો.<br>૩.વાવણી: પહેલા વરસાદ પછી યોગ્ય ઊંડાઈએ ગુણવત્તાવાળા બીજ વાવો.<br>૪.સિંચાઈ: ટપક, નહેર અથવા ચોમાસાના વરસાદનો ઉપયોગ કરીને ખેતરોને પાણી આપો<br>૫.લણણી: પાકેલા પાકને કાપીને અનાજ એકત્રિત કરવા માટે તેને થ્રેશ કરો.",
+            c_oil_p1:"<b>તેલ કાઢવાના પાંચ પગલાં</b><br><br>૧.સૂકવવું: બધો ભેજ દૂર કરવા માટે બીજ (સરસવ/મગફળી) ને તડકામાં સૂકવો.<br>૨.ક્રશિંગ: લાકડાના અથવા પથ્થરના ઘાણી/ચેક્કુમાં બીજ ખવડાવો.<br>૩.દબાવવું: તેલ સ્વસ્થ રાખવા માટે તેને ઓછા તાપમાને ધીમે ધીમે કાઢો.<br>૪.સેટલિંગ: તેલને એક દિવસ માટે છોડી દો જેથી ધૂળ તળિયે જામી જાય.<br>૫.બોટલિંગ: સ્વચ્છ કપડામાંથી ગાળીને બોટલોમાં રેડો.",
+            c_jaggery_p1:"<b>ગોળ બનાવવાના પાંચ પગલાં </b><br><br>૧.ક્રશિંગ: ક્રશરનો ઉપયોગ કરીને તાજી શેરડીમાંથી રસ કાઢો.<br>૨.સફાઈ: કુદરતી ક્લીન્ઝરનો ઉપયોગ કરીને રસ ઉકાળો અને મેલ દૂર કરો.<br>૩.ઉકાળો: રસ જાડા પેસ્ટમાં ફેરવાય ત્યાં સુધી વધુ તાપ પર રાંધો.<br>૪.હલાવો: પોત મેળવવા માટે હલાવતા સમયે પેસ્ટને ખાડામાં ઠંડુ કરો.<br>૫.મોલ્ડિંગ: ઘન ગોળ બનાવવા માટે બ્લોક્સ અથવા મોલ્ડમાં રેડો.",
+            c_agro_p1:"<b>કૃષિવનીકરણમાં પાંચમું પગલું</b><br><br>1.પસંદગી: તમારી જમીનને અનુરૂપ લીમડો, સાગ અથવા બાબુલ જેવા મૂળ વૃક્ષો પસંદ કરો.<br>2.લેઆઉટ: હરોળમાં વૃક્ષો (ગલી પાક) અથવા સરહદો પર જગ્યા રાખો જેથી પાક વચ્ચે રહે.<br>3.વાવણી: ચોમાસા દરમિયાન મોસમી પાક (જેમ કે હળદર અથવા ચણા) સાથે વૃક્ષો વાવો.<br>4.જાળવણી: સૂર્યપ્રકાશ જમીનના પાક સુધી પહોંચે તેની ખાતરી કરવા માટે નિયમિતપણે ઝાડની ડાળીઓ કાપો.<br>5.લણણી: નફા માટે વાર્ષિક મોસમી ખાદ્ય પાક અને 8-10 વર્ષ પછી લાકડાના વૃક્ષોની લણણી કરો.",
+           c_pottery_p1:"<b>માટીકામમાં પાંચ પગલાં</b><br><br>૧.માટી: માટીને સરળ બનાવવા માટે તેને સાફ કરો, પલાળી રાખો અને ભેળવો.<br>૨.પૈડું: પરંપરાગત મેન્યુઅલ અથવા ઇલેક્ટ્રિક વ્હીલ પર વાસણને આકાર આપો.<br>૩.મારવું: દિવાલોને પાતળી કરવા અને આકારને સંપૂર્ણ બનાવવા માટે ચપ્પુનો ઉપયોગ કરો.<br>૪.સૂકવવું: તિરાડો ટાળવા માટે વાસણોને છાંયડામાં હવામાં સૂકવો.<br>૫.ફાયરિંગ: મજબૂતાઈ માટે તેમને લાકડાના ભઠ્ઠા (ભટ્ટી) માં શેકો.",
+            c_seri_p1:"<b>રેશમ ઉછેરમાં પાંચમું પગલું</b><br><br>૧.શેતૂત: રેશમના કીડાઓને તાજા પાંદડા પૂરા પાડવા માટે શેતૂતના ઝાડ ઉગાડો.<br>૨.ઉછેર: રેશમના કીડાઓને કાપેલા પાંદડા ટ્રેમાં ૨૫-૩૦ દિવસ માટે બહાર કાઢો અને ખવડાવો.<br>૩.ઉછેર: પરિપક્વ કીડાઓને કાંતવાનું શરૂ કરવા માટે વાંસના ફ્રેમ (ચંદ્રિકા) માં ખસેડો.<br>૪.કાંતવું: કીડાઓ ૩ દિવસમાં રક્ષણાત્મક કોકૂન બનાવવા માટે રેશમનો દોરો સ્ત્રાવ કરે છે.<br>૫.લણણી: કોકૂન એકત્રિત કરો અને તેમને વરાળથી રેશમને પાછું ખેંચવા માટે તૈયાર કરો.",
+
+
+            video_cow: "https://www.youtube.com/embed/z6D9sYjA0uI", 
+            video_buffalo:"https://www.youtube.com/embed/hsyb_GWy0UI?si=rReNtjgXq30VVM11",//brucellosis
+            video_goat:"https://www.youtube.com/embed/qgoXvJTIQjM?si=BR6WQdzLmBYpFKV5" ,//Parasites
+           video_pig:"https://www.youtube.com/embed/p_l25T2_sDg?si=GY6IuP5QFUzAhUex",//Piglet anemia 
+            video_duck: "https://www.youtube.com/embed/4G1sH0e2kG0", 
+            video_jaggery:"https://www.youtube.com/embed/0UTq6YJ3zbc?si=ofZZx5Fe0RipRYji",// how to work
+             video_seri: "https://www.youtube.com/embed/OjkrgIMKzMY?si=ey__b83mWCnu_kTl",
+             video_agro:"https://www.youtube.com/embed/mSGW7HY4Onc?si=TlHxU_AVUL9UMe6s",
+             video_oil:"https://www.youtube.com/embed/iQg6zNR_JF4?si=bzTAwZFHavkrFhtq",
+             video_manure:"https://www.youtube.com/embed/WkDySpeR7eU?si=Fx32EBPcp26_dQNH",
+             video_flor:"https://www.youtube.com/embed/IGhiyJK23dk?si=F2SuNzStUVHFD4hB",
+             video_fish:"https://www.youtube.com/embed/UbPz1fbxclU?si=8GVT0Fmv6PolJPw6",
+             video_chicken:"https://www.youtube.com/embed/NIyhlY7RqRE?si=Bi1jt1iPzU1-OQh5",
+             video_duck:"https://www.youtube.com/embed/9qRogGa_rvI?si=BCUZ9A0sSr8xxqGO",
+             video_sheep:"https://www.youtube.com/embed/7rYAmSW4IiA?si=8Qv_5HqP_pU__fs1",
+             video_cow:"https://www.youtube.com/embed/1VL_jO7wjz8?si=qykXYIfDDZnOOptW",
+        },
+    
+        "kn-IN": {
+            mainTitle: "ಪಶುಸಂಗೋಪನೆ ಮತ್ತು ಇತರೆ", backBtn: "← ಹಿಂತಿರುಗಿ", backToMain: "← ಮುಖ್ಯ ಮೆನುಗೆ ಹಿಂತಿರುಗಿ", 
+           'Animal Husbandry': "ಪಶುಸಂಗೋಪನೆ", 'Poultry Farming': "ಕೋಳಿ ಸಾಕಾಣಿಕೆ", 'Fish Farming': "ಮೀನು ಸಾಕಾಣಿಕೆ", 'floriculture': "ಪುಷ್ಪಕೃಷಿ", 'Manure Making': "ಗೊಬ್ಬರ ತಯಾರಿಕೆ", 'Oil Extraction': "ತೈಲ ಹೊರತೆಗೆಯುವಿಕೆ", 'Jaggery Making': "ಬೆಲ್ಲ ತಯಾರಿಕೆ", 'Milling': "ಅರೆಯುವಿಕೆ", 'Agroforestry': "ಕೃಷಿ ಅರಣ್ಯ", 'Sericulture': "ರೇಷ್ಮೆ ಕೃಷಿ", 'Pottery': "ಕುಂಬಾರಿಕೆ", 'Lac Cultivation': "ಲಾಕ್ ಕೃಷಿ",
+            'Cow': "ಹಸು", 'Buffalo': "ಎಮ್ಮೆ", 'Goat': "ಮೇಕೆ", 'Pig': "ಹಂದಿ", 'Sheep': "ಕುರಿ", 'Chicken': "ಕೋಳಿ", 'Duck': "ಬಾತುಕೋಳಿ",
+            t_cow: 'ಪಶುಸಂಗೋಪನೆ → ಹಸುವಿನ ಆರೋಗ್ಯ', 
+             t_buffalo:"ಪಶು ಸಂಗೋಪನೆ -> ಎಮ್ಮೆ ಆರೋಗ್ಯ",
+             t_goat:"ಪಶು ಸಂಗೋಪನೆ -> ಮೇಕೆ ಆರೋಗ್ಯ",
+             t_pig:"ಪಶು ಸಂಗೋಪನೆ -> ಹಂದಿ ಆರೋಗ್ಯ",
+             t_sheep:"ಪಶುಪಾಲನೆ -> ಕುರಿಗಳ ಆರೋಗ್ಯ",
+            t_chicken:"ಕೋಳಿ ಸಾಕಣೆ ->ಕೋಳಿ ಆರೋಗ್ಯ ",
+            t_duck: 'ಕೋಳಿ ಸಾಕಾಣಿಕೆ → ಬಾತುಕೋಳಿ ಸಾಕಣೆ', 
+            t_fish:"ಮೀನು ಸಾಕಣೆ->ಮೀನು ಸಾಕಣೆ",
+            t_flor:"ಹೂಕೃಷಿ->ಹೂ ಕೃಷಿ",
+            t_manure:"ಗೊಬ್ಬರ ತಯಾರಿಕೆ -> ಗೊಬ್ಬರ ತಯಾರಿಕೆ",
+            t_oil:"તેલ નિષ્કર્ષણ ->પેટ્રોલિયમ નિષ્કર્ષણ",
+            t_jagagery:"ಬೆಲ್ಲ ತಯಾರಿಕೆ -> ಗುರ್",
+            t_agro:"ಕೃಷಿ ಅರಣ್ಯ -> ಕೃಷಿ ಅರಣ್ಯ",
+            t_seri: 'ರೇಷ್ಮೆ ಕೃಷಿ -> ರೇಷ್ಮೆ ಕೃಷಿ',
+            t_pottery:"ಕುಂಬಾರಿಕೆ ->ಸೆರಾಮಿಕ್ಸ್",
+
+            c_cow_p1: '<b>ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>',
+            c_buffalo_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+            c_goat_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+            c_pig_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+             c_sheep_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+             c_chicken_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+             c_duck_p1:"<b>ಟಾಪ್ 5 ಸಾಮಾನ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಗಳು ಮತ್ತು ಪರಿಹಾರಗಳು:</b>",
+
+             c_cow_p2: "1. ಮಾಸ್ಟಿಟಿಸ್: ಪ್ರತಿಜೀವಕಗಳ ಬಳಕೆ ಮತ್ತು ಸರಿಯಾದ ಕೆಚ್ಚಲಿನ ನೈರ್ಮಲ್ಯ. <br>2. FMD: ನಿಯಮಿತ ಲಸಿಕೆ.<br> 3. ಉಬ್ಬುವುದು: ಅತಿಯಾಗಿ ತಿನ್ನುವುದನ್ನು ತಪ್ಪಿಸಿ. <br>4. ಹಾಲು ಜ್ವರ: ಕ್ಯಾಲ್ಸಿಯಂ ನೀಡಿ. <br>5. ಉಣ್ಣಿ/ಪರಾವಲಂಬಿಗಳು: ನಿಯಮಿತ ಜಂತುಹುಳು ನಿವಾರಣ.",
+             c_buffalo_p2:"1. ಮಾಸ್ಟಿಟಿಸ್: ಹಾಲನ್ನು ಕಡಿಮೆ ಮಾಡುವ ಕೆಚ್ಚಲಿನ ಸೋಂಕು.<br>2.FMD: ಜ್ವರ ಮತ್ತು ಬಾಯಿ ಹುಣ್ಣುಗಳು; ಹಾಲು ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಇಳಿಯುತ್ತದೆ.<br>3.HS: ತೀವ್ರ ಜ್ವರ ಮತ್ತು ಊತ; ವಾರ್ಷಿಕ ಲಸಿಕೆ ಅಗತ್ಯವಿದೆ.<br>4.ಉಬ್ಬುವುದು: ಹೊಟ್ಟೆಯ ಅನಿಲವು ಹಠಾತ್ ಊತವನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ.<br>5.ಪರಾವಲಂಬಿಗಳು: ಹುಳುಗಳು/ಹೇನುಗಳು ದೌರ್ಬಲ್ಯ ಮತ್ತು ಕಡಿಮೆ ಹಾಲು ಉತ್ಪಾದಿಸುತ್ತವೆ.",
+             c_goat_p2:"1.PPR (ಮೇಕೆ ಪ್ಲೇಗ್): ಜ್ವರ, ಅತಿಸಾರ, ಬಾಯಿ ಹುಣ್ಣುಗಳು; ಹೆಚ್ಚು ಸಾಂಕ್ರಾಮಿಕ.<br>2.ಪಾದ ಕೊಳೆತ: ಗೊರಸಿನ ಸೋಂಕು ಊತ ಮತ್ತು ಕುಂಟತನವನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ.<br>3.ನ್ಯುಮೋನಿಯಾ: ಕೆಮ್ಮು, ಜ್ವರ ಮತ್ತು ಉಸಿರಾಟದ ತೊಂದರೆ.<br>4.ಆಂತರಿಕ ಪರಾವಲಂಬಿಗಳು: ತೂಕ ನಷ್ಟ ಮತ್ತು ರಕ್ತಹೀನತೆಗೆ ಕಾರಣವಾಗುವ ಹುಳುಗಳು.<br>5.ಮಾಸ್ಟೈಟಿಸ್: ಕೆಚ್ಚಲಿನ ಸೋಂಕು ಹಾಲು ಕಡಿಮೆ ಮಾಡುತ್ತದೆ ಮತ್ತು ನೋವು ಉಂಟುಮಾಡುತ್ತದೆ.",
+             c_pig_p2:"1.ಹಂದಿ ಜ್ವರ (CSF/ASF): ತೀವ್ರ ಜ್ವರ, ರಕ್ತಸ್ರಾವ, ಹಠಾತ್ ಸಾವು.<br>2.ನ್ಯುಮೋನಿಯಾ: ಕೆಮ್ಮು, ಜ್ವರ, ವೇಗವಾಗಿ ಅಥವಾ ಉಸಿರಾಡಲು ಕಷ್ಟ.<br>3.ಗ್ಯಾಸ್ಟ್ರೋಎಂಟರೈಟಿಸ್: ಹಂದಿಮರಿಗಳಲ್ಲಿ ಸಾಮಾನ್ಯವಾದ ಅತಿಸಾರ ಮತ್ತು ನಿರ್ಜಲೀಕರಣ.<br>4.ಪರಾವಲಂಬಿಗಳು: ತೂಕ ನಷ್ಟ ಮತ್ತು ಕಳಪೆ ಬೆಳವಣಿಗೆಗೆ ಕಾರಣವಾಗುವ ಹುಳುಗಳು.<br>5.ಕಾಲು ಮತ್ತು ಬಾಯಿ ಸಮಸ್ಯೆಗಳು: ಕುಂಟತನ, ಬಾಯಿ ಹುಣ್ಣುಗಳು, ಆಹಾರ ಸೇವನೆ ಕಡಿಮೆಯಾಗುವುದು.",
+             c_sheep_p2:"1.PPR (ಕುರಿ ಪ್ಲೇಗ್): ತೀವ್ರ ಜ್ವರ, ಅತಿಸಾರ ಮತ್ತು ಬಾಯಿ/ಮೂಗಿನಿಂದ ಸ್ರವಿಸುವಿಕೆ.<br>2.ಕಾಲು ಕೊಳೆತ: ಗೊರಸಿನ ಸೋಂಕು ಕುಂಟತನ ಮತ್ತು ದುರ್ವಾಸನೆಯನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ.<br>3.ನ್ಯುಮೋನಿಯಾ: ಕೆಮ್ಮು, ಜ್ವರ ಮತ್ತು ಉಸಿರಾಟದ ತೊಂದರೆ.<br>4.ಆಂತರಿಕ ಪರಾವಲಂಬಿಗಳು: ರಕ್ತಹೀನತೆ, ದೌರ್ಬಲ್ಯ ಮತ್ತು ತೂಕ ನಷ್ಟಕ್ಕೆ ಕಾರಣವಾಗುವ ಹುಳುಗಳು.<br>5.ಮಾಸ್ಟೈಟಿಸ್: ಕೆಚ್ಚಲು ಸೋಂಕು ಕೆಚ್ಚಲು ಊದಿಕೊಳ್ಳಲು ಮತ್ತು ಹಾಲು ಕಡಿಮೆಯಾಗಲು ಕಾರಣವಾಗುತ್ತದೆ.",
+             c_chicken_p2:"1. ನ್ಯೂಕ್ಯಾಸಲ್ ಕಾಯಿಲೆ - ವೈರಲ್, ವೇಗವಾಗಿ ಹರಡುವ, ಉಸಿರಾಟದ ತೊಂದರೆ ಮತ್ತು ಹಠಾತ್ ಸಾವಿಗೆ ಕಾರಣವಾಗುತ್ತದೆ.<br>2. ಫೌಲ್ ಪೋಕ್ಸ್ - ವೈರಸ್‌ನಿಂದ ಚರ್ಮದ ಹಕ್ಕಳೆ; ಸೊಳ್ಳೆಗಳಿಂದ ಹರಡುತ್ತದೆ.<br>3. ಕೋಕ್ಸಿಡಿಯೋಸಿಸ್ - ಕರುಳಿನಲ್ಲಿರುವ ಪರಾವಲಂಬಿಗಳಿಂದ ಉಂಟಾಗುವ ರಕ್ತಸಿಕ್ತ ಅತಿಸಾರ.<br>4. ಮಾರೆಕ್ಸ್ ಕಾಯಿಲೆ - ಪಾರ್ಶ್ವವಾಯು ಮತ್ತು ತೂಕ ನಷ್ಟ; ವೈರಲ್.<br>5. ಸಾಲ್ಮೊನೆಲೋಸಿಸ್ - ಬ್ಯಾಕ್ಟೀರಿಯಾದ ಅತಿಸಾರ ಮತ್ತು ಕಡಿಮೆ ಮೊಟ್ಟೆ ಉತ್ಪಾದನೆ.",
+             c_duck_p2: "1. ಡಕ್ ವೈರಲ್ ಎಂಟರೈಟಿಸ್ (DVE) – ಹಠಾತ್ ಸಾವು, ಅತಿಸಾರ ಮತ್ತು ದೌರ್ಬಲ್ಯವನ್ನು ಉಂಟುಮಾಡುತ್ತದೆ; ಹೆಚ್ಚು ಸಾಂಕ್ರಾಮಿಕ.<br>ಯುಲಿಸಮ್ – ಕೊಳಕು ನೀರು ಅಥವಾ ಕೊಳೆತ ಆಹಾರದಲ್ಲಿನ ವಿಷದಿಂದ ಪಾರ್ಶ್ವವಾಯು.<br>3. ರೀಮೆರೆಲ್ಲಾ ಸೋಂಕು – ಊದಿಕೊಂಡ ಕಣ್ಣುಗಳು, ಮೂಗಿನಿಂದ ಸ್ರವಿಸುವಿಕೆ ಮತ್ತು ಉಸಿರಾಟದ ತೊಂದರೆಗಳು.<br>4. ಡಕ್ ಪ್ಲೇಗ್ – ರಕ್ತಸ್ರಾವ ಮತ್ತು ಹಠಾತ್ ಮರಣಕ್ಕೆ ಕಾರಣವಾಗುವ ವೈರಲ್ ರೋಗ.<br>5. ಹುಳುಗಳ ಬಾಧೆ – ತೂಕ ನಷ್ಟ, ಕಳಪೆ ಬೆಳವಣಿಗೆ ಮತ್ತು ಆಂತರಿಕ ಹುಳುಗಳಿಂದಾಗಿ ಅತಿಸಾರ.",
+             c_fish_p1:"<b>ಮೀನು ಸಾಕಣೆಯಲ್ಲಿ ಐದು ಹಂತಗಳು<br><br></b>1.ಕೊಳದ ಸಿದ್ಧತೆ: ಹೂಳೆತ್ತಿ, ಸುಣ್ಣ ಹಾಕಿ ಮತ್ತು ಕೊಟ್ಟಿಗೆ ಗೊಬ್ಬರ ಬಳಸಿ ನೀರನ್ನು ಸಿದ್ಧಪಡಿಸಿ.<br>2.ತಳಿ ಆಯ್ಕೆ: ಉತ್ತಮ ಗುಣಮಟ್ಟದ ರೋಹು, ಕಟ್ಲಾ ಮತ್ತು ಮೃಗಲ್ ಮೀನಿನ ಮರಿಗಳನ್ನು ಆರಿಸಿ.<br>3.ಮರಿ ಬಿಡುವುದು: ಬೆಳಿಗ್ಗೆ ಅಥವಾ ಸಂಜೆ ತಂಪಾದ ಸಮಯದಲ್ಲಿ ಮೀನಿನ ಮರಿಗಳನ್ನು ಕೊಳಕ್ಕೆ ಬಿಡಿ.<br>4.ಆಹಾರ: ಅಕ್ಕಿ ತೌಡು ಮತ್ತು ಹಿಂಡಿಯಂತಹ ಪೂರಕ ಆಹಾರವನ್ನು ಪ್ರತಿದಿನ ನೀಡಿ.<br>5.ಕೊಯ್ಲು: ಮೀನುಗಳು ಒಂದು ಕೆಜಿ ತೂಕ ಬಂದಾಗ ಬಲೆ ಬೀಸಿ ಹಿಡಿದು ಮಾರಾಟ ಮಾಡಿ.",
+             c_flor_p1:"<b>ಹೂಗಾರಿಕೆಯಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1.ಮಣ್ಣಿನ ತಯಾರಿಕೆ: ಸಡಿಲವಾದ, ಫಲವತ್ತಾದ ಮಣ್ಣನ್ನು ಪಡೆಯಲು ಭೂಮಿಯನ್ನು ಉಳುಮೆ ಮಾಡಿ ಮತ್ತು ಹಸುವಿನ ಗೊಬ್ಬರದೊಂದಿಗೆ ಮಿಶ್ರಣ ಮಾಡಿ.<br>2.ನಾಟಿ: ಬೀಜಗಳನ್ನು ಬಿತ್ತಿ ಅಥವಾ ಸಸಿಗಳನ್ನು (ಮಾರಿಗೋಲ್ಡ್/ಗುಲಾಬಿ) ಎತ್ತರದ ಹಾಸಿಗೆಗಳು ಅಥವಾ ರೇಖೆಗಳಲ್ಲಿ ನೆಡಬೇಕು.<br>3.ನೀರಾವರಿ: ಮಣ್ಣನ್ನು ನಿರಂತರವಾಗಿ ತೇವಾಂಶದಿಂದ ಇರಿಸಿಕೊಳ್ಳಲು ಹನಿ ಅಥವಾ ಲಘು ಕಾಲುವೆ ನೀರಾವರಿ ಬಳಸಿ.<br>4.ಆರೈಕೆ: ಬೆಳವಣಿಗೆಯನ್ನು ಹೆಚ್ಚಿಸಲು ಆರಂಭಿಕ ಮೊಗ್ಗುಗಳನ್ನು ಚಿಮುಕಿಸಿ ಸಾವಯವ ಕೀಟನಾಶಕಗಳನ್ನು (ಬೇವಿನ ಎಣ್ಣೆ) ಸಿಂಪಡಿಸಿ.<br>5.ಕೀಳುವುದು: ಮಾರುಕಟ್ಟೆಗೆ ತಾಜಾವಾಗಿಡಲು ಹೂವುಗಳನ್ನು ಮುಂಜಾನೆ ಕೊಯ್ಲು ಮಾಡಿ.",
+             c_manure_p1:"<b>ಗೊಬ್ಬರ ಗೊಬ್ಬರದಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1. ಉಳುಮೆ: ಟ್ರ್ಯಾಕ್ಟರ್ ಅಥವಾ ಎತ್ತುಗಳನ್ನು ಬಳಸಿ ಮಣ್ಣನ್ನು ತಿರುಗಿಸಿ ಗಾಳಿ ತುಂಬಿಸಿ.<br>2. ಗೊಬ್ಬರ ಹಾಕುವುದು: ಮಣ್ಣನ್ನು ಫಲವತ್ತಾಗಿಸಲು ಹಸುವಿನ ಸಗಣಿ ಅಥವಾ ಗೊಬ್ಬರವನ್ನು ಸೇರಿಸಿ.<br>3. ಬಿತ್ತನೆ: ಮೊದಲ ಮಳೆಯ ನಂತರ ಸರಿಯಾದ ಆಳದಲ್ಲಿ ಗುಣಮಟ್ಟದ ಬೀಜಗಳನ್ನು ನೆಡಿ.<br>4. ನೀರಾವರಿ: ಹನಿ, ಕಾಲುವೆ ಅಥವಾ ಮಾನ್ಸೂನ್ ಮಳೆಯನ್ನು ಬಳಸಿ ಹೊಲಗಳಿಗೆ ನೀರು ಹಾಕಿ<br>5. ಕೊಯ್ಲು: ಪ್ರೌಢ ಬೆಳೆಯನ್ನು ಕತ್ತರಿಸಿ ಧಾನ್ಯವನ್ನು ಸಂಗ್ರಹಿಸಲು ಅದನ್ನು ಒಕ್ಕಣೆ ಮಾಡಿ.",
+              c_oil_p1:"<b>ಎಣ್ಣೆ ತೆಗೆಯುವಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1. ಒಣಗಿಸುವುದು: ಬೀಜಗಳನ್ನು (ಸಾಸಿವೆ/ಕಡಲೆಕಾಯಿ) ಎಲ್ಲಾ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಲು ಬಿಸಿಲಿನಲ್ಲಿ ಒಣಗಿಸಿ.<br>2. ಪುಡಿ ಮಾಡುವುದು: ಬೀಜಗಳನ್ನು ಮರದ ಅಥವಾ ಕಲ್ಲಿನ ಘನಿ/ಚೆಕ್ಕುವಿಗೆ ಹಾಕಿ.<br>3. ಒತ್ತುವುದು: ಎಣ್ಣೆಯನ್ನು ಆರೋಗ್ಯಕರವಾಗಿಡಲು ಕಡಿಮೆ ತಾಪಮಾನದಲ್ಲಿ ನಿಧಾನವಾಗಿ ಹೊರತೆಗೆಯಿರಿ.<br>4. ನೆಲೆಗೊಳ್ಳುವುದು: ಧೂಳು ಕೆಳಭಾಗದಲ್ಲಿ ನೆಲೆಗೊಳ್ಳಲು ಎಣ್ಣೆಯನ್ನು ಒಂದು ದಿನ ಬಿಡಿ.<br>5. ಬಾಟಲಿ ಮಾಡುವುದು: ಸ್ವಚ್ಛವಾದ ಬಟ್ಟೆಯ ಮೂಲಕ ಫಿಲ್ಟರ್ ಮಾಡಿ ಮತ್ತು ಬಾಟಲಿಗಳಲ್ಲಿ ಸುರಿಯಿರಿ.",
+              c_jaggery_p1:"<b>ಬೆಲ್ಲ ತಯಾರಿಕೆಯಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1. ಪುಡಿ ಮಾಡುವುದು: ಕ್ರಷರ್ ಬಳಸಿ ತಾಜಾ ಕಬ್ಬಿನಿಂದ ರಸವನ್ನು ಹೊರತೆಗೆಯಿರಿ.<br>2. ಸ್ವಚ್ಛಗೊಳಿಸುವುದು: ನೈಸರ್ಗಿಕ ಕ್ಲೆನ್ಸರ್‌ಗಳನ್ನು ಬಳಸಿ ರಸವನ್ನು ಕುದಿಸಿ ಮತ್ತು ಕಲ್ಮಶವನ್ನು ತೆಗೆದುಹಾಕಿ.<br>3. ಕುದಿಸುವುದು: ರಸವು ದಪ್ಪ ಪೇಸ್ಟ್ ಆಗುವವರೆಗೆ ಹೆಚ್ಚಿನ ಉರಿಯಲ್ಲಿ ಬೇಯಿಸಿ.<br>4. ಕಲಕುವುದು: ವಿನ್ಯಾಸವನ್ನು ಪಡೆಯಲು ಬೆರೆಸಿ ಪೇಸ್ಟ್ ಅನ್ನು ತಣ್ಣಗಾಗಿಸಿ.<br>5. ಅಚ್ಚು ಮಾಡುವುದು: ಘನ ಬೆಲ್ಲವಾಗಿ ಗಟ್ಟಿಯಾಗಲು ಬ್ಲಾಕ್‌ಗಳು ಅಥವಾ ಅಚ್ಚುಗಳಲ್ಲಿ ಸುರಿಯಿರಿ.",
+               c_agro_p1:"<b>ಕೃಷಿ ಅರಣ್ಯೀಕರಣದಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1. ಆಯ್ಕೆ: ನಿಮ್ಮ ಮಣ್ಣಿಗೆ ಸರಿಹೊಂದುವ ಬೇವು, ತೇಗ ಅಥವಾ ಬಾಬುಲ್‌ನಂತಹ ಸ್ಥಳೀಯ ಮರಗಳನ್ನು ಆರಿಸಿ.<br>2. ವಿನ್ಯಾಸ: ಸಾಲುಗಳಲ್ಲಿ ಜಾಗದ ಮರಗಳು (ಆಲಿ ಬೆಳೆ) ಅಥವಾ ಗಡಿಗಳಲ್ಲಿ ಬೆಳೆಗಳ ನಡುವೆ ಅವಕಾಶ ಮಾಡಿಕೊಡಿ.<br>3. ನೆಡುವುದು: ಮಾನ್ಸೂನ್ ಸಮಯದಲ್ಲಿ ಕಾಲೋಚಿತ ಬೆಳೆಗಳೊಂದಿಗೆ (ಅರಿಶಿನ ಅಥವಾ ಗ್ರಾಂ ನಂತಹ) ಮರಗಳನ್ನು ನೆಡಿ.<br>4. ನಿರ್ವಹಣೆ: ಸೂರ್ಯನ ಬೆಳಕು ನೆಲದ ಬೆಳೆಗಳನ್ನು ತಲುಪುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ನಿಯಮಿತವಾಗಿ ಮರದ ಕೊಂಬೆಗಳನ್ನು ಕತ್ತರಿಸು.<br>5. ಕೊಯ್ಲು: ಲಾಭಕ್ಕಾಗಿ ವಾರ್ಷಿಕವಾಗಿ ಕಾಲೋಚಿತ ಆಹಾರ ಬೆಳೆಗಳನ್ನು ಮತ್ತು 8-10 ವರ್ಷಗಳ ನಂತರ ಮರದ ಮರಗಳನ್ನು ಕೊಯ್ಲು ಮಾಡಿ.",
+             c_pottery_p1:"<b>ಐದು ಹಂತದ ಕುಂಬಾರಿಕೆ</b><br><br>1.ಜೇಡಿಮಣ್ಣು: ಸ್ವಚ್ಛಗೊಳಿಸಿ, ನೆನೆಸಿ ಮತ್ತು ಜೇಡಿಮಣ್ಣನ್ನು ನಯವಾಗಿಸಲು ಬೆರೆಸಿಕೊಳ್ಳಿ.<br>2.ಚಕ್ರ: ಸಾಂಪ್ರದಾಯಿಕ ಕೈಪಿಡಿ ಅಥವಾ ವಿದ್ಯುತ್ ಚಕ್ರದ ಮೇಲೆ ಮಡಕೆಯನ್ನು ಆಕಾರ ಮಾಡಿ.<br>3.ಬೀಟಿಂಗ್: ಗೋಡೆಗಳನ್ನು ತೆಳುಗೊಳಿಸಲು ಮತ್ತು ಆಕಾರವನ್ನು ಪರಿಪೂರ್ಣಗೊಳಿಸಲು ಪ್ಯಾಡಲ್ ಬಳಸಿ.<br>4.ಒಣಗಿಸುವುದು: ಬಿರುಕುಗಳನ್ನು ತಪ್ಪಿಸಲು ಮಡಕೆಗಳನ್ನು ನೆರಳಿನಲ್ಲಿ ಗಾಳಿಯಲ್ಲಿ ಒಣಗಿಸಿ.<br>5.ಗುಂಡು ಹಾರಿಸುವುದು: ಬಲಕ್ಕಾಗಿ ಅವುಗಳನ್ನು ಮರದಿಂದ ಸುಡುವ ಒಲೆಯಲ್ಲಿ (ಭಟ್ಟಿ) ಬೇಯಿಸಿ.",
+            c_seri_p1:"<b>ರೇಷ್ಮೆ ಕೃಷಿಯಲ್ಲಿ ಐದು ಹಂತಗಳು</b><br><br>1.ಮಲ್ಬೆರಿ: ರೇಷ್ಮೆ ಹುಳುಗಳಿಗೆ ತಾಜಾ ಎಲೆಗಳನ್ನು ಒದಗಿಸಲು ಮಲ್ಬೆರಿ ಮರಗಳನ್ನು ಬೆಳೆಸಿ.<br>2.ಪಾಲನೆ: ರೇಷ್ಮೆ ಹುಳುಗಳಿಗೆ ಕತ್ತರಿಸಿದ ಎಲೆಗಳನ್ನು 25-30 ದಿನಗಳವರೆಗೆ ಮರಿ ಮಾಡಿ ಮತ್ತು ಆಹಾರ ನೀಡಿ.<br>3.ಆರೋಹಣ: ಪ್ರಬುದ್ಧ ಹುಳುಗಳನ್ನು ಬಿದಿರಿನ ಚೌಕಟ್ಟುಗಳಿಗೆ (ಚಂದ್ರಿಕಾ) ಸರಿಸಿ ತಿರುಗಲು ಪ್ರಾರಂಭಿಸಿ.<br>4.ನೂಲುವಿಕೆ: ಹುಳುಗಳು 3 ದಿನಗಳಲ್ಲಿ ರಕ್ಷಣಾತ್ಮಕ ಕೋಕೂನ್ ಅನ್ನು ರೂಪಿಸಲು ರೇಷ್ಮೆ ದಾರವನ್ನು ಸ್ರವಿಸುತ್ತವೆ.<br>5.ಕೊಯ್ಲು: ಗೂಡುಗಳನ್ನು ಸಂಗ್ರಹಿಸಿ ಅವುಗಳನ್ನು ಉಗಿ ಮಾಡಿ ಸುತ್ತಲು ರೇಷ್ಮೆಯನ್ನು ತಯಾರಿಸಿ.",
+
+            video_cow: "https://www.youtube.com/embed/UpcLrfjmdF4?si=mbXJQcIqqKFE7iX9",
+           video_buffalo:"https://www.youtube.com/embed/1bH8lwbB3w4?si=ruc16GE98e-0BJeb",//mastitis
+           video_goat:"https://www.youtube.com/embed/gqdhyney8lE?si=VPDqUckEUzYsbriQ",//Parasites
+            video_pig:"https://www.youtube.com/embed/JSyM6qITXKY?si=oSM0BDX2xXEnRsG6",//Loose motions
+           video_sheep:"https://www.youtube.com/embed/TZG-9sRZHOE?si=sT98kipEJhHdIDnL",//skin problem 
+            video_duck: "https://www.youtube.com/embed/wFq7eWEOG6M?si=NF2JrTdb0sZth3xT", 
+            video_chicken:"https://www.youtube.com/embed/6qC0zhkyVDg?si=HIzDhXuyTwr3ATos",//fowl fox
+            video_flor:"https://www.youtube.com/embed/pHoKKBXOnno?si=sF1_8D-plgKpg2bp",//marigold disease 
+             video_manure:"https://www.youtube.com/embed/KjemKieYHzo?si=Eu2fJH9WqLm9chI9",//green manure
+             video_oil:"https://www.youtube.com/embed/CgGBSj2PXsw?si=SyKBZO0yY1tbeMR6",//palm
+             video_jaggery:"https://www.youtube.com/embed/0Vzyc_mWSco?si=xI_XK0ugnm0O_0ll",// how to work
+             video_agro:"https://www.youtube.com/embed/L7O5eL9XZmw?si=Ucr6BD0vaHxd9p77",//Agroforesty
+              video_fish:"https://www.youtube.com/embed/I6QUD0HP2tQ?si=R2Y6NwWWJW_1IOTF",
+              video_seri:"https://www.youtube.com/embed/NhLHtcYx1CU?si=Q6BSUmqMIDP9YU5Y",//Silk farming
+
+        },
+
+        "mar-IN": {
+            mainTitle: "पशुसंवर्धन आणि इतर", backBtn: "← मागे जा", backToMain: "← मुख्य मेनूवर परत जा", 
+            'Animal Husbandry': "पशुसंवर्धन", 'Poultry Farming': "कुक्कुटपालन", 'Fish Farming': "मत्स्यपालन", 'floriculture': "फुलशेती", 'Manure Making': "खत निर्मिती", 'Oil Extraction': "तेल काढणे", 'Jaggery Making': "गूळ बनवणे", 'Milling': "दलणे", 'Agroforestry': "कृषी वनीकरण", 'Sericulture': "रेशीम उद्योग", 'Pottery': "मातीची भांडी", 'Lac Cultivation': "लाख संवर्धन",
+            'Cow': "गाय", 'Buffalo': "म्हैस", 'Goat': "शेळी", 'Pig': "डुक्कर", 'Sheep': "मेंढी", 'Chicken': "कोंबडी", 'Duck': "बदक",
+            t_cow: 'पशुसंवर्धन → गायीचे आरोग्य', 
+           t_buffalo:"पशुपालन -> म्हशींचे आरोग्य",
+          t_goat:"पशुपालन -> शेळीचे आरोग्य",
+          t_pig:"पशुपालन -> डुकरांचे आरोग्य",
+          t_sheep:"पशुसंवर्धन-> मेंढ्यांचे आरोग्य",
+           t_chicken:"कुक्कुटपालन ->कोंबडीचे आरोग्य ",
+            t_duck: 'कुक्कुटपालन → बदक पालन', 
+            t_fish:"मासेपालन-> मत्स्यपालन",
+            t_flor:"फ्लोरिकल्चर-> फ्लॉवर शेती",
+            t_manure:"खत बनवणे -> कंपोस्टिंग",
+            t_oil:"तेल काढणे ->पेट्रोलियम काढणे",
+            t_jaggery:"गुळ बनवणे -> गुळ",
+            t_agro:"कृषीवनीकरण -> शेती वनीकरण",
+            t_seri: 'रेशीम शेती -> रेशीम शेती',
+            t_pottery:"मातीची भांडी ->सिरेमिक",
+
+            c_cow_p1: '<b>5 सामान्य आरोग्य समस्या आणि उपचार:</b>', 
+          c_buffalo_p1:"<b>सर्वात सामान्य आरोग्य समस्या आणि उपचार:</b>",
+          c_goat_p1:"<b>सर्वात सामान्य आरोग्य समस्या आणि उपचार:</b>",
+          c_pig_p1:"<b>सर्वात सामान्य आरोग्य समस्या आणि उपचार:</b>",
+          c_sheep_p1:"<b>सर्वात सामान्य आरोग्य समस्या आणि उपचार:</b>",
+          c_chicken_p1:"<b>५ सामान्य आरोग्य समस्या आणि त्यावरचे उपाय</b>",
+          c_duck_p1:"<b>५ सामान्य आरोग्य समस्या आणि त्यावरचे उपाय</b",
+
+
+          c_cow_p2: '1. स्तनांचा दाह: प्रतिजैविके आणि योग्य स्वच्छता.<br> 2. तोंड आणि पाय रोग: नियमित लसीकरण.<br> 3. पोटफुगी: जास्त हिरवा चारा टाळा.<br> 4. दुग्ध ज्वर: कॅल्शियम द्या.<br> 5. गोचीड/परजीवी: नियमित जंतनाशक आणि स्वच्छ गोठा. ',
+          c_buffalo_p2:"1.एफएमडी: ताप आणि तोंडात फोड येणे; दूध अचानक गळणे.<br>3.एचएस: जास्त ताप आणि सूज; दरवर्षी लसीकरण आवश्यक आहे.<br>4.फुगणे: पोटात वायूमुळे अचानक सूज येते.<br>5.परजीवी: जंत/उवा अशक्तपणा आणि कमी दूध देतात.",
+          c_goat_p2:"1.पीपीआर (बकरीचा प्लेग): ताप, अतिसार, तोंडात फोड; अत्यंत संसर्गजन्य.<br>2.पायाचे कुजणे: खुराच्या संसर्गामुळे सूज आणि लंगडेपणा येतो.<br>3.न्यूमोनिया: खोकला, ताप आणि श्वास घेण्यास त्रास होतो.<br>4.अंतर्गत परजीवी: वजन कमी करणारे आणि अशक्तपणा निर्माण करणारे जंत.<br>5.स्तनदाह: कासेचा संसर्ग दूध कमी करतो आणि वेदना देतो.",
+           c_pig_p2:"1.स्वाइन फिव्हर (CSF/ASF): जास्त ताप, रक्तस्त्राव, अचानक मृत्यू.<br>2.न्यूमोनिया: खोकला, ताप, जलद किंवा कठीण श्वास घेणे.<br>3.गॅस्ट्रोएन्टेरिटिस: अतिसार आणि डिहायड्रेशन, पिलांमध्ये सामान्य आहे.<br>4.परजीवी: वजन कमी करणारे आणि वाढ कमी करणारे जंत.<br>5.पाय आणि तोंडाच्या समस्या: लंगडेपणा, तोंडात फोड येणे, कमी आहार देणे.",
+          c_sheep_p2:"1.पीपीआर (मेंढ्यांचा प्लेग): जास्त ताप, अतिसार आणि तोंड/नाकातून स्त्राव.<br>2.पाय कुजणे: खुरांच्या संसर्गामुळे लंगडेपणा आणि दुर्गंधी येते.<br>3.न्यूमोनिया: खोकला, ताप आणि श्वास घेण्यास त्रास होतो.<br>4.अंतर्गत परजीवी: अशक्तपणा, अशक्तपणा आणि वजन कमी करणारे जंत.<br>5.स्तनदाह: कासेचा संसर्ग ज्यामुळे कासेला सूज येते आणि दूध कमी येते.",
+          c_chicken_p2:"१. न्यूकॅसल रोग - विषाणूजन्य, वेगाने पसरणारा, श्वास घेण्यास त्रास आणि अचानक मृत्यूला कारणीभूत ठरतो.<br>२. फाउल पॉक्स - विषाणूमुळे त्वचेवर खवले; डासांमुळे पसरतो.<br>३. कोक्सीडिओसिस - आतड्यांमधील परजीवींमुळे रक्तरंजित अतिसार.<br>४. मारेक रोग - अर्धांगवायू आणि वजन कमी होणे; विषाणूजन्य.<br>५. साल्मोनेलोसिस - बॅक्टेरियातील अतिसार आणि कमी अंडी उत्पादन.",
+          c_duck_p2:"१. डक व्हायरल एन्टरिटिस (DVE) - अचानक मृत्यू, अतिसार आणि अशक्तपणा कारणीभूत; अत्यंत संसर्गजन्य.<br>२. बोटुलिझम - घाणेरड्या पाण्यात किंवा कुजलेल्या अन्नात विषारी पदार्थ असल्याने पक्षाघात.<br>३. रिमेरेला संसर्ग - डोळे सुजणे, नाकातून स्त्राव आणि श्वास घेण्यास त्रास होणे.<br>४. डक प्लेग - विषाणूजन्य आजार ज्यामुळे रक्तस्त्राव होतो आणि अचानक मृत्यु होतो.<br>५. जंतांचा प्रादुर्भाव - वजन कमी होणे, वाढ कमी होणे आणि अंतर्गत जंतांमुळे होणारे अतिसार.",
+          c_fish_p1:"<b>मत्स्यपालनातील पाच पायऱ्या<br><br></b>1.ಕೊಳದ ಸಿದ್ಧತೆ: ಹೂಳೆತ್ತಿ, ಸುಣ್ಣ ಹಾಕಿ ಮತ್ತು ಕೊಟ್ಟಿಗೆ ಗೊಬ್ಬರ ಬಳಸಿ ನೀರನ್ನು ಸಿದ್ಧಪಡಿಸಿ.<br>2.ತಳಿ ಆಯ್ಕೆ: ಉತ್ತಮ ಗುಣಮಟ್ಟದ ರೋಹು, ಕಟ್ಲಾ ಮತ್ತು ಮೃಗಲ್ ಮೀನಿನ ಮರಿಗಳನ್ನು ಆರಿಸಿ.<br>3.ಮರಿ ಬಿಡುವುದು: ಬೆಳಿಗ್ಗೆ ಅಥವಾ ಸಂಜೆ ತಂಪಾದ ಸಮಯದಲ್ಲಿ ಮೀನಿನ ಮರಿಗಳನ್ನು ಕೊಳಕ್ಕೆ ಬಿಡಿ.<br>4.ಆಹಾರ: ಅಕ್ಕಿ ತೌಡು ಮತ್ತು ಹಿಂಡಿಯಂತಹ ಪೂರಕ ಆಹಾರವನ್ನು ಪ್ರತಿದಿನ ನೀಡಿ.<br>5.ಕೊಯ್ಲು: ಮೀನುಗಳು ಒಂದು ಕೆಜಿ ತೂಕ ಬಂದಾಗ ಬಲೆ ಬೀಸಿ ಹಿಡಿದು ಮಾರಾಟ ಮಾಡಿ..",
+          c_flor_p1:"<b>फुलशेतीचे पाच टप्पे </b><br><br>१.मातीची तयारी: सैल, सुपीक मातीसाठी जमीन नांगरून शेणात मिसळा.<br>२.लागवड: उंच बेड किंवा कड्यांमध्ये बियाणे पेरा किंवा रोपे (झेंडू/गुलाब) लावा.<br>३.सिंचन: माती सतत ओलसर ठेवण्यासाठी ठिबक किंवा हलके कालवे सिंचन वापरा.<br>४.काळजी: वाढ वाढवण्यासाठी लवकर येणाऱ्या कळ्या चिमटा आणि सेंद्रिय कीटकनाशके (कडुलिंबाचे तेल) फवारणी करा.<br>५.उखडणे: बाजारपेठेसाठी ताजी राहण्यासाठी सकाळी लवकर फुले काढा.",
+          c_manure_p1:"<b>खत तयार करण्याचे पाच टप्पे</b><br><br>१. नांगरणी: ट्रॅक्टर किंवा बैलांच्या साहाय्याने माती हलवावी.<br>२.खत: माती सुपीक बनवण्यासाठी शेणखत किंवा कंपोस्ट घाला.<br>३.पेरणी: पहिल्या पावसानंतर योग्य खोलीवर दर्जेदार बियाणे लावा.<br>४.सिंचन: ठिबक, कालवा किंवा पावसाळ्याच्या पावसाचा वापर करून शेतात पाणी द्या.<br>५.कापणी: पिकलेले पीक कापून धान्य गोळा करण्यासाठी त्याची मळणी करा.",
+           c_oil_p1:"<b>तेल काढण्याचे पाच टप्पे</b><br><br>१.वाळवणे: सर्व ओलावा काढून टाकण्यासाठी बियाणे (मोहरी/भुईमूग) उन्हात वाळवा.<br>२.चिरडणे: लाकडी किंवा दगडी गणी/चेक्कूमध्ये बियाणे खायला द्या.<br>३.दाबणे: तेल निरोगी ठेवण्यासाठी कमी तापमानात हळूहळू काढा.<br>४.बसवणे: तेल एका दिवसासाठी सोडा जेणेकरून धूळ तळाशी बसेल.<br>५.बसवणे: स्वच्छ कापडातून गाळून बाटल्यांमध्ये ओता.",
+          c_jaggery_p1:"<b>गुळ बनवण्याचे पाच टप्पे </b><br><br>१.क्रशिंग: क्रशर वापरून ताज्या उसाचा रस काढा.<br>२.स्वच्छता: नैसर्गिक क्लींजर्स वापरून रस उकळवा आणि घाण काढून टाका.<br>३.उकळणे: रस जाड पेस्टमध्ये बदलेपर्यंत उच्च आचेवर शिजवा.<br>४.ढवळणे: पोत मिळविण्यासाठी ढवळत असताना पेस्ट एका खड्ड्यात थंड करा.<br>५.मोल्डिंग: घट्ट गुळात बदलण्यासाठी ब्लॉक्स किंवा साच्यात घाला.",
+         c_agro_p1:"<b>कृषीवनीकरणातील पाचवे पाऊल</b><br><br>१. निवड: तुमच्या मातीला अनुकूल असलेली कडुलिंब, साग किंवा बाबूल सारखी स्थानिक झाडे निवडा.<br>२. लेआउट: ओळींमध्ये (गल्लीत पीक) किंवा कडांवर झाडे लावा जेणेकरून पिके घेता येतील.<br>३. लागवड: पावसाळ्यात हंगामी पिके (हळद किंवा हरभरा सारखी) असलेली झाडे लावा.<br>४. देखभाल: सूर्यप्रकाश जमिनीवरील पिकांपर्यंत पोहोचेल याची खात्री करण्यासाठी झाडांच्या फांद्या नियमितपणे छाटणी करा.<br>५. कापणी: दरवर्षी हंगामी अन्न पिके आणि नफ्यासाठी ८-१० वर्षांनी लाकडाची झाडे काढा.",
+          c_pottery_p1:"<b>मातीकामात पाचवे पाऊल</b><br><br>१.माती: माती स्वच्छ करा, भिजवा आणि मळून घ्या जेणेकरून ती गुळगुळीत होईल.<br>२.चाक: पारंपारिक मॅन्युअल किंवा इलेक्ट्रिक व्हीलवर भांडे आकार द्या.<br>३.मारणे: भिंती पातळ करण्यासाठी आणि आकार परिपूर्ण करण्यासाठी पॅडल वापरा.<br>४.वाळवणे: भेगा टाळण्यासाठी भांडी सावलीत हवेत वाळवा.<br>५.गोळीबार: मजबुतीसाठी लाकडाच्या भट्टीत (भट्टी) बेक करा.",
+          c_seri_p1:"<b>रेशीम शेतीतील पाचवे पाऊल</b><br><br>१.तुती: रेशीम किड्यांना ताजी पाने मिळावीत म्हणून तुतीची झाडे लावा.<br>२.संगोपन: २५-३० दिवसांसाठी ट्रेवर चिरलेली पाने उबवा आणि खायला द्या.<br>३.माउंटिंग: प्रौढ किड्यांना कातायला सुरुवात करण्यासाठी बांबूच्या चौकटीत (चंद्रिका) हलवा.<br>४.कातणे: किडे ३ दिवसांत रेशमी धागा तयार करण्यासाठी रेशमी धागा स्रावित करतात.<br>५.कातणी: कोश गोळा करा आणि त्यांना वाफवून रेशीम तयार करा.",
+
+            video_cow: "hhttps://www.youtube.com/embed/If3xW-xwOa8?si=DjaVaEyoFWn417aR",
+           video_buffalo:"https://www.youtube.com/embed/NJiafi5foqg?si=FD98wICrBBrDsr_6",//mastitis
+           video_goat:"https://www.youtube.com/embed/3ezwcyoKdEk?si=w_qJjebf5xSVjyOE",//Enterotoxemia
+           video_chicken:"https://www.youtube.com/embed/PlFQGp090Jg?si=9SAI-hxOIktPvWox",
+           video_duck: "https://www.youtube.com/embed/lcqwWYF7VU4?si=WrqcrZMHTR2UydIQ",
+           video_sheep:"https://www.youtube.com/embed/uu3bKqDv9oE?si=CouoRBW7d2cdxpNd",
+           video_pig:"https://www.youtube.com/embed/ntiebcnm2YY?si=R-mMh6BrX8HsVIJV",
+           video_flor:"https://www.youtube.com/embed/2ACJUBqc1hQ?si=3IOBR-iN6oHeV4_o",//marigold disease 
+           video_fish:"https://www.youtube.com/embed/6PsPWrOthuk?si=PsB8rAZhVtIg4rz9",
+           video_manure:"https://www.youtube.com/embed/kwEL-JriZy8?si=2Nd_VfMMmokvt-Rr",//Farmyard manure
+            video_oil:"https://www.youtube.com/embed/m5eDhmh6eDE?si=DFEO3nNCEZtavnUX",//coconut
+            video_jaggery:"https://www.youtube.com/embed/AMFrOVs3vO8?si=1FZp2KQyElegnFmZ",// how to work
+            video_agro:"https://www.youtube.com/embed/rjl3P1Uo5XM?si=dldT8Vw6JvZk4yhQ",//Agroforesty
+            video_pottery:"https://www.youtube.com/embed/wuoDoZtgx_o?si=x6EIUL5dyqqcie_9",
+           video_seri:"https://www.youtube.com/embed/ZwhObuNSkgQ?si=TWa_YK3lYXZRzDvU",//silkworm rearing 
+        },
+
+        "ml-IN": {
+            mainTitle: "മൃഗസംരക്ഷണവും മറ്റുള്ളവയും", backBtn: "← തിരികെ", backToMain: "← പ്രധാന മെനുവിലേക്ക് തിരികെ", 
+            'Animal Husbandry': "മൃഗസംരക്ഷണം", 'Poultry Farming': "കോഴി വളർത്തൽ", 'Fish Farming': "മത്സ്യ കൃഷി", 'floriculture': "പുഷ്പകൃഷി", 'Manure Making': "വളം നിർമ്മാണം", 'Oil Extraction': "എണ്ണ വേർതിരിച്ചെടുക്കൽ", 'Jaggery Making': "ശർക്കര നിർമ്മാണം", 'Milling': "മില്ലിംഗ്", 'Agroforestry': "കൃഷി വനം", 'Sericulture': "പട്ടുനൂൽ കൃഷി", 'Pottery': "കളിമൺ പാത്രങ്ങൾ", 'Lac Cultivation': "ലാക്ക് കൃഷി",
+            'Cow': "പശു", 'Buffalo': "എരുമ", 'Goat': "ആട്", 'Pig': "പന്നി", 'Sheep': "ചെമ്മരിയാട്", 'Chicken': "കോഴി", 'Duck': "താറാവ്",
+
+
+            t_cow: 'മൃഗസംരക്ഷണം → പശുവിൻ്റെ ആരോഗ്യം',
+             t_buffalo:"മൃഗസംരക്ഷണം -> എരുമയുടെ ആരോഗ്യം",
+            t_pig:"മൃഗസംരക്ഷണം -> പന്നി ആരോഗ്യം",
+            t_sheep:"മൃഗസംരക്ഷണം -> ആടുകളുടെ ആരോഗ്യം",
+           t_chicken:"കോഴി വളർത്തൽ ->കോഴി ആരോഗ്യം ",
+             t_duck: 'കോഴി വളർത്തൽ → താറാവ് വളർത്തൽ', 
+             t_fish:"മത്സ്യകൃഷി->മത്സ്യകൃഷി",
+             t_flor:"ഫ്ലോറികൾച്ചർ->ഫ്ലോർ കൃഷി",
+             t_manure:"chemical വള നിർമ്മാണം -> കമ്പോസ്റ്റിംഗ്",
+             t_oil:"तेल काढणे ->पेट्रोलियम काढणे",
+             t_jaggery:"കരി ഉണ്ടാക്കൽ -> ഗുർ",
+             t_agro:"അഗ്രോഫോറസ്ട്രി -> ഫാം ഫോറസ്ട്രി",
+             t_seri: 'സെറികൾച്ചർ -> സിൽക്ക് കൃഷി',
+             t_pottery:"pottery ->ceramics",
+
+
+
+
+            c_cow_p1: '<b>5 സാധാരണ ആരോഗ്യ പ്രശ്‌നങ്ങളും ചികിത്സകളും:</b>',
+           c_buffalo_p1:"<b>പ്രധാനപ്പെട്ട 5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പ്രതിവിധികളും:</b>",
+           c_goat_p1:"<b>പ്രധാനപ്പെട്ട 5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പ്രതിവിധികളും:</b>",
+            c_pig_p1:"<b>പ്രധാനപ്പെട്ട 5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പ്രതിവിധികളും:</b>",
+            c_sheep_p1:"<b>പ്രധാനപ്പെട്ട 5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പ്രതിവിധികളും:</b>",
+           c_chicken_p2:"<b>5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പരിഹാരങ്ങളും</b>",
+            c_duck_p2:"<b>5 സാധാരണ ആരോഗ്യ പ്രശ്നങ്ങളും പരിഹാരങ്ങളും</b>",
+
+
+
+           c_cow_p2: "1. അകിടുവീക്കം: ആൻ്റിബയോട്ടിക്കുകളും ശരിയായ ശുചിത്വവും.<br> 2. എഫ്എംഡി: പതിവായ വാക്സിനേഷൻ. <br>3. വീക്കം: അമിതമായി പച്ചപ്പുല്ല് നൽകുന്നത് ഒഴിവാക്കുക.<br> 4. പാൽ പനി: കാൽസ്യം നൽകുക. <br>5. ചെള്ളുകൾ/പരാന്നഭോജികൾ: പതിവായ വിരമരുന്ന് നൽകലും വൃത്തിയുള്ള ഷെഡും.",
+           c_buffalo_p2:"1.മാസ്റ്റിറ്റിസ്: പാൽ കുറയ്ക്കുന്ന അകിട് അണുബാധ.<br>2.FMD: പനിയും വായ്പ്പുണ്ണും; പാൽ പെട്ടെന്ന് കുറയുന<br>3.HS: ഉയർന്ന പനിയും വീക്കവും; വാർഷിക വാക്സിൻ ആവശ്യമാണ്.<br>4.വയറുവേദന: പെട്ടെന്ന് വീക്കം ഉണ്ടാക്കുന്ന വയറ്റിലെ വാതകം.<br>5.പരാദങ്ങൾ: ബലഹീനതയ്ക്കും പാൽ കുറയുന്നതിനും കാരണമാകുന്ന പുഴുക്കൾ/പേൻ.",
+           c_goat_p2:"1.പിപിആർ (ആട് പ്ലേഗ്): പനി, വയറിളക്കം, വായ്പ്പുണ്ണ്; വളരെ പകർച്ചവ്യാധി.<br>2.കാൽ ചെംചീയൽ: കുളമ്പിലെ അണുബാധ വീക്കത്തിനും മുടന്തനും കാരണമാകുന്നു.<br>3.ന്യുമോണിയ: ചുമ, പനി, ശ്വസിക്കാൻ ബുദ്ധിമുട്ട്.<br>4.ആന്തരിക പരാദങ്ങൾ: ശരീരഭാരം കുറയ്ക്കുന്നതിനും വിളർച്ചയ്ക്കും കാരണമാകുന്ന വിരകൾ.<br>5.മാസ്റ്റിറ്റിസ്: അകിടിലെ അണുബാധ പാൽ കുറയ്ക്കുകയും വേദന ഉണ്ടാക്കുകയും ചെയ്യുന്നു.",
+           c_pig_p2:"1.പന്നിപ്പനി (CSF/ASF): കടുത്ത പനി, രക്തസ്രാവം, പെട്ടെന്നുള്ള മരണം.<br>2.ന്യുമോണിയ: ചുമ, പനി, വേഗത്തിലുള്ളതോ ശ്വസിക്കാൻ ബുദ്ധിമുട്ടുള്ളതോ.<br>3.ഗ്യാസ്ട്രോഎന്റൈറ്റിസ്: വയറിളക്കവും നിർജ്ജലീകരണവും, പന്നിക്കുട്ടികളിൽ സാധാരണമാണ്.<br>4.പരാന്നഭോജികൾ: ശരീരഭാരം കുറയ്ക്കാനും വളർച്ച കുറയാനും കാരണമാകുന്ന വിരകൾ.<br>5.കാൽ, വായ് പ്രശ്നങ്ങൾ: മുടന്തൽ, വായ് വ്രണം, ഭക്ഷണം കഴിക്കുന്നതിന്റെ കുറവ്.",
+           c_sheep_p2:"1.പിപിആർ (ആടുകളുടെ പ്ലേഗ്): കടുത്ത പനി, വയറിളക്കം, വായിൽ നിന്നും മൂക്കിൽ നിന്നും സ്രവങ്ങൾ.<br>2.കാൽ ചെംചീയൽ: കുളമ്പിലെ അണുബാധ, മുടന്തനും ദുർഗന്ധവും ഉണ്ടാക്കുന്നു.<br>3.ന്യുമോണിയ: ചുമ, പനി, ശ്വസിക്കാൻ ബുദ്ധിമുട്ട്.<br>4/ആന്തരിക പരാന്നഭോജികൾ: വിളർച്ച, ബലഹീനത, ശരീരഭാരം കുറയ്ക്കൽ എന്നിവയ്ക്ക് കാരണമാകുന്ന വിരകൾ.<br>5.മാസ്റ്റിറ്റിസ്: അകിട് വീർക്കുന്നതിനും പാൽ കുറയുന്നതിനും കാരണമാകുന്ന അകിട് അണുബാധ.",
+          c_chicken_p2:"1. ന്യൂകാസിൽ രോഗം - വൈറൽ, വേഗത്തിൽ പടരുന്ന, ശ്വസന പ്രശ്നങ്ങൾക്കും പെട്ടെന്നുള്ള മരണത്തിനും കാരണമാകുന്നു.<br>2. ഫൗൾ പോക്സ് - വൈറസിൽ നിന്നുള്ള ചർമ്മത്തിലെ പൊറ്റകൾ; കൊതുകുകൾ വഴി പടരുന്നു.<br>3. കോസിഡിയോസിസ് - കുടലിലെ പരാദങ്ങൾ മൂലമുണ്ടാകുന്ന രക്തരൂക്ഷിതമായ വയറിളക്കം.<br>4. മാരെക്സ് രോഗം - പക്ഷാഘാതവും ഭാരക്കുറവും; വൈറൽ.<br>5. സാൽമൊണെല്ലോസിസ് - ബാക്ടീരിയ വയറിളക്കവും കുറഞ്ഞ മുട്ട ഉൽപാദനവും.",
+          c_chicken_p2:"1. ന്യൂകാസിൽ രോഗം - വൈറൽ, വേഗത്തിൽ പടരുന്ന, ശ്വസന പ്രശ്നങ്ങൾക്കും പെട്ടെന്നുള്ള മരണത്തിനും കാരണമാകുന്നു.<br>2. ഫൗൾ പോക്സ് - വൈറസിൽ നിന്നുള്ള ചർമ്മത്തിലെ പൊറ്റകൾ; കൊതുകുകൾ വഴി പടരുന്നു.<br>3. കോസിഡിയോസിസ് - കുടലിലെ പരാദങ്ങൾ മൂലമുണ്ടാകുന്ന രക്തരൂക്ഷിതമായ വയറിളക്കം.<br>4. മാരെക്സ് രോഗം - പക്ഷാഘാതവും ഭാരക്കുറവും; വൈറൽ.<br>5. സാൽമൊണെല്ലോസിസ് - ബാക്ടീരിയ വയറിളക്കവും കുറഞ്ഞ മുട്ട ഉൽപാദനവും.",
+          c_duck_p2:"1. ഡക്ക് വൈറൽ എന്റൈറ്റിസ് (DVE) – പെട്ടെന്നുള്ള മരണം, വയറിളക്കം, ബലഹീനത എന്നിവയ്ക്ക് കാരണമാകുന്നു; വളരെ പകർച്ചവ്യാധി.<br>2. ബോട്ടുലിസം – വൃത്തികെട്ട വെള്ളത്തിലോ ചീഞ്ഞ തീറ്റയിലോ ഉള്ള വിഷവസ്തു മൂലമുണ്ടാകുന്ന പക്ഷാഘാതം.<br>3. റീമെറെല്ല അണുബാധ – വീർത്ത കണ്ണുകൾ, മൂക്കൊലിപ്പ്, ശ്വസന പ്രശ്നങ്ങൾ.<br>4. താറാവ് പ്ലേഗ് – രക്തസ്രാവത്തിനും പെട്ടെന്നുള്ള മരണത്തിനും കാരണമാകുന്ന വൈറൽ രോഗം.<br>5. വിരബാധ – ശരീരഭാരം കുറയ്ക്കൽ, വളർച്ചക്കുറവ്, ആന്തരിക വിരകൾ മൂലമുള്ള വയറിളക്കം.",
+            c_fish_p1:"<b>മത്സ്യകൃഷിയിലെ അഞ്ച് ഘട്ടങ്ങൾ<br><br></b>1.കുളം ഒരുക്കൽ: കുളം വൃത്തിയാക്കി കുമ്മായവും വളവും ചേർത്ത് വെള്ളം തയ്യാറാക്കുക.<br>2.മത്സ്യക്കുഞ്ഞുങ്ങളെ തിരഞ്ഞെടുക്കൽ: രോഹു, കട്ല, മൃഗാൽ തുടങ്ങിയ ഇനങ്ങളെ തിരഞ്ഞെടുക്കുക.<br>3.നിക്ഷേപിക്കൽ: രാവിലെയും വൈകുന്നേരവും തണുപ്പുള്ള സമയത്ത് മീൻ കുഞ്ഞുങ്ങളെ കുളത്തിലിറക്കുക.<br>4.തീറ്റ നൽകൽ: തവിടും പിണ്ണാക്കും കലർത്തിയ തീറ്റകൾ ദിവസവും നൽകുക.<br>5.വിളവെടുപ്പ്: മീനുകൾക്ക് ഏകദേശം ഒരു കിലോ തൂക്കമാകുമ്പോൾ വലയിട്ട് പിടിക്കുക..",
+            c_flor_p1:"<b>പുഷ്പകൃഷിയിലെ അഞ്ച് ഘട്ടങ്ങൾ </b><br><br>1. മണ്ണ് തയ്യാറാക്കൽ: അയഞ്ഞതും ഫലഭൂയിഷ്ഠവുമായ മണ്ണിനായി നിലം ഉഴുതുമറിച്ച് ചാണകവുമായി കലർത്തുക.<br>2. നടീൽ: ഉയർത്തിയ തടങ്ങളിലോ വരമ്പുകളിലോ വിത്ത് വിതയ്ക്കുകയോ തൈകൾ (ജലമഴ/റോസ്) നടുകയോ ചെയ്യുക.<br>3. ജലസേചനം: മണ്ണിൽ സ്ഥിരമായി ഈർപ്പം നിലനിർത്താൻ തുള്ളിമരുന്ന് അല്ലെങ്കിൽ നേരിയ കനാൽ ജലസേചനം ഉപയോഗിക്കുക.<br>4. പരിചരണം: വളർച്ച വർദ്ധിപ്പിക്കുന്നതിന് നേരത്തെയുള്ള മുകുളങ്ങൾ നുള്ളിയെടുക്കുകയും ജൈവ കീടനാശിനികൾ (വേപ്പെണ്ണ) തളിക്കുകയും ചെയ്യുക.<br>5. പറിച്ചെടുക്കൽ: വിപണിയിൽ പുതുമ നിലനിർത്താൻ അതിരാവിലെ പൂക്കൾ വിളവെടുക്കുക.",
+            c_manure_p1:"<b>അഞ്ച് ഘട്ട വളപ്രയോഗം</b><br><br>1. ഉഴുകൽ: ട്രാക്ടർ അല്ലെങ്കിൽ കാളകളെ ഉപയോഗിച്ച് മണ്ണ് വായുസഞ്ചാരമുള്ളതാക്കുക.<br>2. വളപ്രയോഗം: മണ്ണ് ഫലഭൂയിഷ്ഠമാക്കാൻ ചാണകമോ കമ്പോസ്റ്റോ ചേർക്കുക.<br>3. വിതയ്ക്കൽ: ആദ്യ മഴയ്ക്ക് ശേഷം ശരിയായ ആഴത്തിൽ ഗുണനിലവാരമുള്ള വിത്തുകൾ നടുക.<br>4. ജലസേചനം: തുള്ളി, കനാൽ അല്ലെങ്കിൽ മൺസൂൺ മഴ ഉപയോഗിച്ച് വയലുകളിൽ വെള്ളം നനയ്ക്കുക<br>5. വിളവെടുപ്പ്: പാകമായ വിള മുറിച്ച് ധാന്യം ശേഖരിക്കാൻ മെതിക്കുക.",
+             c_oil_p1:"<b>എണ്ണ എടുക്കുന്നതിൽ അഞ്ച് ഘട്ടങ്ങൾ</b><br><br>1.ഉണക്കൽ: വിത്തുകൾ (കടുക്/നിലക്കടല) എല്ലാ ഈർപ്പവും നീക്കം ചെയ്യാൻ വെയിലത്ത് ഉണക്കുക.<br>2.പൊടിക്കൽ: വിത്തുകൾ മരത്തിലോ കല്ലിലോ ഉള്ള ഘാനി/ചെക്കുവിലേക്ക് നൽകുക.<br>3.അമർത്തൽ: എണ്ണ ആരോഗ്യകരമായി നിലനിർത്താൻ കുറഞ്ഞ താപനിലയിൽ പതുക്കെ വേർതിരിച്ചെടുക്കുക.<br>4.ഉണക്കൽ: പൊടി അടിയിൽ അടിഞ്ഞുകൂടുന്ന തരത്തിൽ എണ്ണ ഒരു ദിവസം വയ്ക്കുക.<br>5.കുപ്പിയിലിടൽ: വൃത്തിയുള്ള തുണിയിലൂടെ ഫിൽട്ടർ ചെയ്ത് കുപ്പികളിലേക്ക് ഒഴിക്കുക.",
+          c_jaggery_p1:"<b>ശർക്കര ഉണ്ടാക്കുന്നതിൽ അഞ്ച് ഘട്ടങ്ങൾ </b><br><br>1.ചതയ്ക്കൽ: പുതിയ കരിമ്പിൽ നിന്ന് ക്രഷർ ഉപയോഗിച്ച് നീര് എടുക്കുക.<br>2.വൃത്തിയാക്കൽ: നീര് തിളപ്പിച്ച് പ്രകൃതിദത്ത ക്ലെൻസറുകൾ ഉപയോഗിച്ച് നീര് നീക്കം ചെയ്യുക.<br>3.തിളപ്പിക്കൽ: നീര് കട്ടിയുള്ള പേസ്റ്റായി മാറുന്നതുവരെ ഉയർന്ന തീയിൽ വേവിക്കുക.<br>4.ഇളക്കൽ: ഘടന ലഭിക്കാൻ ഒരു കുഴിയിൽ ഇളക്കുമ്പോൾ പേസ്റ്റ് തണുപ്പിക്കുക.<br>5.മോൾഡിംഗ്: കട്ടിയുള്ള ശർക്കരയായി കഠിനമാക്കാൻ ബ്ലോക്കുകളിലേക്കോ അച്ചുകളിലേക്കോ ഒഴിക്കുക.",
+          c_agro_p1:"<b>കാർഷിക വനവൽക്കരണത്തിലെ അഞ്ച് ഘട്ടങ്ങൾ</b><br><br>1. തിരഞ്ഞെടുപ്പ്: വേപ്പ്, തേക്ക്, ബാബുൽ തുടങ്ങിയ നിങ്ങളുടെ മണ്ണിന് അനുയോജ്യമായ നാടൻ മരങ്ങൾ തിരഞ്ഞെടുക്കുക.<br>2. ലേഔട്ട്: വരികളിലായി (അള്ളി വിള) അല്ലെങ്കിൽ അതിരുകളിലായി വിളകൾ നടുന്നതിന് ഇടയിലുള്ള മരങ്ങൾ.<br>3. നടീൽ: മഴക്കാലത്ത് സീസണൽ വിളകൾ (മഞ്ഞൾ അല്ലെങ്കിൽ പയർ പോലുള്ളവ) നടുക.<br>4. പരിപാലനം: സൂര്യപ്രകാശം നിലത്തെ വിളകളിൽ എത്തുന്നുവെന്ന് ഉറപ്പാക്കാൻ മരക്കൊമ്പുകൾ പതിവായി വെട്ടിമാറ്റുക.<br>5. വിളവെടുപ്പ്: ലാഭത്തിനായി സീസണൽ ഭക്ഷ്യവിളകൾ വർഷം തോറും വിളവെടുക്കുക, 8-10 വർഷത്തിനുശേഷം മരങ്ങൾ വിളവെടുക്കുക.",
+         c_pottery_p1:"<b>അഞ്ച് സ്റ്റെപ്പ് മൺപാത്രങ്ങൾ</b><br><br>1.കളിമണ്ണ്: കളിമണ്ണ് വൃത്തിയാക്കി, നനച്ച്, കുഴച്ച് മിനുസപ്പെടുത്തുക.<br>2.ചക്രം: പരമ്പരാഗത മാനുവൽ അല്ലെങ്കിൽ ഇലക്ട്രിക് വീലിൽ പാത്രം രൂപപ്പെടുത്തുക.<br>3.അടിക്കൽ: ചുവരുകൾ നേർത്തതാക്കാനും ആകൃതി പൂർണമാക്കാനും ഒരു പാഡിൽ ഉപയോഗിക്കുക.<br>4.ഉണക്കൽ: വിള്ളലുകൾ ഒഴിവാക്കാൻ പാത്രങ്ങൾ തണലിൽ വായുവിൽ ഉണക്കുക.<br>5.തീയിടൽ: ശക്തിക്കായി വിറകുകൊണ്ടുള്ള ഒരു ചൂളയിൽ (ഭട്ടി) ചുടേണം.",
+          c_seri_p1:"<b>പുഴുക്കൃഷിയിലെ അഞ്ച് ഘട്ടങ്ങൾ</b><br><br>1. മൾബറി: പട്ടുനൂൽപ്പുഴുക്കൾക്ക് പുതിയ ഇലകൾ നൽകാൻ മൾബറി മരങ്ങൾ വളർത്തുക.<br>2. വളർത്തൽ: പട്ടുനൂൽപ്പുഴുക്കളെ അരിഞ്ഞ ഇലകൾ 25-30 ദിവസത്തേക്ക് വിരിഞ്ഞ് തീറ്റിക്കുക.<br>3. കൂട്ടിയിടൽ: വളർന്ന പുഴുക്കളെ മുള ഫ്രെയിമുകളിലേക്ക് (ചന്ദ്രിക) നീക്കി കറങ്ങാൻ തുടങ്ങുക.<br>4. നൂൽക്കൽ: പുഴുക്കൾ സിൽക്ക് നൂൽ സ്രവിക്കുകയും 3 ദിവസത്തിനുള്ളിൽ ഒരു സംരക്ഷിത കൊക്കൂൺ രൂപപ്പെടുത്തുകയും ചെയ്യുന്നു.<br>5. വിളവെടുപ്പ്: കൊക്കൂണുകൾ ശേഖരിച്ച് ആവിയിൽ ആവിയിൽ ആവിയിൽ ആവിയിൽ ആക്കുക. പട്ടുനൂൽ പുതയ്ക്കാൻ തയ്യാറാക്കുക.",
+
+             video_cow: "https://www.youtube.com/embed/TO23cCApOrc?si=DOKHVRrnzbWEADSd",
+            video_buffalo:"https://www.youtube.com/embed/1DQBFvrg5pg?si=qZsXGmU19m7K9BO3" ,//mastitis
+            video_sheep:"https://www.youtube.com/embed/lgNANYi0qZ0?si=eG51g6pilRX2Q4qT",//foot rot
+            video_goat:"https://www.youtube.com/embed/FgrwrAA9zuI?si=AjGyNX7goXYndMCf",
+            video_chicken:"https://www.youtube.com/embed/5cyAcrWYaYM?si=JsSptRZTnJ0NCDuQ",
+             video_duck: "https://www.youtube.com/embed/yw8ZXH1NHQg?si=Kn6DeBoP6_2VDmoq",
+             video_fish:"https://www.youtube.com/embed/RyDeAQVO_Do?si=e_N-fD2d_UTZJsTe",//fungal infection
+             video_manure:"https://www.youtube.com/embed/39hroX8cEjg?si=s5arlhdO6ToVZjma",//Vermicompost
+             video_oil:"https://www.youtube.com/embed/t1cnh6VMBus?si=z6LH0j-hrCiUbDyo",//Extraction method Cold press
+             video_jaggery:"https://www.youtube.com/embed/f8rCYlZNrac?si=gndgv8IyyukkefU",//how to work
+             video_seri:"https://www.youtube.com/embed/onWzLFkYIGs?si=Zet2tl7i-y_61P5T",//Silkworm rearing 
+              video_seri:"https://www.youtube.com/embed/aRKg1HoYhzg?si=H_nINgD8IPSn7Y64",
+              video_agro:"https://www.youtube.com/embed/61jZpXj-HZk?si=Vw9cpYRtDyKFzqID",
+              video_jaggery:"https://www.youtube.com/embed/AD-RuY6qdnc?si=4krgvn7IbhsrlDZg",
+              video_manure:"https://www.youtube.com/embed/GK36moo5ugQ?si=MzDJPvpeLVashH4w",
+              video_flor:"https://www.youtube.com/embed/rMjOYc6Ypk?si=pp9IuGT3xqXxBCjs",
+
+        },
+
+
+        "pa-IN": {
+            mainTitle: "ਪਸ਼ੂ ਪਾਲਣ ਅਤੇ   ਹੋਰ", backBtn: "← ਵਾਪਸ", backToMain: "← ਮੁੱਖ ਮੀਨੂ 'ਤੇ ਵਾਪਸ ਜਾਓ", 
+            'Animal Husbandry': "ਪਸ਼ੂ ਪਾਲਣ", 'Poultry Farming': "ਮੁਰਗੀ ਪਾਲਣ", 'Fish Farming': "ਮੱਛੀ ਪਾਲਣ", 'floriculture': "ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ", 'Manure Making': "ਖਾਦ ਬਣਾਉਣਾ", 'Oil Extraction': "ਤੇਲ ਕੱਢਣਾ", 'Jaggery Making': "ਗੁੜ ਬਣਾਉਣਾ", 'Milling': "ਪੀਸਣਾ", 'Agroforestry': "ਖੇਤੀਬਾੜੀ ਵਣਕਰਨ", 'Sericulture': "ਰੇਸ਼ਮ ਉਦਯੋਗ", 'Pottery': "ਮਿੱਟੀ ਦੇ ਬਰਤਨ", 'Lac Cultivation': "ਲਾਖ ਦੀ ਖੇਤੀ",
+            'Cow': "ਗਾਂ", 'Buffalo': "ਮੱਝ", 'Goat': "ਬੱਕਰੀ", 'Pig': "ਸੂਰ", 'Sheep': "ਭੇਡ", 'Chicken': "ਮੁਰਗੀ", 'Duck': "ਬਤਖ",
+
+            t_cow: '<b>ਪਸ਼ੂ ਪਾਲਣ → ਗਾਂ ਦੀ ਸਿਹਤ</b>',
+            t_buffalo:"ਪਸ਼ੂ ਪਾਲਣ -> ਮੱਝਾਂ ਦੀ ਸਿਹਤ",
+            t_goat:"ਪਸ਼ੂ ਪਾਲਣ -> ਬੱਕਰੀ ਦੀ ਸਿਹਤ",
+            t_pig:"ਪਸ਼ੂ ਪਾਲਣ -> ਸੂਰ ਦੀ ਸਿਹਤ",
+            t_sheep:"ਪਸ਼ੂ ਪਾਲਣ-> ਭੇਡਾਂ ਦੀ ਸਿਹਤ",
+            t_chicken:"ਪੋਲਟਰੀ ਫਾਰਮਿੰਗ ->ਚਿਕਨ ਸਿਹਤ ",
+            t_duck: 'ਮੁਰਗੀ ਪਾਲਣ → ਬਤਖ ਪਾਲਣ', 
+            t_fish:"ਮੱਛੀ ਪਾਲਣ-> ਮੱਛੀ ਪਾਲਣ",
+            t_flor:"ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ-> ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ",
+            t_manure:"ਖਾਦ ਬਣਾਉਣਾ -> ਖਾਦ ਬਣਾਉਣਾ",
+            t_oil:"ਤੇਲ ਕੱਢਣਾ ->ਪੈਟਰੋਲੀਅਮ ਕੱਢਣਾ",
+            t_jaggery:"ਗੁੜ ਬਣਾਉਣਾ -> ਗੁੜ",
+            t_agro:"ਖੇਤੀ ਜੰਗਲਾਤ -> ਖੇਤ ਜੰਗਲਾਤ",
+            t_seri: 'ਰੇਸ਼ਮ ਦੀ ਖੇਤੀ -> ਰੇਸ਼ਮ ਦੀ ਖੇਤੀ',
+            t_pottery:"ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ-> ਸਿਰੇਮਿਕਸ",
+
+
+
+
+            c_cow_p1: '<b>5 ਆਮ ਸਿਹਤ ਸਮੱਸਿਆਵਾਂ ਅਤੇ ਇਲਾਜ:</b>', 
+           c_buffalo_p1:"<b>ਸਿਹਤ ਦੇ 5 ਆਮ ਮੁੱਦੇ ਅਤੇ ਇਲਾਜ:</b>",
+            c_goat_p1:"<b>ਸਿਹਤ ਦੇ 5 ਆਮ ਮੁੱਦੇ ਅਤੇ ਇਲਾਜ:</b>",
+             c_pig_p1:"<b>ਸਿਹਤ ਦੇ 5 ਆਮ ਮੁੱਦੇ ਅਤੇ ਇਲਾਜ:</b>",
+             c_sheep_p1:"<b>ਸਿਹਤ ਦੇ 5 ਆਮ ਮੁੱਦੇ ਅਤੇ ਇਲਾਜ:</b>",
+           c_chicken_p1:"<b>5 ਆਮ ਸਿਹਤ ਸਮੱਸਿਆਵਾਂ ਅਤੇ ਇਲਾਜ</b>",
+             c_duck_p1:"<b>5 ਆਮ ਸਿਹਤ ਸਮੱਸਿਆਵਾਂ ਅਤੇ ਇਲਾਜ</b>",
+             c_fish_p1:"<b>ਸਿਖਰਲੀਆਂ 5 ਆਮ ਸਿਹਤ ਸਮੱਸਿਆਵਾਂ ਅਤੇ ਇਲਾਜ</b>",
+
+
+
+
+         c_cow_p2: '1. ਮਾਸਟਾਈਟਸ: ਐਂਟੀਬਾਇਓਟਿਕਸ ਅਤੇ ਸਹੀ ਸਫਾਈ।<br> 2. ਐਫਐਮਡੀ: ਨਿਯਮਤ ਟੀਕਾਕਰਨ।<br> 3. ਪੇਟ ਫੁੱਲਣਾ: ਜ਼ਿਆਦਾ ਹਰਾ ਚਾਰਾ ਦੇਣ ਤੋਂ ਪਰਹੇਜ਼ ਕਰੋ।<br> 4. ਦੁੱਧ ਬੁਖਾਰ: ਕੈਲਸ਼ੀਅਮ ਦਿਓ।<br> 5. ਚਿੱਚੜ/ਪਰਜੀਵੀ: ਨਿਯਮਤ ਕੀੜੇਮਾਰ ਅਤੇ ਸਾਫ਼ ਸ਼ੈੱਡ। ',
+       c_buffalo_p2:"1.ਮਾਸਟਾਈਟਸ: ਥਣਾਂ ਦੀ ਲਾਗ ਜੋ ਦੁੱਧ ਨੂੰ ਘਟਾਉਂਦੀ ਹੈ।<br>2.FMD: ਬੁਖਾਰ ਅਤੇ ਮੂੰਹ ਵਿੱਚ ਜ਼ਖਮ; ਦੁੱਧ ਅਚਾਨਕ ਡਿੱਗਦਾ ਹੈ।<br>3.HS: ਤੇਜ਼ ਬੁਖਾਰ ਅਤੇ ਸੋਜ; ਸਾਲਾਨਾ ਟੀਕੇ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ।<br>4.ਫੁੱਲਣਾ: ਪੇਟ ਵਿੱਚ ਗੈਸ ਕਾਰਨ ਅਚਾਨਕ ਸੋਜ।<br>5.ਪਰਜੀਵੀ: ਕੀੜੇ/ਜੂੰਆਂ ਕਮਜ਼ੋਰੀ ਅਤੇ ਘੱਟ ਦੁੱਧ ਦਾ ਕਾਰਨ ਬਣਦੀਆਂ ਹਨ।",
+        c_goat_p2:"1.ਪੀਪੀਆਰ (ਬੱਕਰੀ ਪਲੇਗ): ਬੁਖਾਰ, ਦਸਤ, ਮੂੰਹ ਦੇ ਜ਼ਖਮ; ਬਹੁਤ ਜ਼ਿਆਦਾ ਛੂਤਕਾਰੀ।<br>2.ਪੈਰ ਸੜਨ: ਖੁਰ ਦੀ ਲਾਗ ਜਿਸ ਨਾਲ ਸੋਜ ਅਤੇ ਲੰਗੜਾਪਨ ਹੁੰਦਾ ਹੈ।<br>3.ਨਮੂਨੀਆ: ਖੰਘ, ਬੁਖਾਰ, ਅਤੇ ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ।<br>4.ਅੰਦਰੂਨੀ ਪਰਜੀਵੀ: ਕੀੜੇ ਜੋ ਭਾਰ ਘਟਾਉਣ ਅਤੇ ਅਨੀਮੀਆ ਦਾ ਕਾਰਨ ਬਣਦੇ ਹਨ।<br>5.ਮਾਸਟਾਈਟਸ: ਲੇਵੇ ਦੀ ਲਾਗ ਦੁੱਧ ਨੂੰ ਘਟਾਉਂਦੀ ਹੈ ਅਤੇ ਦਰਦ ਪੈਦਾ ਕਰਦੀ ਹੈ।",
+        c_pig_p2:"1.ਸੂਰ ਬੁਖਾਰ (CSF/ASF): ਤੇਜ਼ ਬੁਖਾਰ, ਖੂਨ ਵਗਣਾ, ਅਚਾਨਕ ਮੌਤ।<br>2.ਨਮੂਨੀਆ: ਖੰਘ, ਬੁਖਾਰ, ਤੇਜ਼ ਜਾਂ ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ।<br>3.ਗੈਸਟਰੋਐਂਟਰਾਈਟਿਸ: ਦਸਤ ਅਤੇ ਡੀਹਾਈਡਰੇਸ਼ਨ, ਸੂਰਾਂ ਵਿੱਚ ਆਮ।<br>4.ਪਰਜੀਵੀ: ਕੀੜੇ ਜੋ ਭਾਰ ਘਟਾਉਣ ਅਤੇ ਮਾੜੀ ਵਿਕਾਸ ਦਾ ਕਾਰਨ ਬਣਦੇ ਹਨ।<br>5.ਪੈਰ ਅਤੇ ਮੂੰਹ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ: ਲੰਗੜਾਪਨ, ਮੂੰਹ ਵਿੱਚ ਜ਼ਖਮ, ਘੱਟ ਖੁਰਾਕ।",
+         c_sheep_p2:"1.ਪੀਪੀਆਰ (ਭੇਡਾਂ ਦੀ ਪਲੇਗ): ਤੇਜ਼ ਬੁਖਾਰ, ਦਸਤ, ਅਤੇ ਮੂੰਹ/ਨੱਕ ਵਿੱਚੋਂ ਪਾਣੀ ਵਗਣਾ।<br>2.ਪੈਰ ਸੜਨ: ਖੁਰ ਦੀ ਲਾਗ ਜਿਸ ਨਾਲ ਲੰਗੜਾਪਨ ਅਤੇ ਬਦਬੂ ਆਉਂਦੀ ਹੈ।<br>3.ਨਮੂਨੀਆ: ਖੰਘ, ਬੁਖਾਰ, ਅਤੇ ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ।<br>4.ਅੰਦਰੂਨੀ ਪਰਜੀਵੀ: ਕੀੜੇ ਜੋ ਅਨੀਮੀਆ, ਕਮਜ਼ੋਰੀ ਅਤੇ ਭਾਰ ਘਟਾਉਣ ਦਾ ਕਾਰਨ ਬਣਦੇ ਹਨ।<br>5.ਮਾਸਟਾਈਟਸ: ਥਣਾਂ ਦੀ ਲਾਗ ਜਿਸ ਨਾਲ ਥਣਾਂ ਵਿੱਚ ਸੋਜ ਅਤੇ ਦੁੱਧ ਘੱਟ ਜਾਂਦਾ ਹੈ।.",
+         c_chicken_p2:"1. ന്യൂകാസിൽ രോഗം - വൈറൽ, വേഗത്തിൽ പടരുന്ന, ശ്വസന പ്രശ്നങ്ങൾക്കും പെട്ടെന്നുള്ള മരണത്തിനും കാരണമാകുന്നു.<br>2. ഫൗൾ പോക്സ് - വൈറസിൽ നിന്നുള്ള ചർമ്മത്തിലെ പൊറ്റകൾ; കൊതുകുകൾ വഴി പടരുന്നു.<br>3. കോസിഡിയോസിസ് - കുടലിലെ പരാദങ്ങൾ മൂലമുണ്ടാകുന്ന രക്തരൂക്ഷിതമായ വയറിളക്കം.<br>4. മാരെക്സ് രോഗം - പക്ഷാഘാതവും ഭാരക്കുറവും; വൈറൽ.<br>5. സാൽമൊണെല്ലോസിസ് - ബാക്ടീരിയ വയറിളക്കവും കുറഞ്ഞ മുട്ട ഉൽപാദനവും.",
+           c_duck_p2:"1.ഡക്ക് വൈറൽ എന്റൈറ്റിസ് (DVE) - പെട്ടെന്നുള്ള മരണം, വയറിളക്കം, ബലഹീനത എന്നിവയ്ക്ക് കാരണമാകുന്നു; വളരെ പകർച്ചവ്യാധിയാണ്.<br>2. ബോട്ടുലിസം - വൃത്തികെട്ട വെള്ളത്തിലോ ചീഞ്ഞ തീറ്റയിലോ ഉള്ള വിഷവസ്തു മൂലമുണ്ടാകുന്ന പക്ഷാഘാതം.<br>3. റീമെറെല്ല അണുബാധ - വീർത്ത കണ്ണുകൾ, മൂക്കൊലിപ്പ്, ശ്വസന പ്രശ്നങ്ങൾ.<br>4. ഡക്ക് പ്ലേഗ് - രക്തസ്രാവത്തിനും പെട്ടെന്നുള്ള മരണത്തിനും കാരണമാകുന്ന വൈറൽ രോഗം.<br>5. വിരബാധ - ശരീരഭാരം കുറയ്ക്കൽ, വളർച്ചക്കുറവ്, ആന്തരിക വിരകൾ മൂലമുള്ള വയറിളക്കം.",
+             c_fish_p1:"<b>ਮੱਛੀ ਪਾਲਣ ਦੇ ਪੰਜ ਕਦਮ<br><br></b>1.ਤਲਾਅ ਦੀ ਤਿਆਰੀ: ਸਫਾਈ ਕਰੋ, ਚੂਨਾ ਪਾਓ ਅਤੇ ਗੋਹੇ ਦੀ ਖਾਦ ਨਾਲ ਪਾਣੀ ਨੂੰ ਉਪਜਾਊ ਬਣਾਓ।<br>2.ਬੀਜ ਦੀ ਚੋਣ: ਵਧੀਆ ਕਿਸਮ ਦੇ ਰੋਹੂ, ਕਤਲਾ ਅਤੇ ਮ੍ਰਿਗਲ ਮੱਛੀ ਦੇ ਬੱਚੇ (ਪੂੰਗ) ਚੁਣੋ।<br>3.ਪੂੰਗ ਪਾਉਣਾ: ਮੱਛੀ ਦੇ ਬੱਚਿਆਂ ਨੂੰ ਸਵੇਰੇ ਜਾਂ ਸ਼ਾਮ ਦੇ ਠੰਢੇ ਸਮੇਂ ਤਲਾਅ ਵਿੱਚ ਛੱਡੋ।<br>4.ਖੁਰਾਕ: ਵਾਧੇ ਲਈ ਰੋਜ਼ਾਨਾ ਚੌਲਾਂ ਦੀ ਫੱਕ (Rice Bran) ਅਤੇ ਖਲ਼ ਵਰਗੀ ਖੁਰਾਕ ਦਿਓ।<br>5.ਮੱਛੀ ਫੜਨਾ: ਜਦੋਂ ਮੱਛੀ 1 ਕਿਲੋ ਦੇ ਕਰੀਬ ਹੋ ਜਾਵੇ, ਤਾਂ ਜਾਲ ਲਗਾ ਕੇ ਬਾਜ਼ਾਰ ਲਈ ਕੱਢ ਲਓ।",
+             c_flor_p1:"<b>ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ ਵਿੱਚ ਪੰਜ ਕਦਮ </b><br><br>1. ਮਿੱਟੀ ਦੀ ਤਿਆਰੀ: ਢਿੱਲੀ, ਉਪਜਾਊ ਮਿੱਟੀ ਲਈ ਜ਼ਮੀਨ ਨੂੰ ਵਾਹੋ ਅਤੇ ਗੋਬਰ ਨਾਲ ਮਿਲਾਓ।<br>2. ਲਾਉਣਾ: ਉੱਚੀਆਂ ਬੈੱਡਾਂ ਜਾਂ ਛੱਲੀਆਂ ਵਿੱਚ ਬੀਜ ਬੀਜੋ ਜਾਂ ਬੂਟੇ (ਗੰਗਾ/ਗੁਲਾਬ) ਲਗਾਓ।<br>3. ਸਿੰਚਾਈ: ਮਿੱਟੀ ਨੂੰ ਲਗਾਤਾਰ ਨਮੀ ਰੱਖਣ ਲਈ ਤੁਪਕਾ ਜਾਂ ਹਲਕੀ ਨਹਿਰੀ ਸਿੰਚਾਈ ਦੀ ਵਰਤੋਂ ਕਰੋ।<br>4. ਦੇਖਭਾਲ: ਵਿਕਾਸ ਨੂੰ ਵਧਾਉਣ ਲਈ ਸ਼ੁਰੂਆਤੀ ਕਲੀਆਂ ਨੂੰ ਕੱਟੋ ਅਤੇ ਜੈਵਿਕ ਕੀਟਨਾਸ਼ਕਾਂ (ਨੀਮ ਤੇਲ) ਦਾ ਛਿੜਕਾਅ ਕਰੋ।<br>5. ਤੋੜਨਾ: ਬਾਜ਼ਾਰ ਲਈ ਤਾਜ਼ਾ ਰੱਖਣ ਲਈ ਸਵੇਰੇ ਜਲਦੀ ਫੁੱਲਾਂ ਦੀ ਕਟਾਈ ਕਰੋ।",
+              c_manure_p1:"<b>ਖਾਦ ਬਣਾਉਣ ਦੇ ਪੰਜ ਕਦਮ</b><br><br>1.ਹਲ ਵਾਹੁਣਾ: ਮਿੱਟੀ ਨੂੰ ਹਵਾਦਾਰ ਬਣਾਉਣ ਲਈ ਟਰੈਕਟਰ ਜਾਂ ਬਲਦਾਂ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਮੋੜੋ।<br>2.ਖਾਦ: ਮਿੱਟੀ ਨੂੰ ਉਪਜਾਊ ਬਣਾਉਣ ਲਈ ਗੋਬਰ ਜਾਂ ਖਾਦ ਪਾਓ।<br>3.ਬਿਜਾਈ: ਪਹਿਲੀ ਬਾਰਿਸ਼ ਤੋਂ ਬਾਅਦ ਸਹੀ ਡੂੰਘਾਈ 'ਤੇ ਗੁਣਵੱਤਾ ਵਾਲੇ ਬੀਜ ਲਗਾਓ।<br>4.ਸਿੰਜਾਈ: ਤੁਪਕਾ, ਨਹਿਰ, ਜਾਂ ਮੌਨਸੂਨ ਬਾਰਿਸ਼ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਖੇਤਾਂ ਨੂੰ ਪਾਣੀ ਦਿਓ<br>5.ਕਟਾਈ: ਪੱਕੀ ਹੋਈ ਫਸਲ ਨੂੰ ਕੱਟੋ ਅਤੇ ਅਨਾਜ ਇਕੱਠਾ ਕਰਨ ਲਈ ਇਸਨੂੰ ਥਰੈਸ਼ ਕਰੋ।",
+           c_oil_p1:"<b>ਤੇਲ ਕੱਢਣ ਦੇ ਪੰਜ ਕਦਮ</b><br><br>1. ਸੁਕਾਉਣਾ: ਸਾਰੀ ਨਮੀ ਨੂੰ ਹਟਾਉਣ ਲਈ ਬੀਜਾਂ (ਸਰ੍ਹੋਂ/ਮੂੰਗਫਲੀ) ਨੂੰ ਧੁੱਪ ਨਾਲ ਸੁਕਾਓ।<br>2.ਕੁਚਲਣਾ: ਬੀਜਾਂ ਨੂੰ ਲੱਕੜ ਜਾਂ ਪੱਥਰ ਦੇ ਘਣੀ/ਚੇੱਕੂ ਵਿੱਚ ਖੁਆਓ।<br>3.ਦਬਾਉਣਾ: ਤੇਲ ਨੂੰ ਸਿਹਤਮੰਦ ਰੱਖਣ ਲਈ ਘੱਟ ਤਾਪਮਾਨ 'ਤੇ ਹੌਲੀ-ਹੌਲੀ ਕੱਢੋ।<br>4.ਸੈੱਟ ਕਰਨਾ: ਤੇਲ ਨੂੰ ਇੱਕ ਦਿਨ ਲਈ ਛੱਡ ਦਿਓ ਤਾਂ ਜੋ ਧੂੜ ਹੇਠਾਂ ਬੈਠ ਜਾਵੇ।<br>5.ਬੋਤਲ ਭਰਨਾ: ਇੱਕ ਸਾਫ਼ ਕੱਪੜੇ ਰਾਹੀਂ ਫਿਲਟਰ ਕਰੋ ਅਤੇ ਬੋਤਲਾਂ ਵਿੱਚ ਡੋਲ੍ਹ ਦਿਓ।",
+          c_jaggery_p1:"<b>ਗੁੜ ਬਣਾਉਣ ਦੇ ਪੰਜ ਕਦਮ </b><br><br>1.ਕੁੜਨਾ: ਕਰੱਸ਼ਰ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਤਾਜ਼ੇ ਗੰਨੇ ਤੋਂ ਜੂਸ ਕੱਢੋ।<br>2.ਸਫਾਈ: ਕੁਦਰਤੀ ਕਲੀਨਜ਼ਰ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਜੂਸ ਨੂੰ ਉਬਾਲੋ ਅਤੇ ਮੈਲ ਹਟਾਓ।<br>3.ਉਬਾਲਣਾ: ਤੇਜ਼ ਅੱਗ 'ਤੇ ਉਦੋਂ ਤੱਕ ਪਕਾਓ ਜਦੋਂ ਤੱਕ ਜੂਸ ਇੱਕ ਸੰਘਣਾ ਪੇਸਟ ਨਾ ਬਣ ਜਾਵੇ।<br>4.ਹਿਲਾਓ: ਬਣਤਰ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਹਿਲਾਉਂਦੇ ਹੋਏ ਪੇਸਟ ਨੂੰ ਇੱਕ ਟੋਏ ਵਿੱਚ ਠੰਡਾ ਕਰੋ।<br>5.ਮੋਲਡਿੰਗ: ਠੋਸ ਗੁੜ ਵਿੱਚ ਸਖ਼ਤ ਹੋਣ ਲਈ ਬਲਾਕਾਂ ਜਾਂ ਮੋਲਡਾਂ ਵਿੱਚ ਡੋਲ੍ਹੋ।",
+           c_agro_p1:"<b>ਖੇਤੀ ਜੰਗਲਾਤ ਵਿੱਚ ਪੰਜ ਕਦਮ</b><br><br>1. ਚੋਣ: ਨਿੰਮ, ਸਾਗਵਾਨ, ਜਾਂ ਬਾਬੁਲ ਵਰਗੇ ਦੇਸੀ ਰੁੱਖ ਚੁਣੋ ਜੋ ਤੁਹਾਡੀ ਮਿੱਟੀ ਦੇ ਅਨੁਕੂਲ ਹੋਣ।<br>2. ਲੇਆਉਟ: ਫਸਲਾਂ ਨੂੰ ਵਿਚਕਾਰ ਰੱਖਣ ਲਈ ਕਤਾਰਾਂ ਵਿੱਚ ਰੁੱਖ (ਗਲੀਆਂ ਦੀ ਫਸਲ) ਜਾਂ ਕਿਨਾਰਿਆਂ 'ਤੇ ਜਗ੍ਹਾ ਦਿਓ।<br>3. ਲਾਉਣਾ: ਮਾਨਸੂਨ ਦੌਰਾਨ ਮੌਸਮੀ ਫਸਲਾਂ (ਜਿਵੇਂ ਕਿ ਹਲਦੀ ਜਾਂ ਚਨੇ) ਵਾਲੇ ਰੁੱਖ ਲਗਾਓ।<br>4. ਰੱਖ-ਰਖਾਅ: ਸੂਰਜ ਦੀ ਰੌਸ਼ਨੀ ਜ਼ਮੀਨੀ ਫਸਲਾਂ ਤੱਕ ਪਹੁੰਚਣ ਨੂੰ ਯਕੀਨੀ ਬਣਾਉਣ ਲਈ ਰੁੱਖਾਂ ਦੀਆਂ ਟਾਹਣੀਆਂ ਨੂੰ ਨਿਯਮਿਤ ਤੌਰ 'ਤੇ ਛਾਂਟਣਾ।<br>5. ਕਟਾਈ: ਲਾਭ ਲਈ ਹਰ ਸਾਲ ਮੌਸਮੀ ਭੋਜਨ ਫਸਲਾਂ ਅਤੇ ਲੱਕੜ ਦੇ ਰੁੱਖਾਂ ਦੀ ਕਟਾਈ ਕਰੋ।",
+         c_pottery_p1:"<b>ਭਾਂਡੇ ਬਣਾਉਣ ਵਿੱਚ ਪੰਜ ਕਦਮ</b><br><br>1.ਮਿੱਟੀ: ਮਿੱਟੀ ਨੂੰ ਸਾਫ਼ ਕਰੋ, ਭਿਓ ਦਿਓ ਅਤੇ ਗੁਨ੍ਹੋ ਤਾਂ ਜੋ ਇਸਨੂੰ ਨਿਰਵਿਘਨ ਬਣਾਇਆ ਜਾ ਸਕੇ।<br>2.ਪਹੀਆ: ਰਵਾਇਤੀ ਹੱਥੀਂ ਜਾਂ ਇਲੈਕਟ੍ਰਿਕ ਪਹੀਏ 'ਤੇ ਘੜੇ ਨੂੰ ਆਕਾਰ ਦਿਓ।<br>3.ਮਾਰਨਾ: ਕੰਧਾਂ ਨੂੰ ਪਤਲਾ ਕਰਨ ਅਤੇ ਆਕਾਰ ਨੂੰ ਸੰਪੂਰਨ ਕਰਨ ਲਈ ਪੈਡਲ ਦੀ ਵਰਤੋਂ ਕਰੋ।<br>4.ਸੁਕਾਉਣਾ: ਤਰੇੜਾਂ ਤੋਂ ਬਚਣ ਲਈ ਘੜੇ ਨੂੰ ਛਾਂ ਵਿੱਚ ਹਵਾ ਨਾਲ ਸੁਕਾਓ।<br>5.ਫਾਇਰਿੰਗ: ਮਜ਼ਬੂਤੀ ਲਈ ਉਨ੍ਹਾਂ ਨੂੰ ਲੱਕੜ ਨਾਲ ਚੱਲਣ ਵਾਲੇ ਭੱਠੇ (ਭੱਟੀ) ਵਿੱਚ ਬੇਕ ਕਰੋ।",
+         c_seri_p1:"<b>ਰੇਸ਼ਮ ਦੀ ਖੇਤੀ ਵਿੱਚ ਪੰਜ ਕਦਮ</b><br><br>1.ਸ਼ਹਿਤੂਤ: ਰੇਸ਼ਮ ਦੇ ਕੀੜਿਆਂ ਲਈ ਤਾਜ਼ੇ ਪੱਤੇ ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ਸ਼ਹਿਤੂਤ ਦੇ ਰੁੱਖ ਉਗਾਓ।<br>2.ਪਾਲਣ: 25-30 ਦਿਨਾਂ ਲਈ ਟ੍ਰੇਆਂ 'ਤੇ ਕੱਟੇ ਹੋਏ ਪੱਤੇ ਰੇਸ਼ਮ ਦੇ ਕੀੜਿਆਂ ਨੂੰ ਫੜੋ ਅਤੇ ਖੁਆਓ।<br>3.ਮਾਊਟਿੰਗ: ਕਤਾਈ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਪਰਿਪੱਕ ਕੀੜਿਆਂ ਨੂੰ ਬਾਂਸ ਦੇ ਫਰੇਮਾਂ (ਚੰਦਰਿਕਾ) ਵਿੱਚ ਭੇਜੋ।<br>4.ਕੱਤਣਾ: ਕੀੜੇ 3 ਦਿਨਾਂ ਦੇ ਅੰਦਰ ਇੱਕ ਸੁਰੱਖਿਆ ਕੋਕੂਨ ਬਣਾਉਣ ਲਈ ਰੇਸ਼ਮ ਦਾ ਧਾਗਾ ਛੁਪਾਉਂਦੇ ਹਨ।<br>5.ਕਟਾਈ: ਰੇਸ਼ਮ ਨੂੰ ਰੀਲਿੰਗ ਲਈ ਤਿਆਰ ਕਰਨ ਲਈ ਕੋਕੂਨ ਇਕੱਠੇ ਕਰੋ ਅਤੇ ਉਨ੍ਹਾਂ ਨੂੰ ਭਾਫ਼ ਦਿਓ।",
+
+            video_buffalo:"https://www.youtube.com/embed/jxx0jPWNBx4?si=Cr-T_mnDkliH7F7f",//mastitis
+            video_goat:"https://www.youtube.com/embed/4DBZqTKUsto?si=2zM9lve-R77Z_9-8",//Parasites
+            video_chicken:"https://www.youtube.com/embed/OXr5oatlu7I?si=bl0y4qRqB51qqBym",
+            video_duck: "https://www.youtube.com/embed/504hvIBAuTU?si=jJSvYJpjDwVHJDcq",
+            video_jaggery:"https://www.youtube.com/embed/f8rCYlZNrac?si=ql8F4RCjnBcUW5hw",//how to work
+            video_pottery:"https://www.youtube.com/embed/BvXfabtqd7A?si=UIAfr__6AFYtG80G",//
+            video_seri:"https://www.youtube.com/embed/-FcNQaRVEGc?si=62qF3X9-KHFSC8SY",
+            video_agro:"https://www.youtube.com/embed/BWuWOkSVmg4?si=LRnN0L-YUdwjZWSO",
+            video_oil:"https://www.youtube.com/embed/AWT0ISFcJ2E?si=FQwSV-YbbRmjdw4Y",
+            video_manure:"https://www.youtube.com/embed/NERo65kBaBM?si=5v8U5Ji1TsLLlK",
+            video_flor:"https://www.youtube.com/embed/paBmmjUd3xw?si=YW4mvDrHSbXBB_MH",
+            video_fish:"https://www.youtube.com/embed/AccdB8VqFpM?si=C6E6DwVnDx1dQ7wu",
+            video_sheep:"https://www.youtube.com/embed/VVpdZ5wW9QU?si=M038AWR_qPj7BpVZ",
+            video_pig:"https://www.youtube.com/embed/tMHa1UW5Yn8?si=HmhNE7KIGgMEkGC4",
+            video_cow:"https://www.youtube.com/embed/bqyKXyDVgLI?si=QOJ0PHmbqiYW_J_y",
+        },
+
+        "ta-IN": {
+            mainTitle: "கால்நடை வளர்ப்பு மற்றும் பிற", backBtn: "← பின்னோக்கி", backToMain: "← பிரதான மெனுவுக்கு திரும்பு", 
+            'Animal Husbandry': "கால்நடை வளர்ப்பு", 'Poultry Farming': "கோழி வளர்ப்பு", 'Fish Farming': "மீன் வளர்ப்பு", 'floriculture': "மலர் வளர்ப்பு", 'Manure Making': "உரம் தயாரித்தல்", 'Oil Extraction': "எண்ணெய் பிரித்தெடுத்தல்", 'Jaggery Making': "வெல்லம் தயாரித்தல்", 'Milling': "அரைத்தல்", 'Agroforestry': "வேளாண் காடு வளர்ப்பு", 'Sericulture': "பட்டுப்புழு வளர்ப்பு", 'Pottery': "மட்பாண்டம்", 'Lac Cultivation': "அரக்கு வளர்ப்பு",
+            'Cow': "மாடு", 'Buffalo': "எருமை", 'Goat': "ஆடு", 'Pig': "பன்றி", 'Sheep': "செம்மறி ஆடு", 'Chicken': "கோழி", 'Duck': "வாத்து",
+
+            t_cow: 'கால்நடை வளர்ப்பு → மாடுகளின் ஆரோக்கியம்', 
+           t_buffalo:"விலங்கு வளர்ப்பு -> எருமை ஆரோக்கியம்",
+           t_goat:"கால்நடை வளர்ப்பு -> ஆடு ஆரோக்கியம்",
+           t_pig:"கால்நடை வளர்ப்பு -> பன்றி ஆரோக்கியம்",
+           t_sheep:"விலங்கு வளர்ப்பு -> செம்மறி ஆடுகளின் ஆரோக்கியம்",
+            t_chicken:"கோழி வளர்ப்பு ->கோழி ஆரோக்கியம் ",
+            t_duck: 'கோழி வளர்ப்பு → வாத்து வளர்ப்பு',
+            t_fish:"மீன் வளர்ப்பு -> மீன் வளர்ப்பு",
+            t_flor:"பூ வளர்ப்பு -> பூ விவசாயம்",
+            t_manure:"உரம் தயாரித்தல் -> உரமாக்கல்",
+            t_oil:"எண்ணெய் பிரித்தெடுத்தல் ->பெட்ரோலியம் பிரித்தெடுத்தல்",
+            t_jaggery:"வெல்லம் தயாரித்தல் -> gur",
+            t_agro:"வேளாண் காடுகள் -> பண்ணை காடுகள்",
+            t_seri: 'பட்டுப்புழு வளர்ப்பு -> பட்டு வளர்ப்பு',
+            t_pottery:"மட்பாண்டம் -> மட்பாண்டங்கள்",
+
+
+            c_cow_p1: '<b>5 பொதுவான சுகாதார சிக்கல்கள் மற்றும் சிகிச்சைகள்:</b>',
+           c_buffalo_p1:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் & சிகிச்சைகள்:</b>",
+          c_goat_p1:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் & சிகிச்சைகள்:</b>",
+           c_pig_p1:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் & சிகிச்சைகள்:</b>",
+           c_sheep_p1:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் & சிகிச்சைகள்:</b>",
+            c_chicken_p1:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் மற்றும் சிகிச்சைகள்</b>",
+           c_duck_p2:"<b>முதல் 5 பொதுவான உடல்நலப் பிரச்சினைகள் மற்றும் சிகிச்சைகள்</b>",
+
+
+          c_cow_p2: '1. மஸ்டிடிஸ்: ஆண்டிபயாடிக் மற்றும் சரியான சுகாதாரம்.<br> 2. எஃப்எம்டி: வழக்கமான தடுப்பூசி. <br>3. வீக்கம்: அதிக பச்சை தீவனத்தை தவிர்க்கவும். <br>4. பால் காய்ச்சல்: கால்சியம் கொடுக்கவும்.<br> 5. உண்ணி/ஒட்டுண்ணிகள்: வழக்கமான குடல் புழு நீக்கம் மற்றும் சுத்தமான கொட்டகை. ',
+         c_buffalo_p2:"1.மாஸ்டிடிஸ்: பால் சுரப்பைக் குறைக்கும் மடி தொற்று.<br>2.FMD: காய்ச்சல் மற்றும் வாய் புண்கள்; பால் திடீரென குறைகிறது.<br>3.HS: அதிக காய்ச்சல் மற்றும் வீக்கம்; ஆண்டுதோறும் தடுப்பூசி போட வேண்டும்.<br>4.வீக்கம்: வயிற்று வாயு திடீர் வீக்கத்தை ஏற்படுத்துகிறது.<br>5.ஒட்டுண்ணிகள்: புழுக்கள்/பேன்கள் பலவீனத்தை ஏற்படுத்துகின்றன மற்றும் பால் குறைவாக சுரக்கின்றன.",
+         c_goat_p2:"1.PPR (ஆடு பிளேக்): காய்ச்சல், வயிற்றுப்போக்கு, வாய் புண்கள்; மிகவும் தொற்றும் தன்மை கொண்டது.<br>2.கால் அழுகல்: குளம்பு தொற்று வீக்கம் மற்றும் நொண்டியை ஏற்படுத்துகிறது.<br>3.நிமோனியா: இருமல், காய்ச்சல் மற்றும் சுவாசிப்பதில் சிரமம்.<br>4.உட்புற ஒட்டுண்ணிகள்: எடை இழப்பு மற்றும் இரத்த சோகையை ஏற்படுத்தும் புழுக்கள்.<br>5.மாஸ்டிடிஸ்: மடி தொற்று, பால் குறைவதையும் வலியையும் ஏற்படுத்துகிறது.",
+         c_pig_p2:"1.பன்றிக் காய்ச்சல் (CSF/ASF): அதிக காய்ச்சல், இரத்தப்போக்கு, திடீர் மரணம்.<br>2.நிமோனியா: இருமல், காய்ச்சல், வேகமாக அல்லது சுவாசிப்பதில் சிரமம்.<br>3.இரைப்பை குடல் அழற்சி: வயிற்றுப்போக்கு மற்றும் நீரிழப்பு, பன்றிக்குட்டிகளில் பொதுவானது.<br>4.ஒட்டுண்ணிகள்: எடை இழப்பு மற்றும் மோசமான வளர்ச்சியை ஏற்படுத்தும் புழுக்கள்.<br>5.கால் மற்றும் வாய் பிரச்சினைகள்: நொண்டி, வாய் புண்கள், குறைவான உணவு.",
+          c_sheep_p2:"1.PPR (செம்மறி ஆடு பிளேக்): அதிக காய்ச்சல், வயிற்றுப்போக்கு மற்றும் வாய்/மூக்கில் இருந்து வெளியேற்றம்.<br>2.கால் அழுகல்: குளம்பு தொற்று, நொண்டி மற்றும் துர்நாற்றத்தை ஏற்படுத்தும்.<br>3.நிமோனியா: இருமல், காய்ச்சல் மற்றும் சுவாசிப்பதில் சிரமம்.<br>4.உட்புற ஒட்டுண்ணிகள்: இரத்த சோகை, பலவீனம் மற்றும் எடை இழப்பை ஏற்படுத்தும் புழுக்கள்.<br>5.மாஸ்டிடிஸ்: மடி வீக்கம் மற்றும் பால் குறைவாக சுரக்க வழிவகுக்கும் மடி தொற்று.",
+         c_chicken_p2:"1. நியூகேஸில் நோய் - வைரஸ், வேகமாகப் பரவும், சுவாசப் பிரச்சினைகள் மற்றும் திடீர் மரணத்தை ஏற்படுத்துகிறது.<br>2. கோழிப் பன்றி - வைரஸால் ஏற்படும் தோல் சிரங்கு; கொசுக்களால் பரவுகிறது.<br>3. கோசிடியோசிஸ் - குடலில் உள்ள ஒட்டுண்ணிகளால் ஏற்படும் இரத்தக்களரி வயிற்றுப்போக்கு.<br>4. மாரெக்ஸ் நோய் - பக்கவாதம் மற்றும் எடை இழப்பு; வைரஸ்.<br>5. சால்மோனெல்லோசிஸ் - பாக்டீரியா வயிற்றுப்போக்கு மற்றும் குறைந்த முட்டை உற்பத்தி.",
+          c_duck_p2:"1.வாத்து வைரஸ் குடல் அழற்சி (DVE) - திடீர் மரணம், வயிற்றுப்போக்கு மற்றும் பலவீனத்தை ஏற்படுத்துகிறது; மிகவும் தொற்றும் தன்மை கொண்டது.<br>2. போட்யூலிசம் - அழுக்கு நீர் அல்லது அழுகிய தீவனத்தில் உள்ள நச்சுத்தன்மையால் ஏற்படும் பக்கவாதம்.<br>3. ரீமெரெல்லா தொற்று - வீங்கிய கண்கள், மூக்கில் நீர் வடிதல் மற்றும் சுவாசப் பிரச்சினைகள்.<br>4. வாத்து பிளேக் - இரத்தப்போக்கு மற்றும் திடீர் இறப்பை ஏற்படுத்தும் வைரஸ் நோய்.<br>5. புழு தொற்று - எடை இழப்பு, மோசமான வளர்ச்சி மற்றும் உட்புற புழுக்களால் ஏற்படும் வயிற்றுப்போக்கு.",
+           c_fish_p1:"<b>மீன் வளர்ப்பில் ஐந்து படிகள்</b><br>1.குளம் தயாரிப்பு: குளத்தை சுத்தம் செய்து, சுண்ணாம்பு மற்றும் இயற்கை உரம் இட்டு தயார் செய்யவும்.<br>2.மீன் குஞ்சு தேர்வு: தரமான ரோகு, கட்லா மற்றும் மிர்கால் ரக மீன் குஞ்சுகளை தேர்வு செய்யவும்.<br>3.குஞ்சுகள் விடுதல்: காலை அல்லது மாலை வேளையில் மீன் குஞ்சுகளை குளத்தில் விடவும்.<br>4.உணவு அளித்தல்: தவிடு மற்றும் புண்ணாக்கு போன்ற சத்தான உணவுகளை தினமும் வழங்கவும்.<br>5.அறுவடை: மீன்கள் ஒரு கிலோ எடையை எட்டியவுடன் வலை வீசி பிடித்து விற்பனை செய்யவும்.",
+           c_flor_p1:"<b>பூ வளர்ப்பில் ஐந்து படிகள் </b><br><br>1. மண் தயாரிப்பு: தளர்வான, வளமான மண்ணுக்கு நிலத்தை உழுது மாட்டு சாணத்துடன் கலக்கவும்.<br>2. நடவு: உயர்த்தப்பட்ட பாத்திகள் அல்லது முகடுகளில் விதைகளை விதைக்கவும் அல்லது மரக்கன்றுகளை (சாமந்தி/ரோஜா) நடவும்.<br>3. நீர்ப்பாசனம்: மண்ணை தொடர்ந்து ஈரப்பதமாக வைத்திருக்க சொட்டு நீர் அல்லது லேசான கால்வாய் நீர்ப்பாசனத்தைப் பயன்படுத்தவும்.<br>4. பராமரிப்பு: வளர்ச்சியை அதிகரிக்க ஆரம்ப மொட்டுகளை கிள்ளி கரிம பூச்சிக்கொல்லிகளை (வேப்ப எண்ணெய்) தெளிக்கவும்.<br>5. பறித்தல்: சந்தைக்கு பூக்களை புதியதாக வைத்திருக்க அதிகாலையில் அறுவடை செய்யுங்கள்.",
+            c_manure_p1:"<b>எருவை ஐந்து படிகளில் இடுதல்</b><br><br>1. உழுதல்: டிராக்டர் அல்லது காளைகளைப் பயன்படுத்தி மண்ணைத் திருப்பி காற்றோட்டமாக்குங்கள்.<br>2. உரமிடுதல்: மண்ணை வளமாக்க மாட்டு சாணம் அல்லது உரம் சேர்க்கவும்.<br>3. விதைப்பு: முதல் மழைக்குப் பிறகு சரியான ஆழத்தில் தரமான விதைகளை நடவும்.<br>4. நீர்ப்பாசனம்: சொட்டுநீர், கால்வாய் அல்லது பருவமழையைப் பயன்படுத்தி வயல்களுக்கு நீர் பாய்ச்சவும்.<br>5. அறுவடை: முதிர்ந்த பயிரை வெட்டி தானியங்களை சேகரிக்க அதை கதிரடிக்கவும்.",
+           c_oil_p1:"<b>எண்ணெய் எடுப்பதில் ஐந்து படிகள்</b><br><br>1. உலர்த்துதல்: விதைகளை (கடுகு/நிலக்கடலை) வெயிலில் உலர்த்தி அனைத்து ஈரப்பதத்தையும் நீக்கவும்.<br>2.நசுக்குதல்: விதைகளை மரம் அல்லது கல் கானி/செக்குவில் ஊட்டவும்.<br>3.அழுத்துதல்: எண்ணெயை ஆரோக்கியமாக வைத்திருக்க குறைந்த வெப்பநிலையில் மெதுவாகப் பிரித்தெடுக்கவும்.<br>4.அழுத்துதல்: எண்ணெயை ஒரு நாள் அப்படியே விடவும், அதனால் தூசி அடியில் படியும்.<br>5.பாட்டில் அடைத்தல்: சுத்தமான துணியில் வடிகட்டி பாட்டில்களில் ஊற்றவும்.",
+           c_jaggery_p1:"<b>வெல்லம் தயாரிப்பதில் ஐந்து படிகள் </b><br><br>1.நசுக்குதல்: புதிய கரும்பிலிருந்து சாற்றை நொறுக்கி எடுக்கவும்.<br>2.சுத்தம் செய்தல்: சாற்றை வேகவைத்து, இயற்கை சுத்தப்படுத்திகளைப் பயன்படுத்தி நுரையை அகற்றவும்.<br>3.கொதித்தல்: சாறு ஒரு கெட்டியான பேஸ்டாக மாறும் வரை அதிக வெப்பத்தில் சமைக்கவும்.<br>4.கிளறுதல்: அமைப்பைப் பெற ஒரு குழியில் பேஸ்ட்டை குளிர்விக்கும் போது.<br>5.மோல்டிங்: திடமான வெல்லமாக கெட்டியாக மாற தொகுதிகள் அல்லது அச்சுகளில் ஊற்றவும்.",
+          c_agro_p1:"<b>வேளாண் காடு வளர்ப்பில் ஐந்து படிகள்</b><br><br>1. தேர்வு: உங்கள் மண்ணுக்கு ஏற்ற வேம்பு, தேக்கு அல்லது பாபுல் போன்ற பூர்வீக மரங்களைத் தேர்ந்தெடுக்கவும்.<br>2. அமைப்பு: வரிசைகளில் இடைவெளி மரங்களை (சந்து பயிர் செய்தல்) அல்லது எல்லைகளில் பயிர்களை இடையில் அனுமதிக்கவும்.<br>3. நடவு: பருவகால பயிர்களுடன் (மஞ்சள் அல்லது பருப்பு போன்றவை) மரங்களை நடவும்.<br>4. பராமரிப்பு: சூரிய ஒளி நிலப் பயிர்களை அடைவதை உறுதிசெய்ய மரக் கிளைகளைத் தொடர்ந்து கத்தரிக்கவும்.<br>5. அறுவடை: ஆண்டுதோறும் பருவகால உணவுப் பயிர்களையும், 8-10 ஆண்டுகளுக்குப் பிறகு மர மரங்களையும் அறுவடை செய்து லாபம் ஈட்டவும்.",
+           c_pottery_p1:"<b>ஐந்து படி மட்பாண்டங்கள்</b><br><br>1.களிமண்: களிமண்ணை சுத்தம் செய்து, ஊறவைத்து, பிசைந்து மென்மையாக்குங்கள்.<br>2.சக்கரம்: பாரம்பரிய கையேடு அல்லது மின்சார சக்கரத்தில் பானையை வடிவமைக்கவும்.<br>3.அடித்தல்: சுவர்களை மெல்லியதாக்கி வடிவத்தை முழுமையாக்க ஒரு துடுப்பைப் பயன்படுத்தவும்.<br>4.உலர்த்துதல்: விரிசல்களைத் தவிர்க்க நிழலில் பானைகளை காற்றில் உலர்த்துதல்.<br>5.சுடுதல்: வலிமைக்காக மரத்தால் எரிக்கப்பட்ட சூளையில் (பட்டி) அவற்றை சுடவும்.",
+           c_seri_p1:"<b>பட்டுப்புழு வளர்ப்பில் ஐந்து படிகள்</b><br><br>1. மல்பெரி: பட்டுப்புழுக்களுக்கு புதிய இலைகளை வழங்க மல்பெரி மரங்களை வளர்க்கவும்.<br>2. வளர்ப்பு: பட்டுப்புழுக்களுக்கு நறுக்கிய இலைகளை 25-30 நாட்களுக்கு குஞ்சு பொரித்து உணவளிக்கவும்.<br>3. பொருத்துதல்: முதிர்ந்த புழுக்களை மூங்கில் சட்டங்களுக்கு (சந்திரிகா) நகர்த்தி சுழற்றத் தொடங்குங்கள்.<br>4. நூற்பு: புழுக்கள் பட்டு நூலை சுரந்து 3 நாட்களுக்குள் ஒரு பாதுகாப்பு கூட்டை உருவாக்குகின்றன.<br>5. அறுவடை: பட்டுக்கூடுகளை சேகரித்து அவற்றை நீராவியால் சுற்றுவதற்கு தயார் செய்யவும்.",
+
+
+            video_cow: "https://www.youtube.com/embed/NFNTKop2Dfw?si=wk2N4ON5y3qhNyhm",
+              video_buffalo:"https://www.youtube.com/embed/tBgCIka9ASo?si=tkAYwKKmCkpGX75z",//mastitis
+              video_goat:"https://www.youtube.com/embed/-mlyT8G2uhc?si=zqZzJupkevrdIrca",//Parasiteside
+              video_pig:"https://www.youtube.com/embed/cXFEazb7dCY?si=ipS4eqh47LSwAKMJ",//Piglet anemia
+              video_sheep:"https://www.youtube.com/embed/LVaJvHJl2gI?si=KY1EKx4Asoe7TVu5",//foot rot
+            video_duck: "https://www.youtube.com/embed/C1Uej4WQbZs?si=MU_qCAbdh31MBqRW",
+            video_chicken:"https://www.youtube.com/embed/fEdKbDFaT3I?si=qt_WQuIaJ_3wV40-",//Newcastle Disease
+            video_fish:"https://www.youtube.com/embed/6s-xesVmFqs?si=j6zHHc8d-lM6t-ZO",//fungal infection
+            video_flor:"https://www.youtube.com/embed/Crg3Kj72Nu4?si=cW48Kb4sb4pPCd8N",//rose Dieback
+            video_manure:"https://www.youtube.com/embed/rOtuLpjEX08?si=pszn5IbmD8HaPYZ2",//green manure 
+            video_jaggery:"https://www.youtube.com/embed/UUTRX6MevzE?si=8Hua0TUvBJKRFSkX",//how to work 
+            video_pottery:"https://www.youtube.com/embed/WtxWR-As9Yc?si=m6aq82UT3muDm0-9",//
+            video_agro:"https://www.youtube.com/embed/lpHABCeD2d8?si=f9LqVBh6G2rN7o60",//Agroforesty
+            video_seri:"https://www.youtube.com/embed/d_dohCC-21E?si=5go9TH65pCGN-uJa",//Silk farming
+           video_oil:"https://www.youtube.com/embed/VBmyp6bra1Q?si=hVYJ7hsSFvsDMKDu",
+
+
+        },
+
+        "te-IN": {
+            mainTitle: "పశుపోషణ మరియు ఇతరులు", backBtn: "← వెనుకకు", backToMain: "← ప్రధాన మెనుకు వెనుకకు", 
+            'Animal Husbandry': "పశుపోషణ", 'Poultry Farming': "కోళ్ల పెంపకం", 'Fish Farming': "చేపల పెంపకం", 'floriculture': "పూల పెంపకం", 'Manure Making': "ఎరువుల తయారీ", 'Oil Extraction': "నూనె తీయడం", 'Jaggery Making': "బెల్లం తయారీ", 'Milling': "మిల్లింగ్", 'Agroforestry': "వ్యవసాయ అటవీ", 'Sericulture': "పట్టుపురుగుల పెంపకం", 'Pottery': "కుండల తయారీ", 'Lac Cultivation': "లాక్ సాగు",
+            'Cow': "ఆవు", 'Buffalo': "గేదె", 'Goat': "మేక", 'Pig': "పంది", 'Sheep': "గొర్రె", 'Chicken': "కోడి", 'Duck': "బాతు",
+            t_cow: 'పశుపోషణ → ఆవు ఆరోగ్యం',
+            t_buffalo:"జంతువుల పెంపకం ->గేదె ఆరోగ్యం",
+            t_goat:"జంతువుల పెంపకం -> మేక ఆరోగ్యం",
+            t_pig:"జంతువుల పెంపకం -> పంది ఆరోగ్యం",
+            t_sheep:"జంతువుల పెంపకం -> గొర్రెల ఆరోగ్యం",
+           t_chicken:"కోళ్ల పెంపకం ->కోళ్ల ఆరోగ్యం ",
+          t_duck: 'కోళ్ల పెంపకం → బాతుల పెంపకం', 
+          t_fish:"చేపల పెంపకం->చేపల పెంపకం",
+          t_flor:"ఫ్లోరీకల్చర్->ఫ్లవర్ అగ్రికల్చర్",
+          t_manure:"ఎరువు తయారీ -> కంపోస్టింగ్",
+          t_oil:"నూనె వెలికితీత ->పెట్రోలియం వెలికితీత",
+          t_jaggery:"బెల్లం తయారీ -> గుర్",
+          t_agro:"ఆగ్రోఫారెస్ట్రీ -> ఫామ్ ఫారెస్ట్రీ",
+          t_seri: 'సెరికల్చర్ -> పట్టు వ్యవసాయం',
+          t_pottery:"కుండలు -> సెరామిక్స్",
+
+            c_cow_p1: '<b>5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు:</b>', 
+            c_buffalo_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు:</b>",
+             c_goat_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు:</b>",
+             c_pig_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు:</b>",
+            c_sheep_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు:</b>",
+            c_chicken_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు</b>",
+              c_duck_p1:"<b>టాప్ 5 సాధారణ ఆరోగ్య సమస్యలు & నివారణలు</b>",
+
+
+
+            c_cow_p2: '1. మాస్టిటిస్: యాంటీబయాటిక్స్ మరియు సరైన పరిశుభ్రత.<br> 2. ఎఫ్ఎమ్డి: క్రమం తప్పకుండా టీకాలు వేయడం. <br>3. ఉబ్బరం: ఎక్కువ పచ్చి మేతను నివారించండి.<br>4. మిల్క్ ఫీవర్: కాల్షియం ఇవ్వండి.<br> 5. పేలు/పరాన్నజీవులు: క్రమం తప్పకుండా నులిపురుగుల మందులు మరియు శుభ్రమైన షెడ్.',
+           c_buffalo_p2:"1.மாஸ்டிடிஸ்: பால் சுரப்பைக் குறைக்கும் மடி தொற்று.<br>2.FMD: காய்ச்சல் மற்றும் வாய் புண்கள்; பால் திடீரென குறைகிறது.<br>3.HS: அதிக காய்ச்சல் மற்றும் வீக்கம்; ஆண்டுதோறும் தடுப்பூசி போட வேண்டும்.<br>4.வீக்கம்: வயிற்று வாயு திடீர் வீக்கத்தை ஏற்படுத்துகிறது.<br>5.ஒட்டுண்ணிகள்: புழுக்கள்/பேன்கள் பலவீனத்தை ஏற்படுத்துகின்றன மற்றும் பால் குறைவாக சுரக்கின்றன.",
+           c_goat_p2:"1.PPR (మేక ప్లేగు): జ్వరం, విరేచనాలు, నోటి పుండ్లు; చాలా అంటువ్యాధి.<br>2.పాదాలకు సోకు: వాపు మరియు కుంటితనానికి కారణమయ్యే గొట్టపు ఇన్ఫెక్షన్.<br>3.న్యుమోనియా: దగ్గు, జ్వరం మరియు శ్వాస తీసుకోవడంలో ఇబ్బంది.<br>4.అంతర్గత పరాన్నజీవులు: బరువు తగ్గడం మరియు రక్తహీనతకు కారణమయ్యే పురుగులు.<br>5.మాస్టిటిస్: పొదుగు సంక్రమణ పాలను తగ్గిస్తుంది మరియు నొప్పిని కలిగిస్తుంది.",
+           c_pig_p2:"1.స్వైన్ ఫీవర్ (CSF/ASF): అధిక జ్వరం, రక్తస్రావం, ఆకస్మిక మరణం<br>2.న్యుమోనియా: దగ్గు, జ్వరం, వేగంగా లేదా శ్వాస తీసుకోవడం కష్టం.<br>3.గ్యాస్ట్రోఎంటెరిటిస్: విరేచనాలు మరియు నిర్జలీకరణం, పందిపిల్లలలో సాధారణం.<br>4.పరాన్నజీవులు: బరువు తగ్గడానికి మరియు పేలవమైన పెరుగుదలకు కారణమయ్యే పురుగులు.<br>5.పాదం మరియు నోటి సమస్యలు: కుంటితనం, నోటి పుండ్లు, ఆహారం తగ్గడం.",
+           c_sheep_p2:"1.PPR (గొర్రెల తెగులు): అధిక జ్వరం, విరేచనాలు మరియు నోరు/ముక్కు స్రావాలు.<br>2.పాదాల తెగులు: కుంటితనం మరియు దుర్వాసనకు కారణమయ్యే డెక్క ఇన్ఫెక్షన్.<br>3.న్యుమోనియా: దగ్గు, జ్వరం మరియు శ్వాస తీసుకోవడంలో ఇబ్బంది.<br>4.అంతర్గత పరాన్నజీవులు: రక్తహీనత, బలహీనత మరియు బరువు తగ్గడానికి కారణమయ్యే పురుగులు.<br>5.మాస్టిటిస్: పొదుగు వాపు మరియు తక్కువ పాలు రావడానికి దారితీసే పొదుగు ఇన్ఫెక్షన్.",
+           c_chicken_p2:"1. న్యూకాజిల్ వ్యాధి - వైరల్, వేగంగా వ్యాప్తి చెందుతుంది, శ్వాస తీసుకోవడంలో ఇబ్బంది మరియు ఆకస్మిక మరణానికి కారణమవుతుంది.<br>2. ఫౌల్ పాక్స్ - వైరస్ నుండి చర్మంపై పొరలు; దోమల ద్వారా వ్యాపిస్తుంది.<br>3. కోకిడియోసిస్ - పేగులోని పరాన్నజీవుల వల్ల రక్తపు విరేచనాలు.<br>4. మారెక్స్ వ్యాధి - పక్షవాతం మరియు బరువు తగ్గడం; వైరల్.<br>5. సాల్మొనెలోసిస్ - బాక్టీరియల్ విరేచనాలు మరియు తక్కువ గుడ్డు ఉత్పత్తి.",
+          c_duck_p2:"1.డక్ వైరల్ ఎంటెరిటిస్ (DVE) – ఆకస్మిక మరణం, విరేచనాలు మరియు బలహీనతకు కారణమవుతుంది; చాలా అంటువ్యాధి.<br>2. బొటులిజం – మురికి నీరు లేదా కుళ్ళిన ఆహారంలోని విషం వల్ల పక్షవాతం.<br>3. రీమెరెల్లా ఇన్ఫెక్షన్ – కళ్ళు వాపు, ముక్కు కారటం మరియు శ్వాస సమస్యలు.<br>4. డక్ ప్లేగు – రక్తస్రావం మరియు ఆకస్మిక మరణానికి కారణమయ్యే వైరల్ వ్యాధి.<br>5. నులిపురుగుల ముట్టడి – బరువు తగ్గడం, పేలవమైన పెరుగుదల మరియు అంతర్గత పురుగుల కారణంగా విరేచనాలు.",
+            c_fish_p1:"<b>చేపల పెంపకంలో ఐదు దశలుc<br><br></b>1.చెరువు తయారీ: చెరువును శుభ్రం చేసి, సున్నం మరియు ఎరువుతో నీటిని సిద్ధం చేయాలి.<br>2.చేప పిల్లల ఎంపిక: నాణ్యమైన రోహు, కట్ల మరియు మృగాల చేప పిల్లలను ఎంచుకోవాలి.<br>3.చెరువులో వదలడం: ఉదయం లేదా సాయంత్రం చల్లని వేళల్లో చేప పిల్లలను వదలాలి.<br>4.మేత: వరి తవుడు మరియు చెక్క వంటి అనుబంధ ఆహారాన్ని ప్రతిరోజూ అందించాలి.<br>5.చేపల వేట: చేపలు ఒక కిలో బరువు పెరిగిన తర్వాత జల కొట్టి అమ్మకానికి తీయాలి",
+            c_flor_p1:"<b>పూల పెంపకంలో ఐదు దశలు </b><br><br>1.నేల తయారీ: వదులుగా, సారవంతమైన నేల కోసం భూమిని దున్ని ఆవు పేడతో కలపండి.<br>2.నాటడం: పెరిగిన పడకలు లేదా గట్లలో విత్తనాలు విత్తండి లేదా మొక్కలు (మేరిగోల్డ్/రోజ్) నాటండి.<br>3.నీటిపారుదల: నేలను స్థిరంగా తేమగా ఉంచడానికి బిందు లేదా తేలికపాటి కాలువ నీటిపారుదలని ఉపయోగించండి.<br>4.సంరక్షణ: పెరుగుదలను పెంచడానికి ప్రారంభ మొగ్గలను చిటికెడు మరియు సేంద్రీయ పురుగుమందులను (వేప నూనె) పిచికారీ చేయండి.<br>5.కోయడం: మార్కెట్ కోసం తాజాగా ఉంచడానికి తెల్లవారుజామున పువ్వులను కోయండి.",
+            c_manure_p1:"<b>ఐదు దశల ఎరువుల తయారీ</b><br><br>1. దున్నడం: ట్రాక్టర్ లేదా ఎద్దులను ఉపయోగించి మట్టిని తిప్పి గాలిని ప్రసరింపజేయండి.<br>2.ఎరువు వేయడం: నేలను సారవంతం చేయడానికి ఆవు పేడ లేదా కంపోస్ట్ జోడించండి.<br>3.విత్తనం: మొదటి వర్షం తర్వాత సరైన లోతులో నాణ్యమైన విత్తనాలను నాటండి.<br>4.నీటిపారుదల: డ్రిప్, కాలువ లేదా రుతుపవన వర్షాన్ని ఉపయోగించి పొలాలకు నీరు పెట్టండి<br>5.కోత: పరిపక్వ పంటను కోసి ధాన్యాన్ని సేకరించడానికి దానిని నూర్పిడి చేయండి.",
+            c_oil_p1:"<b>నూనె తీయడంలో ఐదు దశలు</b><br><br>1. ఎండబెట్టడం: విత్తనాలను (ఆవాలు/వేరుశనగ) ఎండబెట్టి తేమ అంతా తొలగించండి.<br>2.చల్లడం: విత్తనాలను చెక్క లేదా రాతి ఘనీ/చెక్కులో తినిపించండి.<br>3.నొక్కడం: నూనెను ఆరోగ్యంగా ఉంచడానికి తక్కువ ఉష్ణోగ్రత వద్ద నెమ్మదిగా తీయండి.<br>4.చల్లడం: దుమ్ము అడుగున స్థిరపడేలా నూనెను ఒక రోజు అలాగే ఉంచండి.<br>5.బాటిల్ చేయడం: శుభ్రమైన గుడ్డ ద్వారా వడకట్టి సీసాలలో పోయాలి.",
+            c_jaggery_p1:"<b>బెల్లం తయారీలో ఐదు దశలు </b><br><br>1.క్రషింగ్: క్రషర్ ఉపయోగించి తాజా చెరకు నుండి రసం తీయండి.<br>2.శుభ్రపరచడం: సహజ క్లెన్సర్‌లను ఉపయోగించి రసాన్ని మరిగించి, నురుగును తొలగించండి.<br>3.మరిగేలా చేయడం: రసం చిక్కగా అయ్యే వరకు అధిక వేడి మీద ఉడికించాలి.<br>4.కదిలించడం: ఆకృతిని పొందడానికి గుంటలో కలుపుతూ పేస్ట్‌ను చల్లబరచండి.<br>5.అచ్చు వేయడం: ఘన బెల్లం గట్టిపడటానికి బ్లాక్స్ లేదా అచ్చులలో పోయాలి.",
+            c_agro_p1:"<b>ఆగ్రోఫారెస్ట్రీలో ఐదు దశలు</b><br><br>1.ఎంపిక: మీ నేలకు సరిపోయే వేప, టేకు లేదా బాబుల్ వంటి స్థానిక చెట్లను ఎంచుకోండి.<br>2.లేఅవుట్: వరుసలలో ఖాళీ చెట్లు (అల్లీ క్రాపింగ్) లేదా సరిహద్దులలో పంటలను మధ్యలో అనుమతించండి.<br>3.నాటడం: వర్షాకాలంలో కాలానుగుణ పంటలతో (పసుపు లేదా గ్రామ్ వంటివి) చెట్లను నాటండి.<br>4.నిర్వహణ: సూర్యరశ్మి నేల పంటలకు చేరేలా చెట్ల కొమ్మలను క్రమం తప్పకుండా కత్తిరించండి.<br>5.కోత: లాభం కోసం ఏటా కాలానుగుణ ఆహార పంటలను మరియు 8-10 సంవత్సరాల తర్వాత కలప చెట్లను కోయండి.",
+            c_pottery_p1:"<b>ఐదు దశల కుండలు</b><br><br>1. బంకమట్టి: మట్టిని శుభ్రం చేసి, నానబెట్టి, మెత్తగా చేయడానికి మెత్తగా చేయండి.<br>2.చక్రం: సాంప్రదాయ మాన్యువల్ లేదా ఎలక్ట్రిక్ చక్రంపై కుండను ఆకృతి చేయండి.<br>3.కొట్టడం: గోడలను పలుచగా చేయడానికి మరియు ఆకారాన్ని పరిపూర్ణం చేయడానికి తెడ్డును ఉపయోగించండి.<br>4.ఎండబెట్టడం: పగుళ్లను నివారించడానికి నీడలో కుండలను గాలిలో ఆరబెట్టండి.<br>5.కాల్పు: బలం కోసం వాటిని చెక్కతో కాల్చిన బట్టీలో (భట్టి) కాల్చండి.",
+            c_seri_p1:"<b>సెరికల్చర్‌లో ఐదు దశలు</b><br><br>1.మల్బరీ: పట్టుపురుగులకు తాజా ఆకులను అందించడానికి మల్బరీ చెట్లను పెంచండి.<br>2.పెంపకం: పట్టుపురుగులను తరిగిన ఆకులను 25-30 రోజులు ట్రేలలో పొదిగి తినిపించండి.<br>3.మౌంటింగ్: పరిణతి చెందిన పురుగులను వెదురు ఫ్రేములకు (చంద్రిక) తరలించి తిప్పడం ప్రారంభించండి.<br>4.వరుస: పురుగులు 3 రోజుల్లో రక్షణాత్మక కోకన్‌ను ఏర్పరచడానికి పట్టు దారాన్ని స్రవిస్తాయి.<br>5.కోత: పట్టుపురుగులను సేకరించి వాటిని ఆవిరి చేసి తిప్పడానికి పట్టును సిద్ధం చేయండి.",
+
+            video_cow: "https://www.youtube.com/embed/p3DtAE-wOhk?si=uT9ZSuERsbTPuoiR",
+             video_buffalo:"https://www.youtube.com/embed/Md6ZKy8x0mE?si=tvraGZOC_LCM9Qn8",//mastitis
+             video_goat:"https://www.youtube.com/embed/3dUVabSdCjY?si=7VW8-5wMosuzkt96",//Parasites
+            video_pig:"https://www.youtube.com/embed/RbMk9rJnFoo?si=BI3Bq9sKxw20FCYM",//Piglet anemia 
+              video_sheep:"https://www.youtube.com/embed/Uc8rQMN0Tww?si=YxIBV2GrgXdakBOq",//foot rot
+            video_duck: "https://www.youtube.com/embed/2vE4f-8p9rM",
+            video_chicken:"https://www.youtube.com/embed/bgSkjMYeRck?si=gwhQ3GvhW1_NpZdh",//Newcastle disease 
+            video_fish:"https://www.youtube.com/embed/yxi5Dz1xa3E?si=Nywh-JVNt7gILpdR",//Parasites infection 
+            video_flor:"https://www.youtube.com/embed/3Byp275fM78?si=cyOLiKXD95dtbkFb",//rose fungus
+            video_manure:"https://www.youtube.com/embed/Ygmxhbwj_Ss?si=Kp8TxoC7nju7M61M",//green manure
+            video_oil:"https://www.youtube.com/embed/_OAODlhyCLw?si=CAG6eM7ypfR_ftBy",//palm
+            video_jaggery:"https://www.youtube.com/embed/Ls4U8RRUrSo?si=jMlJ1CLRgJDBBnlz",//how to work
+            video_agro:"https://www.youtube.com/embed/yokoNBYFYAg?si=sZpchAB0SMSriq38",//Agroforesty
+            video_pottery:"https://www.youtube.com/embed/bq5RCKELyoA?si=k9xbBsWHugWwh9TW",//
+            video_seri:"https://www.youtube.com/embed/Msf_fGkm7RA?si=bWkImYqiVuA664-_",//Silkworm rearing
+        },
+
+        // Add back all other languages for a complete website (omitted here for brevity)
+        // I'm just including the requested languages and a few others as examples
+        "default": {} // Ensure a default empty object is present for safety
+    };
+
+
+    // Current state tracking
+    let currentView = 'main';
+    let lastSubMenuKey = null; // To remember which sub-menu we are in
+    let currentLang = document.getElementById('languageSelector').value; // Get initial lang
+
+    // --- 3. UI GENERATION FUNCTIONS ---
+
+    function createCard(title, img, clickHandler) {
+        return `
+            <div class="card" onclick="${clickHandler}">
+                <img src="${img}" alt="${title}"/>
+                <div class="card-title">${title}</div>
+            </div>
+        `;
+    }
+
+    function clearView() {
+        document.getElementById('optionsGrid').innerHTML = '';
+        document.getElementById('details').style.display = 'none';
+        document.getElementById('mainTitle').innerText = translations[currentLang]?.mainTitle || 'Animal Husbandry and Others';
+        document.getElementById('backBtn').innerText = translations[currentLang]?.backBtn || '← Back';
+    }
+
+    // 1. Load Main Grid
+    function loadMainGrid() {
+clearView();
+    currentView = 'main';
+    lastSubMenuKey = null;
+    let gridHTML = '';
+    
+    const t = translations[currentLang] || translations['en-IN']; // Get translations
+
+    for (const [key, value] of Object.entries(optionsData)) {
+        // Use the key (e.g., 'Animal Husbandry') to look up the translated title
+        const translatedTitle = t[key] || key; 
+        
+        const clickHandler = value.type === 'sub-menu' ? `showSubMenu('${key}')` : `showDetails('${key}')`;
+        gridHTML += createCard(translatedTitle, value.img, clickHandler);
+    }
+    document.getElementById('optionsGrid').innerHTML = gridHTML;
+}
+    // 2. Show Sub-Menu (e.g., Cow, Buffalo)
+    function showSubMenu(menuKey) {
+        clearView();
+        currentView = 'animal_husbandry';
+        lastSubMenuKey = menuKey;
+
+        const subMenuData = optionsData[menuKey];
+        const translatedMenuTitle = translations[currentLang]?.[menuKey] || menuKey;
+        const translatedBackBtn = translations[currentLang]?.backToMain || '← Back to Main';
+
+        document.getElementById('mainTitle').innerText = translatedMenuTitle; 
+        
+        let gridHTML = `<button class="back-btn" onclick="loadMainGrid()">${translatedBackBtn}</button>`;
+
+        for (const [key, value] of Object.entries(subMenuData.subOptions)) {
+            const translatedTitle = translations[currentLang]?.[key] || key;
+            const clickHandler = `showDetails('${menuKey}','${key}')`;
+            gridHTML += createCard(translatedTitle, value.img, clickHandler);
+        }
+        document.getElementById('optionsGrid').innerHTML = gridHTML;
+    }
+
+    // 3. Show Details for an Option (e.g., Cow details, Poultry details)
+    function showDetails(menuKey, subKey = null) {
+        let data;
+        let title_key;
+        let content_keys;
+        let video_key;
+        let img_key;
+
+        if (subKey) {
+            data = optionsData[menuKey].subOptions[subKey];
+            title_key = data.title_key;
+            content_keys = [data.content_key + '_p1', data.content_key + '_p2']; // Assuming 2 paragraphs
+            video_key = data.video_key;
+            img_key = data.img_key;
+        } else {
+            data = optionsData[menuKey];
+            title_key = data.title_key;
+            content_keys = [data.content_key + '_p1']; // Assuming 1 paragraph for others
+            video_key = data.video_key;
+            img_key = data.img_key;
+        }
+
+        // Save keys to be used for language updates
+        document.getElementById('details').dataset.titleKey = title_key;
+        document.getElementById('details').dataset.contentKeys = content_keys.join(',');
+        document.getElementById('details').dataset.videoKey = video_key;
+        document.getElementById('details').dataset.menuKey = menuKey;
+        document.getElementById('details').dataset.subKey = subKey || '';
+        document.getElementById('details').dataset.imgKey = img_key || '';
+        document.getElementById('optionsGrid').innerHTML = '';
+        document.getElementById('details').style.display = 'block';
+        currentView = 'details';
+
+        // Update the back button to go to the correct previous view
+        const backBtn = document.getElementById('backBtn');
+        if (subKey) {
+            backBtn.setAttribute('onclick', `showSubMenu('${menuKey}')`);
+        } else {
+            backBtn.setAttribute('onclick', `loadMainGrid()`);
+        }
+
+        // Apply all translations to the details view
+        updateDetailsContent(); 
+    }
+
+    // 4. Back button function
+    function goBackToGrid() {
+        const backBtn = document.getElementById('backBtn');
+        const clickHandler = backBtn.getAttribute('onclick');
+        if (clickHandler) {
+            // Execute the stored function
+            new Function(clickHandler)(); 
+        }
+    }
+
+    // --- 4. MULTILINGUAL FUNCTIONS ---
+
+    // Helper function to update the visible detail content
+    function updateDetailsContent() {
+        const details = document.getElementById('details');
+        if (details.style.display === 'block') {
+            const t = translations[currentLang];
+            const titleKey = details.dataset.titleKey;
+            const contentKeys = details.dataset.contentKeys ? details.dataset.contentKeys.split(',') : [];
+            const videoKey = details.dataset.videoKey;
+            const menuKey = details.dataset.menuKey;
+            const imgKey = details.dataset.imgKey;
+
+            // Update Title
+            document.getElementById('detailsTitle').innerText = t[titleKey] || titleKey;
+            document.getElementById('mainTitle').innerText = t[menuKey] || menuKey;
+
+            // Update Content (clear previous content first, then inject based on keys)
+            const contentDiv = document.getElementById('detailsContent');
+            contentDiv.innerHTML = ''; // Clear existing content
+
+            for (let i = 0; i < contentKeys.length; i++) {
+                const p = document.createElement('p');
+                p.innerHTML = t[contentKeys[i]] || '';
+                contentDiv.appendChild(p);
+            }
+
+            // Update Video
+            const videoIframe = document.createElement('iframe');
+            videoIframe.width = '100%';
+            videoIframe.height = '315';
+            videoIframe.frameBorder = '0';
+            videoIframe.allowFullscreen = true; // Use boolean for iframe attributes
+            
+            if (t[videoKey]) {
+                videoIframe.src = t[videoKey];
+                contentDiv.appendChild(videoIframe); // Append the video iframe
+            }
+            const imageEl = document.createElement('img');
+            const imageUrl = t[imgKey] || translations['en-IN'][imgKey]; // Use 'en-IN' as fallback for image URL
+            if (imageUrl) {
+                imageEl.src = imageUrl;
+                imageEl.alt = t[details.dataset.titleKey] || '';
+                contentDiv.appendChild(imageEl); // Insert the image before the video
+            }
+        }
+    }
+
+    // Main function to handle language change
+    function updateUIByLanguage(lang) {
+        currentLang = lang;
+        const t = translations[lang] || translations['en-IN'];
+
+        // Update Header and General Elements
+        document.getElementById('mainTitle').innerText = t.mainTitle;
+        document.getElementById('backBtn').innerText = t.backBtn;
+
+        // Re-load the view to apply translations to dynamic content (cards)
+        if (currentView === 'main' || lastSubMenuKey === null) {
+        loadMainGrid();
+    } 
+    // If we are in a sub-menu (like Animal Husbandry sub-cards), re-render that.
+    else if (currentView === 'animal_husbandry' && lastSubMenuKey) {
+        showSubMenu(lastSubMenuKey);
+    }
+    // If we are inside the details page, update the content there.
+    else if (currentView === 'details') {
+        updateDetailsContent();
+    }
+    }
+
+
+    // Event Listener for Language Selector
+    document.getElementById('languageSelector').addEventListener('change', function () {
+        updateUIByLanguage(this.value);
+    });
+
+
+    // Initialize the page view
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMainGrid();
+        // Initial translation application
+        updateUIByLanguage(currentLang);
+    });
+</script>
+</body>
+</html>

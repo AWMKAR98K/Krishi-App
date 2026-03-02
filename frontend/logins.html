@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="images\login.jpg" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #e9ebee; /* Light background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Standard form width */
+}
+
+.login-form h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* Input Fields Styling */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-group input[type="email"],
+.input-group input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #007bff; /* Highlight focus */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Login Button Styling */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #007bff; /* Blue button */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Separator Line */
+.separator {
+    height: 1px;
+    background-color: #ddd;
+    margin: 25px 0;
+}
+
+/* Signup Link Styling */
+.signup-prompt {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.signup-link {
+    color: #28a745; /* Green link color */
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+    color: #1e7e34;
+}
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <form class="login-form" id="login-form">
+            <h2>Welcome Back!</h2>
+
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="loginEmail" name="email" placeholder="youremail@example.com" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+            
+            <div class="separator"></div>
+
+            <div class="signup-prompt">
+                Don't have an account? 
+                <a href="signups.html" class="signup-link">Sign Up Here</a>
+            </div>
+
+        </form>
+    </div>
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } 
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = { 
+    apiKey: "AIzaSyDvsXYVoAOSz15_IfZlLNXTpf9kb006TLg",
+    authDomain: "farm-connect-d7e9c.firebaseapp.com",
+    projectId: "farm-connect-d7e9c",
+    storageBucket: "farm-connect-d7e9c.firebasestorage.app",
+    messagingSenderId: "219909535730",
+    appId: "1:219909535730:web:6e4b3caefbd3d1559b1d6b"
+   };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem('signedIn', 'true');
+      window.location.href = 'index.html';
+    } catch (error) {
+      alert("Login failed: " + error.message);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+          @media (max-width: 600px) {
+    body { padding: 10px; }
+    section { padding: 15px; }
+  }
+          /* Hide Google top banner & tooltip */
+        iframe.goog-te-banner-frame { display: none !important; }
+        #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+
+        /* Google translate dropdown styling */
+        #google_translate_element {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .goog-te-gadget {
+            font-size: 0;
+        }
+
+        .goog-te-gadget .goog-te-combo {
+            font-size: 14px !important;
+            color: #333 !important;
+            padding: 8px;
+            width: 100px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .goog-logo-link {
+            display: none !important;
+        }
+
+        /* Button styling */
+/* Button styling - Updated to target #translateBtn */
+#translateBtn {
+    background-color: #27ae60; /* Matches your header green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    display: block; /* Helps with centering if needed */
+}
+
+#translateBtn:hover {
+    background: #219150; /* Slightly darker green on hover */
+}
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - Krishi Auction</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header style="background: #27ae60; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+       <div id="menu-placeholder"></div>
+       <script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+        <h2 id="title"><i class="fas fa-seedling"></i> Farmer Dashboard</h2><br>
+        <div style="display: flex; gap: 15px; align-items: center;"> 
+            <button onclick="logout()" style="background: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+<center><button id="translateBtn">Google Translate</button></center>
+<div id="google_translate_element"></div> 
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+        <section style="background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #27ae60; padding-bottom: 10px; margin-bottom: 20px;">
+                <h2 style="color: #27ae60; margin: 0;"><i class="fas fa-shopping-cart"></i> Seeds & Equipment Market</h2>
+                <input type="text" id="searchInput" placeholder="Search for seeds, tools..." onkeyup="filterProducts()" style="padding: 8px 15px; border-radius: 20px; border: 1px solid #ddd; width: 300px;">
+            </div>
+            
+            <div id="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                <p style="text-align: center; color: #666;">Loading available products...</p>
+            </div>
+        </section>
+
+        <hr style="border: 0; height: 1px; background: #eee; margin: 40px 0;">
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+            
+            <section class="auth-card" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); height: fit-content;">
+                <h3 style="color: #27ae60; margin-top: 0;"><i class="fas fa-plus-circle"></i> Post New Crop Yield</h3>
+                
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <input id="cropType" placeholder="Crop Name (e.g., Wheat, Grapes)" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <input id="unit" placeholder="Unit (e.g., kg, ton, quintal)" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <input id="minPrice" type="number" placeholder="Min Price per Unit (₹)" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+
+                    <label style="font-weight: bold; font-size: 0.9em;">Select State:</label>
+                    <select id="state" onchange="updateDistricts()" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="">Select State</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Punjab">Punjab</option>
+                    </select>
+
+                    <label style="font-weight: bold; font-size: 0.9em;">Select District:</label>
+                    <select id="district" style="padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="">Select District</option>
+                    </select>
+
+                    <label style="font-weight: bold; font-size: 0.9em;">Pickup Address:</label>
+                    <textarea id="fullAddress" placeholder="Enter complete address for the winner..." style="width:100%; border-radius:6px; padding:10px; border: 1px solid #ddd; height: 80px;"></textarea>
+
+                    <div style="font-size: 0.8em; color: #555;">
+                        Photo: <input type="file" id="image" accept="image/*" style="margin-bottom: 5px;">
+                        Video: <input type="file" id="video" accept="video/*">
+                    </div>
+                    
+                    <button class="btn-primary" onclick="uploadYield()" style="background: #27ae60; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                        Start 24h Auction
+                    </button>
+                </div>
+            </section>
+
+            <section style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <h3 style="margin-top: 0; color: #333;"><i class="fas fa-tractor"></i> Your Active Auctions</h3>
+                <div id="myYields" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+                    <p>Loading your yields...</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/farmer-market.js"></script>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) window.location.href = "login.html";
+
+        // --- 1. UNIFIED INITIALIZATION ---
+        window.onload = function() {
+            console.log("System Initialized...");
+            if (typeof loadFarmerDashboard === "function") loadFarmerDashboard();
+            if (typeof loadMarketplace === "function") loadMarketplace();
+        };
+
+        // --- 2. DISTRICT LOGIC ---
+        const districtMap = {
+            "Maharashtra": ["Nashik", "Pune", "Nagpur", "Sangli"],
+            "Punjab": ["Amritsar", "Ludhiana", "Patiala"]
+        };
+
+        function updateDistricts() {
+            const state = document.getElementById("state").value;
+            const distSelect = document.getElementById("district");
+            distSelect.innerHTML = "<option>Select District</option>";
+            if(state && districtMap[state]) {
+                districtMap[state].forEach(d => {
+                    distSelect.innerHTML += `<option value="${d}">${d}</option>`;
+                });
+            }
+        }
+
+        // --- 3. LOAD FARMER AUCTIONS ---
+        async function loadFarmerDashboard() {
+            try {
+                const res = await fetch("http://localhost:5000/api/yield/my-yields", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await res.json();
+                const container = document.getElementById("myYields");
+                container.innerHTML = "";
+
+                if (data.length === 0) {
+                    container.innerHTML = "<p style='color:#999;'>You haven't posted any crops yet.</p>";
+                    return;
+                }
+
+                data.forEach(y => {
+                    const now = new Date();
+                    const endTime = new Date(y.auctionEndTime);
+                    
+                    let statusHTML = (now < endTime) 
+                        ? `<span style="color:#f39c12; font-weight:bold;">⏳ Auction Live</span>` 
+                        : (y.isPlatformFeePaid) 
+                            ? `<b style="color: #27ae60;">✅ SOLD! (Paid)</b>` 
+                            : `<b style="color: #2980b9;">🏆 Ended (Pending)</b>`;
+
+                    const card = document.createElement("div");
+                    card.style = "border: 1px solid #eee; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);";
+                    card.innerHTML = `
+                        <img src="http://localhost:5000/${y.image}" style="width:100%; height:160px; object-fit:cover;">
+                        <div style="padding: 15px;">
+                            <h4 style="margin:0 0 5px 0;">${y.cropType}</h4>
+                            <p style="font-size: 0.85em; color: #666; margin-bottom: 10px;">📍 ${y.district}, ${y.state}</p>
+                            <div style="padding: 8px; background: #fdfdfd; border: 1px solid #f1f1f1; border-radius: 5px; text-align: center; font-size: 0.9em; margin-bottom: 10px;">
+                                ${statusHTML}
+                            </div>
+                            <button onclick="deleteYield('${y._id}')" style="background: #fee; color: #c0392b; border: 1px solid #fcc; padding: 6px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 0.85em;">
+                                <i class="fas fa-trash"></i> Delete Yield
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) { console.error("Load Error:", err); }
+        }
+
+        // --- 4. UPLOAD LOGIC ---
+        async function uploadYield() {
+            try {
+                const formData = new FormData();
+                formData.append("cropType", document.getElementById("cropType").value);
+                formData.append("unit", document.getElementById("unit").value);
+                formData.append("minPrice", document.getElementById("minPrice").value);
+                formData.append("state", document.getElementById("state").value);
+                formData.append("district", document.getElementById("district").value);
+                formData.append("fullAddress", document.getElementById("fullAddress").value);
+                
+                const imageFile = document.getElementById("image").files[0];
+                const videoFile = document.getElementById("video").files[0];
+
+                if(!imageFile || !videoFile) return alert("Please select both an image and a video!");
+
+                formData.append("image", imageFile);
+                formData.append("video", videoFile);
+
+                const res = await fetch("http://localhost:5000/api/yield/create", {
+                    method: "POST",
+                    headers: { "Authorization": "Bearer " + token },
+                    body: formData 
+                });
+                
+                if (res.ok) {
+                    alert("Auction Started Successfully!");
+                    location.reload();
+                } else {
+                    alert("Upload failed. Check fields.");
+                }
+            } catch (err) { console.error("Upload Error:", err); }
+        }
+
+        async function deleteYield(yieldId) {
+            if (confirm("Delete this auction?")) {
+                const res = await fetch(`http://localhost:5000/api/yield/delete/${yieldId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                if (res.ok) location.reload();
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,mr,ta,te,kn,ml,pa,bn,gu',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        // Button toggle
+        document.getElementById("translateBtn").addEventListener("click", function () {
+            const el = document.getElementById("google_translate_element");
+            el.style.display = el.style.display === "none" ? "block" : "none";
+        });
+
+    </script>
+
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="images/gov.png" type="image/png">
+  <title>Govt Schemes & Loans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+img {
+border-radius: 50%;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background: #f2f9ff;
+margin: 0;
+padding: 0;
+}
+
+header {
+background-color: #0057b8;
+color: white;
+text-align: center;
+border-radius: 7px;
+padding: 1%;
+margin: 4%;
+}
+
+.card {
+background: white;
+margin: 20px;
+padding: 15px;
+border-radius: 12px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+transition: all 0.3s ease;
+}
+
+.card.scheme {
+border-left: 8px solid #4bb3fd;
+}
+
+.card.loan {
+border-left: 8px solid #004080;
+}
+
+.card h2 {
+margin-top: 0;
+cursor: pointer;
+}
+
+.card-content {
+display: none;
+padding-top: 10px;
+}
+
+iframe {
+width: 100%;
+height: 200px;
+margin-top: 10px;
+border: none;
+}
+
+    .btn {
+  background-color: #0328fc;
+  color: white; /* Standard Red */
+  border: 2px solid #3e57e5;
+  padding: 8px 20px;  
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;  
+  font-family: inherit;
+  align-items: center;
+}
+
+
+.btn:hover {
+  background-color: #33fd01;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(1, 245, 54, 0.582);
+}
+</style>
+</head>
+<body>
+<header>
+  <div id="menu-placeholder"></div>
+  <script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+<img src="images/govn.png" width="100px">
+    <h1 id="pageTitle">Govt Schemes & Loans</h1>
+    <label for="languageSelector">🌐 Choose Language/भाषा:</label>
+    <select id="languageSelector">
+      <option value="en-IN">English</option>
+      <option value="hi-IN">Hindi(हिन्दी)</option>
+      <option value="bn-IN">Bangla(বাংলা)</option>
+      <option value="gu-IN">Gujarati(ગુજરાતી)</option>
+      <option value="kn-IN">Kannada(ಕನ್ನಡ)</option>
+      <option value="mar-IN">Marathi(ಮರಾಠಿ)</option>
+      <option value="ml-IN">Malayalam(മലയാളം)</option>
+      <option value="pa-IN">Punjabi(ਪੰਜਾਬੀ)</option>
+      <option value="ta-IN">Tamil(தமிழ்)</option>
+      <option value="te-IN">Telugu(తెలుగు)</option>
+    </select>
+  </header>
+
+<div class="card scheme">
+<h2 onclick="toggleCard(this)" id="a1">PM Kisan Samman Nidhi</h2><div class="card-content">
+<p id="p1">Eligible farmers get Rs. 6000 per year in 3 installments.</p>
+<p id ="px"><strong>How to apply:</strong></p> 
+<iframe id="video1" width="560" height="315" src="https://www.youtube.com/embed/qtnhnbE4aUM?si=zWfddybGPmf1KXeQ" title="Ayushman Bharat (Marathi)" frameborder="0" allowfullscreen></iframe>
+<p><strong>Where to apply:</strong> <a href="https://pmkisan.gov.in/" target="_blank">pmkisan.gov.in</a></p>
+</div></div>
+
+<div class="card loan">
+<h2 onclick="toggleCard(this)" id="a2">Kisan Credit Card (KCC) Loan</h2><div class="card-content">
+<p id="p2">Loan for buying seeds, fertilizers and agriculture needs at low interest rates.</p>
+<p id ="px"><strong>How to apply:</strong></p> 
+<iframe id="video2" src="https://youtu.be/R_RNJUUHWF4?si=jCEyTyjAz1JGdgPe" allowfullscreen></iframe>
+<p id="t1"><strong>Where to apply: </strong> <a href="https://www.pmkisan.gov.in/kccform.aspx" target="_blank">pmkisan.gov.in/kccform</a></p>
+<p id="t2"></p>
+</div></div>
+
+<div class="card loan">
+<h2 onclick="toggleCard(this)" id="a3">Pradhan mantri fasla bima yojaana</h2>
+<div class="card-content">
+<p id="p3">Flagship crop insurance scheme launched in 2016 and crops losses due to natural climate pests and disease.</p>
+<p id ="px"><strong>How to apply:</strong></p> 
+<iframe id="video3" src="https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u" allowfullscreen></iframe>
+<p><strong>Where to apply:</strong> <a href="https://www.pmkisan.gov.in/kccform.aspx" target="_blank">pmkisan.gov.in/kccform</a></p>
+</div></div>
+
+<div class="card loan">
+<h2 onclick="toggleCard(this)" id="a4">Soli health card scheme</h2>
+<div class="card-content">
+<p id="p4">Scheme has led to declined fertilizer usage in many regions in productivity crops like pulse ,oli</p>
+<p id ="px"><strong>How to apply:</strong></p> 
+<iframe id="video4" src="https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi"  allowfullscreen></iframe> 
+<p><strong>Where to apply:</strong> <a href="https://www.pmkisan.gov.in/kccform.aspx" target="_blank">pmkisan.gov.in/kccform</a></p>
+</div>
+</div>
+
+<div class="card loan">
+<h2 onclick="toggleCard(this)" id="a5">Animal husbandry infrastructure development fund </h2>
+<div class="card-content">
+<p id="p5">Boost export and ensure nutrients rich feed to animal like cattle,goats.pigs etc</p>
+<p id ="px"><strong>How to apply:</strong></p> 
+<iframe id="video5"src="https://www.youtube.com/embed/7sYYOnzJFYE?si=xuSFpgnOMUVbcI9d" sallowfullscreen></iframe>
+<p><strong>Where to apply:</strong> <a href="https://www.pmkisan.gov.in/kccform.aspx" target="_blank">pmkisan.gov.in/kccform</a></p>
+</div>
+</div>
+<center>
+<button class="btn" id="bt" onclick="openNewWebsite()">Get Government office and bank address</button>
+</center>
+<script>
+    const translations = {
+      "en-IN": {
+        pageTitle: "Govt Schemes & Loans",
+        a1: "PM Kisan Samman Nidhi",
+        a2: "Kisan Credit Card (KCC) Loan",
+        a3:"pradhan mantri fasla bima yojaana",
+        a4:"soli health card scheme",
+        a5:"animal husbandry infrastructure development fund",
+        p1:"Eligible farmers get Rs. 6000 per year in 3 installments.", // Added content for p1
+        p2:"Loan for buying seeds, fertilizers and agriculture needs at low interest rates",
+        p3:"Flagship crop insurance scheme launched in 2016 and crops losses due to natural climate pests and disease.", // Added content for p3
+        p4:"Scheme has led to declined fertilizer usage in many regions in productivity crops like pulse ,oli", // Added content for p4
+        p5:"Boost export and ensure nutrients rich feed to animal like cattle,goats.pigs etc", // Added content for p5
+        px:"How to apply:",
+        t1:"Where to apply",
+        bt:"Get Government office and bank address",
+        video1: "https://www.youtube.com/embed/qtnhnbE4aUM?si=zWfddybGPmf1KXeQ",
+        video2: "https://www.youtube.com/embed/HiJCMmGUo9Q?si=MIUCBdI9hkly4IZm",
+        video3: "https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u",
+        video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi",
+        video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=xuSFpgnOMUVbcI9d",
+
+      }, 
+      "hi-IN": {
+        pageTitle: "सरकारी योजनाएं और ऋण",
+        a1: "प्रधानमंत्री किसान सम्मान निधि",
+        a2: "किसान क्रेडिट कार्ड (केसीसी)",
+        a3:"प्रधानमंत्री फसल बीमा योजना",
+        a4:"सोली स्वास्थ्य कार्ड योजना",
+        a5:"पशुपालन बुनियादी ढाँचा विकास निधि",
+        p1:"पात्र किसानों को 3 किश्तों में प्रति वर्ष 6000 रुपये मिलते हैं।", // Hindi translation for p1
+        p2:"बीज, उर्वरक और कृषि आवश्यकताओं के लिए कम ब्याज दरों पर ऋण",
+        p3:"2016 में शुरू की गई प्रमुख फसल बीमा योजना और प्राकृतिक जलवायु कीटों और बीमारियों के कारण फसल का नुकसान।", // Hindi translation for p3
+        p4:"इस योजना से कई क्षेत्रों में दाल, तेल जैसी उत्पादकता वाली फसलों में उर्वरक के उपयोग में कमी आई है।", // Hindi translation for p4
+        p5:"पशुओं जैसे मवेशी, बकरी, सूअर आदि को निर्यात को बढ़ावा देना और पोषक तत्वों से भरपूर चारा सुनिश्चित करना", // Hindi translation for p5
+        px:"आवेदन कैसे करें:",
+        t1:"कहां आवेदन करें",
+        bt:"सरकारी कार्यालय और बैंक का पता प्राप्त करें",
+        video1: "https://www.youtube.com/embed/HiJCMmGUo9Q?si=MIUCBdI9hkly4IZm",  
+        video2: "https://www.youtube.com/embed/0tX81sEnJFc",
+        video3:"https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u" ,
+        video4:"https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi",
+        video5:"https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk",       
+      },
+      "bn-IN": {
+        pageTitle: "সরকারি প্রকল্প ও ঋণ",
+        a1: "প্রধানমন্ত্রী কিষাণ সম্মান নিধি",
+        a2: "কিষাণ ক্রেডিট কার্ড (KCC)",
+        a3:"প্রধানমন্ত্রী ফসল বীমা যোজনা",
+        a4:"সোলি স্বাস্থ্য কার্ড প্রকল্প",
+        a5:"পশুপালন অবকাঠামো উন্নয়ন তহবিল",
+        p1:"যোগ্য কৃষকরা 3 কিস্তিতে প্রতি বছর 6000 টাকা পান।",
+        p2:"কম সুদের হারে বীজ, সার এবং কৃষি প্রয়োজনের জন্য ঋণ",
+        p3:"2016 সালে চালু হওয়া ফ্ল্যাগশিপ শস্য বীমা প্রকল্প এবং প্রাকৃতিক জলবায়ু কীটপতঙ্গ ও রোগের কারণে ফসলের ক্ষতি।",
+        p4:"এই প্রকল্পের ফলে অনেক অঞ্চলে ডাল, তেল সহ উৎপাদনশীল ফসলে সারের ব্যবহার কমেছে।",
+        p5:"গরু, ছাগল, শূকর ইত্যাদির মতো প্রাণীদের জন্য পুষ্টিসমৃদ্ধ খাদ্য নিশ্চিত করা এবং রপ্তানি বাড়ানো।",
+        px:"কীভাবে আবেদন করবেন:",
+        t1:"কোথায় আবেদন করতে হবে",
+        bt:"সরকারি অফিস এবং ব্যাঙ্কের ঠিকানা পান",
+        video1: "https://www.youtube.com/embed/uy_s3NLa91I?si=Tpzv3Npid1A3Mk7e", 
+        video2: "https://www.youtube.com/embed/BazwLL2Vt7c",
+        video3:"https://www.youtube.com/embed/jpJe6TzdUdM?si=vZvhAPeGLWKBzXjA",
+        video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Bengali one is not available
+        video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Bengali one is not available
+      },
+
+"gu-IN":{
+          pageTitle:"સરકારી યોજના અને લોન",
+          a1:"પીએમ કિસાન સન્માન નિધિ",
+          a2:"કિસાન ક્રેડિટ કાર્ડ",
+          a3:"પ્રધાન મંત્રી ફસલા બીમા યોજના",
+          a4:"સોલી હેલ્થ કાર્ડ યોજના",
+          a5:"પશુપાલન ઇન્ફ્રાસ્ટ્રક્ચર ડેવલપમેન્ટ ફંડ",
+          p1:"પાત્ર ખેડૂતોને 3 હપ્તામાં દર વર્ષે રૂ. 6000 મળે છે.",
+          p2:"ઓછા વ્યાજ દરે બીજ, ખાતર અને કૃષિ જરૂરિયાતો માટે લોન",
+          p3:"2016 માં શરૂ કરાયેલ મુખ્ય પાક વીમા યોજના અને કુદરતી આબોહવા જંતુઓ અને રોગોને કારણે પાકનું નુકસાન.",
+          p4:"આ યોજનાથી ઘણા પ્રદેશોમાં કઠોળ, તેલીબિયાં જેવા ઉત્પાદકતા પાકોમાં ખાતરનો ઉપયોગ ઘટ્યો છે.",
+          p5:"નિકાસને વેગ આપવા અને ગાય, બકરી, ડુક્કર વગેરે જેવા પ્રાણીઓને પોષક તત્વોથી ભરપૂર ખોરાક સુનિશ્ચિત કરવા.",
+          px:"કેવી રીતે અરજી કરવી:",
+          t1:"ક્યાં અરજી કરવી",
+          bt:"સરકારી ઓફિસ અને બેંકનું સરનામું મેળવો",
+          video1: "https://www.youtube.com/embed/bF6BOCdzrtU?si=x6DtF-NrgcI1YJwP", // Reusing a general video if Gujarati one is not available
+          video2:"https://www.youtube.com/embed/r_hFUFRUMHw?si=1Fax5b49syhZjXW8",
+          video3: "https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u", // Reusing a general video if Gujarati one is not available
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Gujarati one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Gujarati one is not available
+        },
+
+ "kn-IN":{
+          pageTitle:"ಸರ್ಕಾರದ ಯೋಜನೆ ಮತ್ತು ಸಾಲ",
+          a1:"ಪ್ರಧಾನ ಮಂತ್ರಿ ಕಿಸಾನ್ ಸಮ್ಮಾನ್ ನಿಧಿ",
+          a2:"ಕಿಸಾನ್ ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್",
+          a3:"ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲಾ ಬಿಮಾ ಯೋಜನೆ",
+          a4:"ಸೋಲಿ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ಯೋಜನೆ",
+          a5:"ಪಶುಸಂಗೋಪನೆ ಮೂಲಸೌಕರ್ಯ ಅಭಿವೃದ್ಧಿ ನಿಧಿ",
+          p1:"ಅರ್ಹ ರೈತರಿಗೆ ವರ್ಷಕ್ಕೆ 6000 ರೂ. 3 ಕಂತುಗಳಲ್ಲಿ ದೊರೆಯುತ್ತದೆ.",
+          p2:"ಕಡಿಮೆ ಬಡ್ಡಿ ದರದಲ್ಲಿ ಬೀಜಗಳು, ರಸಗೊಬ್ಬರಗಳು ಮತ್ತು ಕೃಷಿ ಅಗತ್ಯಗಳಿಗಾಗಿ ಸಾಲ",
+          p3:"2016 ರಲ್ಲಿ ಪ್ರಾರಂಭವಾದ ಪ್ರಮುಖ ಬೆಳೆ ವಿಮಾ ಯೋಜನೆ ಮತ್ತು ನೈಸರ್ಗಿಕ ಹವಾಮಾನ ಕೀಟಗಳು ಮತ್ತು ರೋಗಗಳಿಂದ ಬೆಳೆ ನಷ್ಟ.",
+          p4:"ಈ ಯೋಜನೆಯು ಅನೇಕ ಪ್ರದೇಶಗಳಲ್ಲಿ ಬೇಳೆಕಾಳುಗಳು, ಎಣ್ಣೆಕಾಳುಗಳಂತಹ ಉತ್ಪಾದಕ ಬೆಳೆಗಳಲ್ಲಿ ರಸಗೊಬ್ಬರ ಬಳಕೆಯನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಕಾರಣವಾಗಿದೆ.",
+          p5:"ರಫ್ತು ಹೆಚ್ಚಿಸಲು ಮತ್ತು ಜಾನುವಾರು, ಮೇಕೆ, ಹಂದಿ ಇತ್ಯಾದಿ ಪ್ರಾಣಿಗಳಿಗೆ ಪೌಷ್ಟಿಕಾಂಶ ಭರಿತ ಆಹಾರವನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು.",
+          px:"ಅರ್ಜಿ ಸಲ್ಲಿಸುವುದು ಹೇಗೆ:",
+          t1:"ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕಾದ ಸ್ಥಳ",
+          bt:"ಸರ್ಕಾರಿ ಕಚೇರಿ ಮತ್ತು ಬ್ಯಾಂಕ್ ವಿಳಾಸವನ್ನು ಪಡೆಯಿರಿ",
+          video1: "https://www.youtube.com/embed/ZGIp26VW5Lk?si=OUcLhAWqkUTRa_QL", // Reusing a general video if Kannada one is not available
+          video2:"https://www.youtube.com/embed/r_hFUFRUMHw?si=1Fax5b49syhZjXW8",
+          video3: "https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u", // Reusing a general video if Kannada one is not available
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Kannada one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Kannada one is not available
+        },
+
+"mar-IN":{
+          pageTitle:"सरकारी योजना कर्ज",
+          a1:"प्रधान मंत्री किसान सन्मान निधी",
+          a2:"किसान क्रेडिट कार्ड",
+          a3:"पंतप्रधान पीक विमा योजना",
+          a4:"सोली हेल्थ कार्ड योजना",
+          a5:"पशुसंवर्धन पायाभूत सुविधा विकास निधी",
+          p1:"पात्र शेतकऱ्यांना वर्षाला रु. 6000 तीन हप्त्यांमध्ये मिळतात.",
+          p2:"बियाणे, खते आणि शेतीच्या गरजांसाठी कमी व्याज दरात कर्ज",
+          p3:"2016 मध्ये सुरू झालेली प्रमुख पीक विमा योजना आणि नैसर्गिक हवामान कीटक आणि रोगांमुळे झालेले पीक नुकसान.",
+          p4:"या योजनेमुळे अनेक प्रदेशांमध्ये डाळी, तेलबियांसारख्या उत्पादक पिकांमध्ये खतांचा वापर कमी झाला आहे.",
+          p5:"निर्यात वाढवण्यासाठी आणि गायी, शेळ्या, डुक्कर इत्यादी जनावरांना पोषक तत्वांनी युक्त चारा सुनिश्चित करण्यासाठी.",
+          px:"अर्ज कसा करायचा?",
+          t1:"अर्ज कुठे करायचा",
+          bt:"सरकारी कार्यालय आणि बँकेचा पत्ता मिळवा",
+          video1:"https://www.youtube.com/embed/0wB8u7qQ89E?si=pbnG49y0ZdHNt_fq",
+          video2:"https://www.youtube.com/embed/k766_q17tOA?si=yWJjtENRic1wH-8S",
+          video3:"https://www.youtube.com/embed/8m1HzLzzd9s?si=-UCoGlEDs1O7rY-p",
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Marathi one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Marathi one is not available
+        },
+
+ "ml-IN":{
+          pageTitle:"സർക്കാർ പദ്ധതിയും വായ്പയും",
+          a1:"പ്രധാനമന്ത്രി കിസാൻ സമ്മാൻ നിധി",
+          a2:"കിസാൻ ക്രെഡിറ്റ് കാർഡ്",
+          a3:"പ്രധാനമന്ത്രി വിള ഇൻഷുറൻസ് പദ്ധതി",
+          a4:"സോളി ഹെൽത്ത് കാർഡ് പദ്ധതി",
+          a5:"മൃഗസംരക്ഷണ അടിസ്ഥാന സൗകര്യ വികസന ഫണ്ട്",
+          p1:"അർഹതപ്പെട്ട കർഷകർക്ക് പ്രതിവർഷം 6000 രൂപ 3 ഗഡുക്കളായി ലഭിക്കുന്നു.",
+          p2:"വിത്തുകൾ, വളങ്ങൾ, കാർഷിക ആവശ്യങ്ങൾ എന്നിവ വാങ്ങുന്നതിന് കുറഞ്ഞ പലിശ നിരക്കിലുള്ള വായ്പ",
+          p3:"2016-ൽ ആരംഭിച്ച പ്രധാന വിള ഇൻഷുറൻസ് പദ്ധതി, പ്രകൃതി ദുരന്തങ്ങൾ, കീടങ്ങൾ, രോഗങ്ങൾ എന്നിവ കാരണം വിളനാശം ഉണ്ടാകുമ്പോൾ.",
+          p4:"ഈ പദ്ധതി പല പ്രദേശങ്ങളിലും പയർവർഗ്ഗങ്ങൾ, എണ്ണക്കുരുക്കൾ പോലുള്ള ഉൽപാദനക്ഷമതയുള്ള വിളകളിൽ വളങ്ങളുടെ ഉപയോഗം കുറയ്ക്കുന്നതിലേക്ക് നയിച്ചു.",
+          p5:"കന്നുകാലികൾ, ആടുകൾ, പന്നികൾ തുടങ്ങിയ മൃഗങ്ങൾക്ക് പോഷകസമൃദ്ധമായ തീറ്റ ഉറപ്പാക്കുകയും കയറ്റുമതി വർദ്ധിപ്പിക്കുകയും ചെയ്യുക.",
+          px:"എങ്ങനെ അപേക്ഷിക്കണം:",
+          t1:"എവിടെ അപേക്ഷിക്കണം",
+          bt:"സർക്കാർ ഓഫീസ് വിലാസവും ബാങ്ക് വിലാസവും നേടുക",
+          video1:"https://www.youtube.com/embed/u3bl3H4DC98?si=Yk1aSvQe2JoPK1kc",
+          video2:"https://www.youtube.com/embed/L0qG4001jfE?si=ykKf9_fpm0pDN_P_",
+          video3:"https://www.youtube.com/embed/u3bl3H4DC98?si=moJgd-fR_E37gT0F",
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Malayalam one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Malayalam one is not available
+        },
+
+        "pa-IN":{
+          pageTitle:"ਸਰਕਾਰੀ ਸਕੀਮ ਅਤੇ ਕਰਜ਼ਾ",
+          a1:"ਪ੍ਰਧਾਨ ਮੰਤਰੀ ਕਿਸਾਨ ਸਨਮਾਨ ਨਿਧੀ",
+          a2:"ਕਿਸਾਨ ਕ੍ਰੈਡਿਟ ਕਾਰਡ (KCC) ਕਰਜ਼ਾ",
+          a3:"ਪ੍ਰਧਾਨ ਮੰਤਰੀ ਫਾਸਲਾ ਬੀਮਾ ਯੋਜਨਾ",
+          a4:"ਸੋਲੀ ਹੈਲਥ ਕਾਰਡ ਸਕੀਮ",
+          a5:"ਪਸ਼ੂ ਪਾਲਣ ਬੁਨਿਆਦੀ ਢਾਂਚਾ ਵਿਕਾਸ ਫੰਡ",
+          p1:"ਯੋਗ ਕਿਸਾਨਾਂ ਨੂੰ 3 ਕਿਸ਼ਤਾਂ ਵਿੱਚ ਪ੍ਰਤੀ ਸਾਲ 6000 ਰੁਪਏ ਮਿਲਦੇ ਹਨ।",
+          p2:"ਘੱਟ ਵਿਆਜ ਦਰਾਂ 'ਤੇ ਬੀਜ, ਖਾਦ ਅਤੇ ਖੇਤੀ ਦੀਆਂ ਜ਼ਰੂਰਤਾਂ ਲਈ ਕਰਜ਼ਾ",
+          p3:"2016 ਵਿੱਚ ਸ਼ੁਰੂ ਕੀਤੀ ਗਈ ਪ੍ਰਮੁੱਖ ਫਸਲ ਬੀਮਾ ਯੋਜਨਾ ਅਤੇ ਕੁਦਰਤੀ ਮੌਸਮੀ ਕੀੜਿਆਂ ਅਤੇ ਬਿਮਾਰੀਆਂ ਕਾਰਨ ਫਸਲਾਂ ਦਾ ਨੁਕਸਾਨ।",
+          p4:"ਇਸ ਸਕੀਮ ਨਾਲ ਕਈ ਖੇਤਰਾਂ ਵਿੱਚ ਦਾਲਾਂ, ਤੇਲ ਬੀਜਾਂ ਵਰਗੀਆਂ ਉਤਪਾਦਕਤਾ ਵਾਲੀਆਂ ਫਸਲਾਂ ਵਿੱਚ ਖਾਦ ਦੀ ਵਰਤੋਂ ਘਟੀ ਹੈ।",
+          p5:"ਨਿਰਯਾਤ ਨੂੰ ਉਤਸ਼ਾਹਿਤ ਕਰਨਾ ਅਤੇ ਪਸ਼ੂਆਂ ਜਿਵੇਂ ਗਾਵਾਂ, ਬੱਕਰੀਆਂ, ਸੂਰਾਂ ਆਦਿ ਨੂੰ ਪੌਸ਼ਟਿਕ ਭਰਪੂਰ ਚਾਰਾ ਯਕੀਨੀ ਬਣਾਉਣਾ।",
+          px:"ਅਰਜ਼ੀ ਕਿਵੇਂ ਦੇਣੀ ਹੈ:",
+          t1:"ਕਿੱਥੇ ਅਰਜ਼ੀ ਦੇਣੀ ਹੈ",
+          bt:"ਸਰਕਾਰੀ ਦਫ਼ਤਰ ਅਤੇ ਬੈਂਕ ਦਾ ਪਤਾ ਪ੍ਰਾਪਤ ਕਰੋ",
+          video1: "https://www.youtube.com/embed/ZGIp26VW5Lk?si=OUcLhAWqkUTRa_QL", // Reusing a general video if Punjabi one is not available
+          video2: "https://www.youtube.com/embed/0tX81sEnJFc", // Reusing a general video if Punjabi one is not available
+          video3:"https://www.youtube.com/embed/LHy6gfFwHiE?si=ficglJSO1CSuXy8u" , // Reusing a general video if Punjabi one is not available
+          video4:"https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Punjabi one is not available
+          video5:"https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Punjabi one is not available
+        },
+
+"ta-IN":{
+          pageTitle:"அரசு திட்டம் & கடன்",
+          a1:"பிரதான் மந்திரி கிசான் சம்மான் நிதி",
+          a2:"கிசான் கடன் அட்டை",
+          a3:"பிரதம மந்திரி பயிர் காப்பீட்டுத் திட்டம்",
+          a4:"மண் ஆரோக்கிய அட்டைத் திட்டம்",
+          a5:"கால்நடை வளர்ப்பு உள்கட்டமைப்பு மேம்பாட்டு நிதி",
+          p1:"தகுதியுள்ள விவசாயிகளுக்கு ஆண்டுக்கு ரூ. 6000 மூன்று தவணைகளில் கிடைக்கிறது.",
+          p2:"குறைந்த வட்டி விகிதத்தில் விதைகள், உரங்கள் மற்றும் விவசாயத் தேவைகளுக்கான கடன்",
+          p3:"2016 இல் தொடங்கப்பட்ட முதன்மைப் பயிர் காப்பீட்டுத் திட்டம் மற்றும் இயற்கைப் பேரிடர்கள், பூச்சிகள் மற்றும் நோய்கள் காரணமாக ஏற்படும் பயிர் இழப்புகள்.",
+          p4:"இந்தத் திட்டம் பல பகுதிகளில் பருப்பு, எண்ணெய் வித்துக்கள் போன்ற உற்பத்தித் திறன் கொண்ட பயிர்களில் உரப் பயன்பாடு குறைவதற்கு வழிவகுத்தது.",
+          p5:"ஏற்றுமதியை அதிகரிக்கவும், கால்நடைகள், ஆடுகள், பன்றிகள் போன்ற விலங்குகளுக்கு சத்தான தீவனத்தை உறுதி செய்யவும்.",
+          px:"எப்படி விண்ணப்பிப்பது:",
+          t1:"எங்கே விண்ணப்பிப்பது",
+          bt:"அரசு அலுவலகம் மற்றும் வங்கி முகவரியைப் பெறுங்கள்.",
+          video1:"https://www.youtube.com/embed/v8ip3jrbH1M?si=iZW62xNKkElfnNyD",
+          video2:"https://www.youtube.com/embed/S5DQIAU1rFY?si=gfXpEBVBxUfQGOp",
+          video3:"https://www.youtube.com/embed/v8ip3jrbH1M?si=RK02Y3Q71ezUjuaL",
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Tamil one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Tamil one is not available
+        },
+
+ "te-IN":{
+          pageTitle:"ప్రభుత్వ పథకం & రుణం",
+          a1:"ప్రధాన్ మంత్రీ కిసాన్ సమ్మాన్ నిధి",
+          a2:"కిసాన్ క్రెడిట్ కార్డ్",
+          a3:"ప్రధానమంత్రి పంటల బీమా పథకం",
+          a4:"నేల ఆరోగ్య కార్డు పథకం",
+          a5:"పశుసంవర్ధక మౌలిక సదుపాయాల అభివృద్ధి నిధి",
+          p1:"అర్హులైన రైతులకు సంవత్సరానికి రూ. 6000 మూడు విడతలుగా అందుతుంది.",
+          p2:"విత్తనాలు, ఎరువులు మరియు వ్యవసాయ అవసరాల కోసం తక్కువ వడ్డీ రేట్లకు రుణం",
+          p3:"2016 లో ప్రారంభించబడిన ప్రధాన పంటల బీమా పథకం మరియు ప్రకృతి వైపరీత్యాలు, తెగుళ్లు మరియు వ్యాధుల కారణంగా పంట నష్టాలు.",
+          p4:"ఈ పథకం అనేక ప్రాంతాలలో పప్పులు, నూనెగింజలు వంటి ఉత్పాదక పంటలలో ఎరువుల వాడకాన్ని తగ్గించడానికి దారితీసింది.",
+          p5:"ఎగుమతిని పెంచడానికి మరియు పశువులు, మేకలు, పందులు మొదలైన జంతువులకు పోషక విలువలు అధికంగా ఉండే దాణా అందించడానికి.",
+          px:"ఎలా దరఖాస్తు చేయాలి:",
+          t1:"ఎక్కడ దరఖాస్తు చేయాలి",
+          bt:"ప్రభుత్వ కార్యాలయం మరియు బ్యాంకు చిరునామాను పొందండి",
+          video1:"https://www.youtube.com/embed/h5Y2MwNmr-s?si=-4CAbTAyQGp-NpqI",
+          video2:"https://www.youtube.com/embed/HHiyoTOt29I?si=Spl25AFipT4cH74f",
+          video3:"https://www.youtube.com/embed/h5Y2MwNmr-s?si=oO0X1SCKZYvTOwEN",
+          video4: "https://www.youtube.com/embed/m3jtZtf_mZM?si=ouoQQEiEiAUx7Pzi", // Reusing a general video if Telugu one is not available
+          video5: "https://www.youtube.com/embed/7sYYOnzJFYE?si=4dyTtIDapi7OHUk", // Reusing a general video if Telugu one is not available
+        },
+    };
+
+    function updateUIByLanguage(lang) {
+      const t = translations[lang];
+      if (!t) return;
+
+    document.querySelector('header h1').innerText = t.pageTitle;
+    document.getElementById('a1').innerText = t.a1;
+    document.getElementById('a2').innerText = t.a2;
+    document.getElementById('a3').innerText = t.a3;
+    document.getElementById('a4').innerText = t.a4;
+    document.getElementById('a5').innerText = t.a5;
+   document.getElementById('p1').innerText = t.p1;
+   document.getElementById('p2').innerText = t.p2;
+   document.getElementById('p3').innerText = t.p3;
+   document.getElementById('p4').innerText = t.p4;
+   document.getElementById('p5').innerText = t.p5;
+   document.getElementById('px').innerText = t.px;
+   document.getElementById('t1').innerText = t.t1;
+   document.getElementById('bt').innerText = t.bt;
+
+  	// Check if video elements exist before trying to set their source
+  	const video1 = document.getElementById('video1');
+  	if (t.video1 && video1) {
+        video1.src = t.video1;
+    }
+  	const video2 = document.getElementById('video2');
+      if (t.video2 && video2) {
+        video2.src = t.video2;
+      }
+  	const video3 = document.getElementById('video3');
+      if (t.video3 && video3) {
+        video3.src = t.video3;
+      }
+  	const video4 = document.getElementById('video4');
+      if (t.video4 && video4) {
+        video4.src = t.video4;
+      }
+  	const video5 = document.getElementById('video5');
+     if (t.video5 && video5) {
+        video5.src = t.video5;
+      }
+    }
+
+    document.getElementById('languageSelector').addEventListener('change', function () {
+      updateUIByLanguage(this.value);
+    });
+
+    // Add a check for the initial source of the KCC loan video
+    // The default link in the HTML for KCC loan is a YouTube share link (https://youtu.be/...)
+    // YouTube iframes require the embed link (https://www.youtube.com/embed/...)
+    // I'm updating the initial HTML to use the correct embed link for KCC Loan
+    // The one in the translation object is already corrected.
+
+    updateUIByLanguage(document.getElementById('languageSelector').value); // initial
+
+    function toggleCard(header) {
+      const content = header.nextElementSibling;
+      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    }
+function openNewWebsite() {
+  // Replace 'https://example.com' with the actual URL you want to open
+  window.open('7x.html', '_blank');
+}
+  </script>
+</body>
+</html>

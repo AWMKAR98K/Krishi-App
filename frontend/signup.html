@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+<style>
+:root {
+    --primary-green: #27ae60;
+    --dark-green: #219150;
+    --light-bg: #f0f8ff;
+    --white: #ffffff;
+    --text-main: #2d3436;
+    --text-muted: #636e72;
+    --radius: 12px;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e0ffe0 0%, #f0f8ff 100%);
+}
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.logo-area i {
+    font-size: 40px;
+    color: var(--primary-green);
+    margin-bottom: 10px;
+}
+
+.auth-card h2 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 26px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.select-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-green);
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #dfe6e9;
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: #fdfdfd;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
+}
+
+/* Wholesaler Section Styling */
+.special-fields {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--primary-green);
+    margin-bottom: 15px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.signup-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.signup-btn:hover {
+    background: var(--dark-green);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.footer-links {
+    margin-top: 25px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.footer-links a {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+/* Specific styling for the Wholesaler hidden fields */
+#wholesalerFields {
+    border-left: 3px solid var(--primary-green);
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+
+<h2>Signup</h2>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="logo-area">
+            <i class="fas fa-leaf"></i>
+            <h2>Create Account</h2>
+        </div>
+        
+        <p class="subtitle">Join the AI Farming community today</p>
+
+        <div class="input-group">
+            <input id="name" type="text" placeholder="Full Name">
+        </div>
+        <div class="input-group">
+            <input id="email" type="email" placeholder="Email Address">
+        </div>
+        <div class="input-group">
+            <input id="phone" type="tel" placeholder="Phone Number">
+        </div>
+        <div class="input-group">
+            <input id="password" type="password" placeholder="Password">
+        </div>
+
+        <div class="input-group">
+            <label class="select-label">Select Your Role</label>
+            <select id="role">
+                <option value="farmer">I am a Farmer</option>
+                <option value="wholesaler">I am a Wholesaler</option>
+            </select>
+        </div>
+
+        <div id="wholesalerFields" class="special-fields" style="display:none;">
+            <div class="input-group">
+                <input id="companyName" placeholder="Company Name">
+            </div>
+            <div class="input-group">
+                <input id="companyId" placeholder="Registered Company ID">
+            </div>
+        </div>
+
+        <button class="signup-btn" onclick="signup()">Create Account</button>
+        
+        <div class="footer-links">
+            <span>Already have an account?</span>
+            <a href="login.html">Login</a>
+        </div>
+    </div>
+</div>
+<script>
+  // Show fields only if wholesaler is selected
+  document.getElementById('role').addEventListener('change', function() {
+    document.getElementById('wholesalerFields').style.display = 
+      this.value === 'wholesaler' ? 'block' : 'none';
+  });
+</script>
+<button onclick="signup()">Signup</button>
+
+<script src="js/app.js"></script>
+</body>
+</html>

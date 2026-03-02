@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">     
+  <link rel="icon" href="images\l1.png" type="image/x-icon">
+  <title>Land Information & Crop Suggestion</title>
+<style>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f7fcf9; 
+  padding: 10px;
+  margin: 0;
+}
+
+header {
+  background-color: #38a169; /* Primary Green */
+  color: #ffffff;
+  padding: 1%;
+  text-align: center;
+  font-size: 1.5rem;
+  border-radius: 7px;
+  margin: 4%;
+  font-weight: 600;
+}
+
+#languageSelector {
+  display: block;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: auto; 
+  text-align: center;
+  align-items: center;
+}
+
+main {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+button {
+  background-color: #38a169;
+  color: white;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #277953;
+}
+
+@media (min-width: 600px) {
+  .options {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* 5. Forms (Input Area) */
+form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  border-top: 4px solid #48bb78;
+}
+
+form h2 {
+    color: #38a169;
+    margin-bottom: 1.5rem;
+}
+
+form label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+form select, form input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  font-size: 1rem;
+}
+
+form button[type="submit"] {
+    margin-top: 2rem;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #48bb78;
+}
+
+form button[type="submit"]:hover {
+    background-color: #38a169;
+}
+
+.results {
+  background: #ecfdf5;
+  padding: 1.5rem;
+  border-left: 5px solid #48bb78;
+  margin-top: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.results h3 {
+    color: #277953;
+    margin-bottom: 0.75rem;
+}
+
+.results ul {
+    list-style: disc inside;
+    padding-left: 15px;
+}
+
+.results li {
+    margin-bottom: 5px;
+    line-height: 1.5;
+}
+
+.hidden {
+  display: none;
+}
+
+img {
+      border-radius: 50%;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2f9ff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #38a169;
+      color: white;
+      text-align: center;
+      border-radius: 7px;
+      padding: 1%;
+      margin: 4%;
+      align-items: center;
+    }
+
+</style></head>
+<body >
+<header>
+  <div id="menu-placeholder"></div>
+  <script>
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-placeholder').innerHTML = data;
+    });
+</script>
+<img src="images\lan.jpg" width="100px">
+<h1 id="pageTitle">Land Information & Crop Suggestion</h1>
+<!-- 🌐 Language Selector -->
+<br>
+<center>
+<label for="languageSelector">🌐 Choose Language/भाषा:</label>
+<select id="languageSelector">
+  <option value="en">English</option>
+  <option value="hi">Hindi(हिन्दी)</option>
+	<option value="bn">Bangla(বাংলা)</option>
+	<option value="gu">Gujarati(ગુજરાતી)</option>
+	<option value="kn">Kannada(ಕನ್ನಡ)</option>
+	<option value="mr">Marathi(मराठी)</option>
+	<option value="ml">Malayalam(മലയാളം)</option>
+	<option value="pa">Punjabi(ਪੰਜਾਬੀ)</option>
+	<option value="ta">Tamil(தமிழ்)</option>
+	<option value="te">Telugu(తెలుగు)</option>
+</select>
+</center>
+</header>
+  <main>
+ <section class="options">
+  <button id="button1" onclick="showOption('option1')">Which crop to grow on my land</button>
+  <button id="button2" onclick="showOption('option2')">How to grow a specific crop</button>
+</section>
+
+    <!-- Option 1 -->
+    <section id="option1" class="hidden">
+      <form id="cropForm">
+        <label id="labelState" for="stateSelect"></label>
+        <select id="stateSelect"></select>
+
+        <label id="labelDistrict" for="districtSelect"></label>
+        <select id="districtSelect"></select>
+
+        <label id="labelTaluka" for="talukaSelect"></label>
+        <select id="talukaSelect"></select>
+
+        <label id="labelMonths" for="monthSelect"></label>
+        <select id="monthSelect"></select>
+
+        <label id="labelCropType" for="cropTypeSelect"></label>
+        <select id="cropTypeSelect"></select>
+
+        <label id="labelLandArea" for="landAreaSelect"></label>
+        <select id="landAreaSelect"></select>
+
+        <label id="labelInvestment" for="investmentSelect"></label>
+        <select id="investmentSelect"></select>
+
+        <label id="labelSoilScore" for="soilScoreSelect"></label>
+        <select id="soilScoreSelect"></select>
+
+        <button id="button3" type="submit">Suggest Crop</button>
+      </form>
+
+      <div class="results" id="resultBox">
+        <h3 id="result1">Result:</h3>
+        <ul id="cropResults"></ul>
+      </div>
+    </section>
+
+    <!-- Option 2 -->
+    <section id="option2" class="hidden">
+      <h2 id="option2Title"></h2>
+      <form id="cropStepsForm">
+        <label id="labelCropType2" for="cropTypeSelect2"></label>
+        <select id="cropTypeSelect2"></select>
+
+        <label id="labelCropName" for="cropNameSelect"></label>
+        <select id="cropNameSelect"></select>
+
+        <button type="submit" id="getStepsButton">Get Steps</button>
+      </form>
+
+    <div class="results hidden" id="stepsResultBox">
+      <h3 id="resultHeader2">Result:</h3>
+        <div id="videoContainer"></div>
+        <h3 id="p1"><strong>Minimum Requirements:</strong> </h3><span id="minRequirements">---</span></p><br>
+        <h3 id="p2"><strong>Steps to Cultivate:</strong></h3>
+        <ol id="cultivationSteps"></ol>
+    </div>
+    </section>
+  </main>
+
+<script>
+    const languageData = { 
+      "labels": {
+        "pageTitle":        { "en": "Land Information & Crop Suggestion", "hi": "भूमि जानकारी और फसल सुझाव",     "ml": "ഭൂമിയുടെയും വിള നിർദ്ദേശവും",          "mr": "जमिनीची माहिती आणि पिकांची सूचना",   "bn": "জমির তথ্য ও ফসলের পরামর্শ",        "gu": "જમીન માહિતી અને પાક સૂચન",      "kn": "ಜಮೀನುಗಳ ಮಾಹಿತಿ ಮತ್ತು ಬೆಳೆಗಳ ಸಲಹೆ",   "pa":"ਜ਼ਮੀਨਾਂ ਦੀ ਜਾਣਕਾਰੀ ਅਤੇ ਫਸਲਾਂ ਦੇ ਸੁਝਾਅ", "ta":"நிலத் தகவல் & பயிர் பரிந்துரை",                        "te":"భూముల సమాచారం & పంటల సూచన", },
+        "button1":          { "en": "Which crop to grow on my land",      "hi": "मेरी जमीन पर कौन सी फसल उगाऊं", "ml": "എന്റെ സ്ഥലത്ത് ഏത് വിള വളർത്തണം", "mr": "माझ्या जमिनीवर कोणते पीक घ्यावे" ,     "bn": "আমার জমিতে কোন ফসল লাগাবো?",   "gu": "મારી જમીનમાં કયો પાક ઉગાડવો?", "kn": "ನನ್ನ ಜಮೀನಿನಲ್ಲಿ ಯಾವ ಬೆಳೆ ಬೆಳೆಯಬೇಕು?", "pa":"ਮੇਰੀ ਜ਼ਮੀਨ 'ਤੇ ਕਿਹੜੀ ਫ਼ਸਲ ਉਗਾਵਾਂ?",    "ta":"என் நிலத்தில் என்ன பயிர் சாகுபடி செய்ய வேண்டும்?", "te":"నా పొలంలో ఏ పంట పండించాలి",},
+        "button2":          { "en": "How to grow a specific crop",        "hi": "एक विशिष्ट फसल कैसे उगाएं",       "ml": "ഒരു പ്രത്യേക വിള എങ്ങനെ വളർത്താം",   "mr": "विशिष्ट पीक कसे वाढवावे" ,           "bn": "কিভাবে একটি নির্দিষ্ট ফসল চাষ করবেন", "gu": "ચોક્કસ પાક કેવી રીતે ઉગાડવો",    "kn": "ನಿರ್ದಿಷ್ಟ ಬೆಳೆ ಬೆಳೆಯುವುದು ಹೇಗೆ",           "pa":"ਇੱਕ ਖਾਸ ਫਸਲ ਕਿਵੇਂ ਉਗਾਈ ਜਾਵੇ",       "ta":"ஒரு குறிப்பிட்ட பயிரை எவ்வாறு வளர்ப்பது",            "te":"ఒక నిర్దిష్ట పంటను ఎలా పండించాలి",},
+        "button3":          { "en": "Suggest Crop","hi": "फसल का सुझाव दें","ml": "വിള നിർദ്ദേശിക്കുക","mr": "पिकाचा सल्ला द्या","bn": "ফসলের পরামর্শ দিন","gu": "પાક સૂચવો","kn": "ಬೆಳೆ ಸೂಚಿಸಿ","pa": "ਫ਼ਸਲ ਦਾ ਸੁਝਾਅ ਦਿਓ","ta": "பயிர் பரிந்துரைக்கவும்","te": "పంటను సూచించండి", },
+        "getStepsButton":   { "en": "Get Steps","hi": "खेती के चरण प्राप्त करें","ml": "കൃഷി രീതികൾ അറിയുക","mr": "शेतीचे टप्पे मिळवा","bn": "চাষের ধাপগুলি দেখুন","gu": "ખેતીના તબક્કાઓ મેળવો","kn": "ಕೃಷಿ ಹಂತಗಳನ್ನು ಪಡೆಯಿರಿ","pa": "ਖੇਤੀ ਦੇ ਪੜਾਅ ਪ੍ਰਾਪਤ ਕਰੋ","ta": "சாகுபடி முறைகளைப் பெறவும்","te": "సాగు పద్ధతులను తెలుసుకోండి", },
+        "result1":          { "en": "Result:","hi": "परिणाम:","ml": "ഫലം:","mr": "निकाल:","bn": "ফলাফল:","gu": "પરિણામ:","kn": "ಫಲಿತಾಂಶ:","pa": "ਨਤੀਜਾ:","ta": "முடிவு:","te": "ఫలితం:", },
+        "p1":               { "en": "Minimum Requirements:","hi": "न्यूनतम आवश्यकताएं:","ml": "കുറഞ്ഞ ആവശ്യകതകൾ:","mr": "किमान आवश्यकता:","bn": "ন্যূনতম প্রয়োজনীয়তা:","gu": "ન્યૂનતમ જરૂરિયાતો:","kn": "ಕನಿಷ್ಠ ಅಗತ್ಯತೆಗಳು:","pa": "ਘੱਟੋ-ਘੱਟ ਲੋੜਾਂ:","ta": "குறைந்தபட்ச தேவைகள்:","te": "కనీస అవసరాలు:", },
+        "p2":               { "en": "Steps to Cultivate:","hi": "खेती के चरण:","ml": "കൃഷി ചെയ്യാനുള്ള ഘട്ടങ്ങൾ:","mr": "लागवडीचे टप्पे:","bn": "চাষের ধাপগুলি:","gu": "ખેતીના તબક્કાઓ:","kn": "ಬೆಳೆಸಲು ಹಂತಗಳು:","pa": "ਖેਤੀ ਕਰਨ ਦੇ ਪੜਾਅ:","ta": "சாகுபடி செய்வதற்கான படிகள்:","te": "సాగు చేయడానికి దశలు:", },
+        "labelState":       { "en": "State:",                             "hi": "राज्य:",                         "ml": "സംസ്ഥാനം:",                               "mr": "राज्य:" ,                          "bn": "রাজ্য:",                            "gu": "રાજ્ય:",                       "kn": "ರಾಜ್ಯ:",                                 "pa":"ਰਾਜ:",                             "ta":"மாநிலம்:",                                              "te":"రాష్ట్రం:",},
+        "labelDistrict":    { "en": "District:",                          "hi": "ज़िला:",                         "ml": "ജില്ല:",                                      "mr": "जिल्हा" ,                         "bn": "জেলা:",                            "gu": "જિલ્લો",                       "kn": "ಜಿಲ್ಲೆ:",                                 "pa":"ਜ਼ਿਲ੍ਹਾ:",                            "ta":"மாவட்டம்:",                                              "te":"జిల్లా:",},
+        "labelTaluka":      { "en": "Taluka:",                            "hi": "तालुका:",                        "ml": "താലൂക്ക്:",                                  "mr": "तालुका",                          "bn": "তালুকা:",                           "gu": "તાલુકો:",                      "kn": "ತಾಲೂಕು:",                              "pa":"ਤਾਲੁਕਾ:",                           "ta":"தாலுகா:",                                               "te":"తాలూకా:",},
+        "labelMonths":      { "en": "Starting - Ending Months:",          "hi": "प्रारंभिक - अंतिम महीने:",           "ml": "ആരംഭം - അവസാന മാസം:",             "mr": "सुरुवात - शेवटचे महिने:",             "bn": "শুরু - শেষ মাস:",                  "gu": "શરૂઆત - અંત મહિનાઓ:",       "kn": "ಆರಂಭ - ಅಂತ್ಯದ ತಿಂಗಳುಗಳು:",           "pa":"ਸ਼ੁਰੂਆਤੀ - ਸਮਾਪਤੀ ਮਹੀਨੇ:",             "ta":"தொடக்க - முடிவு மாதங்கள்:",                        "te":"ప్రారంభ - ముగింపు నెలలు:",},
+        "labelCropType":    { "en": "Type of Crop:",                      "hi": "फसल का प्रकार:",                 "ml": "വിളയുടെ തരം:",                          "mr": "पिकाचा प्रकार:",                     "bn": "ফসলের ধরন:",                     "gu": "પાકનો પ્રકાર:",                  "kn": "ಬೆಳೆ ಪ್ರಕಾರ:",                           "pa":"ਫਸਲ ਦੀ ਕਿਸਮ:",                      "ta":"பயிர் வகை:",                                         "te":"పంట రకం:",},
+        "labelLandArea":    { "en": "Land Area:",                         "hi": "भूमि क्षेत्रफल:",                    "ml": "ഭൂപ്രദേശം:",                                "mr": "जमीन क्षेत्र:",                      "bn": "ভূমি এলাকা:",                       "gu": "જમીન વિસ્તાર:",                "kn": "ಭೂ ಪ್ರದೇಶ:",                             "pa":"ਜ਼ਮੀਨੀ ਖੇਤਰ:",                      "ta":"நிலப்பரப்பு:",                                          "te":"భూ విస్తీర్ణం:",},
+        "labelInvestment":  { "en": "Capital Investment (₹):",            "hi": "पूंजी निवेश (₹):",                 "ml": "മൂലധന നിക്ഷേപം (₹):",                   "mr": "भांडवली गुंतवणूक (₹):",             "bn": "মূলধন বিনিয়োগ (₹):",               "gu": "મૂડી રોકાણ (₹):",                "kn": "ಬಂಡವಾಳ ಹೂಡಿಕೆ (₹):",                "pa":"ਪੂੰਜੀ ਨਿਵੇਸ਼ (₹):",                    "ta":"மூலதன முதலீடு (₹):",                                 "te":"మూలధన పెట్టుబడి (₹):",},
+        "labelSoilScore":   { "en": "Soil Test Score:",                   "hi": "मिट्टी का परीक्षण स्कोर:",            "ml": "മണ്ണിന്റെ പരിശോധനാ സ്കോർ:",         "mr": "माती चाचणी गुण:",                  "bn": "মাটি পরীক্ষার স্কোর:",                "gu": "માટી પરીક્ષણ સ્કોર:",              "kn": "ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ಅಂಕಗಳು:",              "pa":"ਮਿੱਟੀ ਦੀ ਜਾਂਚ ਦਾ ਸਕੋਰ:",              "ta":"மண்ணின் சோதனை மதிப்பெண்:",                     "te":"నేల పరీక్ష స్కోరు:",},
+        "labelCropType2":   { "en": "Type of Crop:",                      "hi": "फसल का प्रकार:",                "ml": "വിളയുടെ തരം:",                           "mr": "पिकाचा प्रकार:",                     "bn": "ফসলের ধরন:",                     "gu": "પાકનો પ્રકાર:",                  "kn": "ಬೆಳೆ ಪ್ರಕಾರ:",                           "pa":"ਫਸਲ ਦੀ ਕਿਸਮ:",                    "ta":"பயிர் வகை:",                                          "te":"పంట రకం:", },
+        "labelCropName":    { "en": "Crop Name:",                         "hi": "फसल का नाम:",                 "ml": "വിളയുടെ പേര്:" ,                          "mr": "पिकाचे नाव:" ,                      "bn": "ফসলের নাম:",                     "gu": "પાકનું નામ:",                    "kn": "ಬೆಳೆಯ ಹೆಸರು:",                         "pa":"ਫਸਲ ਦਾ ਨਾਮ:",                     "ta":"பயிரின் பெயர்:",                                        "te":"పంట పేరు:",},
+      },
+
+      "options": {
+        "months": [
+          {"id": "jun-oct","en": "June - October","hi": "जून - अक्टूबर","ml": "ജൂൺ - ഒക്ടോബർ","mr": "जून - ऑक्टोबर","bn": "জুন - অক্টোবর","gu": "જૂન - ઓક્ટોબર","kn": "ಜೂನ್ - ಅಕ್ಟೋಬರ್","pa": "ਜੂਨ - ਅਕਤੂਬਰ","ta": "ஜூன் - அக்டோபர்","te": "జూన్ - అక్టోబర్"},
+          {"id": "nov-apr","en": "November - April","hi": "नवंबर - अप्रैल","ml": "നവംബർ - ഏപ്രിൽ","mr": "नोव्हेंबर - एप्रिल","bn": "নভেম্বর - এপ্রিল","gu": "નવેમ્બર - એપ્રિલ","kn": "ನವೆಂಬರ್ - ಏಪ್ರಿಲ್","pa": "ਨਵੰਬਰ - ਅਪ੍ਰੈਲ","ta": "நவம்பர் - ஏப்ரல்","te": "నవంబర్ - ఏప్రిల్"},
+          {"id": "mar-jun","en": "March - June","hi": "मार्च - जून","ml": "മാർച്ച് - ജൂൺ","mr": "मार्च - जून","bn": "মার্চ - জুন","gu": "માર્ચ - જૂન","kn": "ಮಾರ್ಚ್ - ಜೂನ್","pa": "ਮਾਰਚ - ਜੂਨ","ta": "மார்ச் - ஜூன்","te": "మార్చి - జూన్"}
+              ],
+        "crop_types": [
+          {"id": "CEPU", "en": "Cereals/Pulses", "hi":"अनाज/दालें", "ml":"ധാന്യങ്ങൾ/പയർവർഗ്ഗങ്ങൾ", "mr":"तृणधान्ये/कडधान्ये", "bn":"শস্য/ডাল", "gu":"અનાજ/કઠોળ","kn":"ಧಾನ್ಯಗಳು/ದ್ವಿದಳ ಧಾನ್ಯಗಳು","pa":"ਅਨਾਜ/ਦਾਲਾਂ", "ta":"தானியங்கள்/பருப்புகள்", "te":"తృణధాన్యాలు/పప్పుధాన్యాలు"},
+          {"id": "FRU","en": "Fruit","hi": "फल","ml": "പഴം","mr": "फळ","bn": "ফল","gu": "ફળ","kn": "ಹಣ್ಣು","pa": "ਫਲ","ta": "பழம்","te": "పండు"},
+          {"id": "VEG","en": "Vegetables","hi": "सब्जियां","ml": "പച്ചക്കറികൾ","mr": "भाजीपाला","bn": "শাকসবজি","gu": "શાકભાજી","kn": "ತರಕಾರಿಗಳು","pa": "ਸਬਜ਼ੀਆਂ","ta": "காய்கறிகள்","te": "కూరగాయలు"},
+          {"id": "CACO","en": "Cash/Commercial","hi": "नकदी/वाणिज्यिक फसलें","ml": "പണ/വാണിജ്യ വിളകൾ","mr": "रोख/व्यावसायिक पिके","bn": "নগদ/বাণিজ্যিক ফসল","gu": "રોકડ/વાણિજ્યિક પાક","kn": "ನಗದು/ವಾಣಿಜ್ಯ ಬೆಳೆಗಳು","pa": "ਨਕਦੀ/ਵਪਾਰਕ ਫ਼ਸਲਾਂ","ta": "பண/வணிகப் பயிர்கள்","te": "నగదు/వాణిజ్య పంటలు"},
+          {"id": "OIL","en": "Oil seeds","hi": "तिलहन","ml": "എണ്ണക്കുരുക്കൾ","mr": "तेल बियाणे","bn": "তৈলবীজ","gu": "તેલીબિયાં","kn": "ಎಣ್ಣೆ ಬೀಜಗಳು","pa": "ਤੇਲ ਬੀਜ","ta": "எண்ணெய் வித்துக்கள்","te": "నూనె గింజలు"},
+          {"id": "SPI","en": "Spices","hi": "मसाले","ml": "സുഗന്ധവ്യഞ്ജനങ്ങൾ","mr": "मसाले","bn": "মশলা","gu": "મસાલા","kn": "ಮಸಾಲೆಗಳು","pa": "ਮਸਾਲੇ","ta": "மசாலாப் பொருட்கள்","te": "మసాలాలు"},
+          {"id": "NUT","en": "Nuts","hi": "मेवे","ml": "പരിപ്പ്","mr": "सुका मेवा/कवचफळे","bn": "বাদাম","gu": "સૂકા મેવા","kn": "ಬೀಜಗಳು","pa": "ਮੇਵੇ","ta": "கொட்டைகள்","te": "పప్పులు"},
+          {"id": "HOM","en": "Home Plant","hi": "घरेलू पौधा","ml": "വീട്ടിലെ ചെടി","mr": "घरातील रोप","bn": "গৃহস্থালী গাছ","gu": "ઘરનો છોડ","kn": "ಮನೆ ಗಿಡ","pa": "ਘਰੇਲੂ ਪੌਦਾ","ta": "வீட்டுத் தாவரம்","te": "ఇంటి మొక్క"},
+        ],
+        "crop_names": {
+          "CEPU": [
+          {"id": "Rice","en": "Rice","hi": "चावल","ml": "അരി","mr": "तांदूळ","bn": "চাল","gu": "ચોખા","kn": "ಅಕ್ಕಿ","pa": "ਚਾਵਲ","ta": "அரிசி","te": "బియ్యం"},
+          {"id": "Wheat","en": "Wheat","hi": "गेहूं","ml": "ഗോതമ്പ്","mr": "गहू","bn": "গম","gu": "ઘઉં","kn": "ಗೋಧಿ","pa": "ਕਣਕ","ta": "கோதுமை","te": "గోధుమ"},
+          {"id": "Bajra","en": "Bajra","hi": "बाजरा/ज्वार","ml": "ചോളം","mr": "बाजरी/नाचणी","bn": "বাজরা","gu": "બાજરી","kn": "ರಾಗಿ/ಮಿಲೆಟ್","pa": "ਬਾਜਰਾ","ta": "சிறுதானியம்","te": "చిరుధాన్యాలు"},
+          ],
+          "VEG": [
+          {"id": "Spinach","en": "Spinach","hi": "पालक","ml": "ചീര","mr": "पालक","bn": "পালং","gu": "પਾਲક","kn": "ಪಾಲಕ್","pa": "ਪਾਲਕ","ta": "கீரை","te": "పాలకూర"},
+          {"id": "Potato","en": "Potato","hi": "आलू","ml": "ഉരുളക്കിഴങ്ങ്","mr": "बटाटा","bn": "আলু","gu": "બટાટા","kn": "ಆಲೂಗಡ್ಡೆ","pa": "ਆਲੂ","ta": "உருளைக்கிழங்கு","te": "బంగాళాదుంప"},
+          ],
+          "CACO": [
+          {"id": "Tobacco","en": "Tobacco","hi": "तंबाकू","ml": "പുകയില","mr": "तंबाखू","bn": "তামাক","gu": "તમાકુ","kn": "ತಂಬಾಕು","pa": "ਤੰਬਾਕੂ","ta": "புகையிலை","te": "పొగాకు"},
+          {"id": "Saffron","en": "Saffron","hi": "केसर","ml": "കുങ്കുമപ്പൂവ്","mr": "केसर","bn": "জাফরান","gu": "કેસર","kn": "ಕೇಸರಿ","pa": "ਕੇਸਰ","ta": "குங்குமப்பூ","te": "కుంకుమపువ్వు"},
+          ],
+          "OIL": [
+          {"id": "Groundnut","en": "Groundnut","hi": "मूंगफली","ml": "നിലക്കടല","mr": "शेंगदाणा","bn": "চিনাবাদাম","gu": "મગફળી","kn": "ನೆಲಗಡಲೆ","pa": "ਮੂੰਗਫਲੀ","ta": "நிலக்கடலை","te": "వేరుశనగ"},
+          {"id": "Sunflower","en": "Sunflower","hi": "सूरजमुखी","ml": "സൂര്യകാന്തി","mr": "सूर्यफूल","bn": "সূর্যমুখী","gu": "સૂર્યમુખી","kn": "ಸೂರ್ಯಕಾಂತಿ","pa": "ਸੂਰਜਮੁਖੀ","ta": "சூரியகாந்தி","te": "సూర్యకాంతి"},
+          ],
+          "SPI": [
+          {"id": "Blackpepper","en": "Black Pepper","hi": "काली मिर्च","ml": "കുരുമുളക്","mr": "काळी मिरी","bn": "কালো মরিচ","gu": "કાળા મરી","kn": "ಕರಿ ಮೆಣಸು","pa": "ਕਾਲੀ ਮਿਰਚ","ta": "கருப்பு மிளகு","te": "మిరియాలు"},
+          {"id": "Fennel","en": "Fennel","hi": "सौंफ","ml": "പെരുംജീരകം","mr": "बडीशेप","bn": "মৌরি","gu": "વરિયાળી","kn": "ಸೋಂಪು","pa": "ਸੌਂਫ","ta": "சோம்பு","te": "సోంపు"},
+          ],
+          "FRU": [
+          {"id": "banana","en": "Banana","hi": "केला","ml": "വാഴപ്പഴം","mr": "केळी","bn": "কলা","gu": "કેળું","kn": "ಬಾಳೆಹಣ್ಣು","pa": "ਕੇਲਾ","ta": "வாழைப்பழம்","te": "అరటిపండు"},
+          {"id": "Mango","en": "Mango","hi": "आम","ml": "മാങ്ങ","mr": "आंबा","bn": "আম","gu": "કેરી","kn": "ಮಾವಿನ ಹಣ್ಣು","pa": "ਅੰਬ","ta": "மாம்பழம்","te": "మామిడి"},
+          ],
+          "NUT": [
+          {"id": "Almonds","en": "Almonds","hi": "बादाम","ml": "ബദാം","mr": "बदाम","bn": "বাদাম","gu": "બદામ","kn": "ಬಾದಾಮಿ","pa": "ਬਦਾਮ","ta": "பாதாம்","te": "బాదం"},
+          {"id": "BetelNut","en": "Betel Nut","hi": "सुपारी","ml": "അടക്ക","mr": "सुपारी","bn": "সুপারি","gu": "સોપારી","kn": "ಅಡಿಕೆ","pa": "ਸੁਪਾਰੀ","ta": "பாக்கு","te": "పోక చెక్క"},
+          ],
+          "HOM": [
+          {"id": "Aloevera","en": "Aloevera","hi": "घृतकुमारी","ml": "കറ്റാർ വാഴ","mr": "कोरफड","bn": "ঘৃতকুমারী","gu": "કુવારપાઠું","kn": "ಲೋಳೆಸರ","pa": "ਕੁਆਰ ਗੰਦਲ","ta": "கற்றாழை","te": "కలబంద"},
+          {"id": "Curry","en": "Curry","hi": "करी","ml": "കറി","mr": "करी","bn": "কারি","gu": "કઢી","kn": "ಕರಿ","pa": "ਕਰੀ","ta": "கறி","te": "కూర"},
+          ],
+        }
+      },
+
+      "states": {
+        "MH": {
+          "en": "Maharashtra","hi": "महाराष्ट्र","ml": "മഹാരാഷ്ട്ര","mr": "महाराष्ट्र","bn": "মহারাষ্ট্র","gu": "મહારાષ્ટ્ર","kn": "ಮಹಾರಾಷ್ಟ್ರ","pa": "ਮਹਾਰਾਸ਼ਟਰ","ta": "மகாராஷ்டிரா","te": "మహారాష్ట్ర",
+          "districts": {
+            "TH": {
+              "en": "Thane","hi": "ठाणे","ml": "താണെ","mr": "ठाणे","bn": "থানে","gu": "ઠાણે","kn": "ಠಾಣೆ","pa": "ਥਾਣੇ","ta": "தானே","te": "థానే",
+              "talukas": [
+                {"id": "KAL","en": "Kalyan","hi": "कल्याण","ml": "കല്യാൺ","mr": "कल्याण","bn": "কল্যাণ","gu": "કલ્યાણ","kn": "ಕಲ್ಯಾಣ","pa": "ਕਲਿਆਣ","ta": "கல்யாண்","te": "కళ్యాణ్"},
+                {"id": "THANE","en": "Thane","hi": "ठाणे","ml": "താണെ","mr": "ठाणे","bn": "থানে","gu": "ઠાણે","kn": "ಠಾಣೆ","pa": "ਥਾਣੇ","ta": "தானே","te": "థానే"},
+                {"id": "MUR","en": "Murbad","hi": "मुरबाड","ml": "മുർബാദ്","mr": "मुरबाड","bn": "মুরবাদ","gu": "મુરબાડ","kn": "ಮુરಬಾಡ್","pa": "ਮੁਰਬਾਦ","ta": "முர்பாத்","te": "ముర్బాడ్"},
+                {"id": "SHA","en": "Shahapur","hi": "शहापूर","ml": "ഷഹാപൂർ","mr": "शहापूर","bn": "শাহাপুর","gu": "શાહપુર","kn": "ಶಹಾಪುರ","pa": "ਸ਼ਾਹਪੁਰ","ta": "ஷாஹாபூர்","te": "షహాపుర్"},
+                {"id": "BHI","en": "Bhiwandi","hi": "भिवंडी","ml": "ഭിവണ്ടി","mr": "भिवंडी","bn": "ভিওয়ান্ডি","gu": "ભિવંડી","kn": "ಭಿವಂಡಿ","pa": "ਭਿਵੰਡੀ","ta": "பிவண்டி","te": "భివండి"},
+                {"id": "USA","en": "Ulhasnagar","hi": "उल्हासनगर","ml": "ഉൾഹാസ്നഗർ","mr": "उल्हासनगर","bn": "উলহাসনগর","gu": "ઉલ્હાસનગર","kn": "ಉಲ್ಹಾಸನಗರ","pa": "ਉਲਹਾਸਨਗਰ","ta": "உல்ஹாஸ்நகர்","te": "ఉల్హాస్‌నగర్"},
+                {"id": "AMB","en": "Ambernath","hi": "अंबरनाथ","ml": "അംബർനാഥ്","mr": "अंबरनाथ","bn": "অম্বরনাথ","gu": "અંબરનાથ","kn": "ಅಂಬರನಾಥ್","pa": "ਅੰਬਰਨਾਥ","ta": "அம்பர்நாத்","te": "అంబర్‌నాథ్"},
+              ]
+            },
+            "DHA": {
+              "en": "Dharashiv","hi": "धाराशिव","ml": "ധാരാശിവ്","mr": "धाराशिव","bn": "ধারাশিভ","gu": "ધારાશિવ","kn": "ಧಾರಾಶಿವ್","pa": "ਧਾਰਾਸ਼ਿਵ","ta": "தாராஷிவ்","te": "ధారాశివ్",
+              "talukas": [
+                {"id": "TUL","en": "Tuljapur","hi": "तुळजापूर","ml": "തുളജാപുർ","mr": "तुळजापूर","bn": "তুলজাপুর","gu": "તુલજાપુર","kn": "ತುಳಜಾಪುರ","pa": "ਤੁਲਜਾਪੁਰ","ta": "துளஜாபூர்","te": "తులజాపూర్"},
+                {"id": "DHC","en": "Dharashiv city","hi": "धाराशिव शहर","ml": "ധാരാശിവ് സിറ്റി","mr": "धाराशिव शहर","bn": "ধারাশিভ সিটি","gu": "ધારાશિવ સિટી","kn": "ಧಾರಾಶಿವ್ ಸಿಟಿ","pa": "ਧਾਰਾਸ਼ਿਵ ਸਿਟੀ","ta": "தாராஷிவ் நகரம்","te": "ధారాశివ్ నగరం"},
+              ]
+            },
+            "AHI": {
+              "en": "Ahilyanagar","hi": "अहिल्यानगर","ml": "അഹില്യാനഗർ","mr": "अहिल्यानगर","bn": "অহিল্যানগর","gu": "અહિલ્યાનગર","kn": "ಅಹಿಲ್ಯಾನಗರ","pa": "ਅਹਿਲਿਆਨਗਰ","ta": "அஹில்யாநகர்","te": "అహిల్యానగర్",
+              "talukas": [
+                {"id": "NAG","en": "Nagar","hi": "नगर","ml": "നഗർ","mr": "नगर","bn": "নগর","gu": "નગર","kn": "ನಗರ","pa": "ਨਗਰ","ta": "நகர்","te": "నగర్"},
+                {"id": "SHI","en": "Shrigonda","hi": "श्रीगोंदा","ml": "ശ്രീഗോണ്ട","mr": "श्रीगोंदा","bn": "শ্রীগোণ্ডা","gu": "શ્રીગોંડા","kn": "ಶ್ರೀಗೊಂದಾ","pa": "ਸ਼੍ਰੀਗੋਂਡਾ","ta": "ஸ்ரீகோண்டா","te": "శ్రీగోండ"},
+                {"id": "KAR","en": "Karjat","hi": "कर्जत","ml": "കർജത്ത്","mr": "कर्जत","bn": "કર્જત","gu": "કર્જત","kn": "ಕರ್ಜತ್","pa": "ਕਰਜਤ","ta": "கர்ஜத்","te": "కర్జత్"},
+                {"id": "JAM","en": "Jamkhed","hi": "जामखेड","ml": "ജാംഖേഡ്","mr": "जामखेड","bn": "জামখেড়","gu": "જામખેડ","kn": "ಜಾಮ್ಖೇಡ್","pa": "ਜਾਮਖੇੜ","ta": "ஜாம்கேத்","te": "జామ్‌ఖేడ్"},
+              ]
+            },
+            "CSN": { 
+              "en": "Chh. Sambhaji Nagar","hi": "छ. संभाजी नगर","ml": "ഛ. സംഭാജി നഗർ","mr": "छ. संभाजी नगर","bn": "ছ. সম্ভাজি নগর","gu": "છ. સંભાજી નગર","kn": "ಛ. ಸಂಭಾಜಿ ನಗರ","pa": "ਛ. ਸੰਭਾਜੀ ਨਗਰ","ta": "ச. சம்பாஜி நகர்","te": "ఛ. సంభాజీ నగర్",
+              "talukas": [
+                {"id": "PAI","en": "Paithan","hi": "पैठण","ml": "പൈഠൺ","mr": "पैठण","bn": "পৈঠন","gu": "પૈઠણ","kn": "ಪೈಠಣ","pa": "ਪੈਠਣ","ta": "பைத்தான்","te": "పైఠాన్"},
+                {"id": "KHU","en": "Khuldabad","hi": "खुल्दाबाद","ml": "ഖുൽദാബാദ്","mr": "खुल्दाबाद","bn": "খুলদাবাদ","gu": "ખુલ્દાબાદ","kn": "ಖುಲ್ದಾಬಾದ್","pa": "ਖੁਲਦਾਬਾਦ","ta": "குல்தாபாத்","te": "ఖుల్దాబాద్"},
+              ]
+            },
+            "MC": { 
+              "en": "Mumbai City", "hi": "मुंबई शहर", "ml": "മുംബൈ സിറ്റി", "mr": "मुंबई शहर","bn": "মুম্বাই সিটি","gu": "મુંબઈ શહેર","kn": "ಮುಂಬೈ ನಗರ","pa": "ਮੁੰਬਈ ਸ਼ਹਿਰ","ta": "மும்பை நகரம்","te": "ముంబై నగరం",
+              "talukas": [
+                {"id": "MUMCITY","en": "Mumbai City","hi": "मुंबई शहर","ml": "മുംബൈ സിറ്റി","mr": "मुंबई शहर","bn": "মুম্বাই সিটি","gu": "મુંબઈ શહેર","kn": "ಮುಂಬೈ ನಗರ","pa": "ਮੁੰਬਈ ਸ਼ਹਿਰ","ta": "மும்பை நகரம்","te": "ముంబై నగరం"},
+              ]
+            },
+            "RAT": { 
+              "en": "Ratnagiri","hi": "रत्नागिरी","ml": "രത്നഗിരി","mr": "रत्नागिरी","bn": "রত্নগিরি","gu": "રત્નાગીરી","kn": "ರತ್ನಗಿರಿ","pa": "ਰਤਨਾਗਿਰੀ","ta": "ரத்னகிரி","te": "రత్నగిరి",
+              "talukas": [
+                {"id": "RAT-T","en": "Ratnagiri","hi": "रत्नागिरी","ml": "രത്നഗിരി","mr": "रत्नागिरी","bn": "রত্নগিরি","gu": "રત્નાગીરી","kn": "ರತ್ನಗಿರಿ","pa": "ਰਤਨਾਗਿਰੀ","ta": "ரத்னகிரி","te": "రత్నగిరి"},
+                {"id": "SAN","en": "Sangameshwar","hi": "संगमेश्वर","ml": "സംഗമേശ്വർ","mr": "संगमेश्वर","bn": "সংগমেশ্বর","gu": "સંગમેશ્વર","kn": "ಸಂಗಮೇಶ್ವರ","pa": "ਸੰਗਮੇਸ਼ਵਰ","ta": "சங்கமேஸ்வர்","te": "సంగమేశ్వర్"},
+                {"id": "LAN","en": "Lanja","hi": "लांजा","ml": "ലാഞ്ച","mr": "लांजा","bn": "লাঞ্জা","gu": "લાંજા","kn": "ಲಾಂಜಾ","pa": "ਲਾਂਜਾ","ta": "லாஞ்சா","te": "లాంజా"},
+                {"id": "RAJ","en": "Rajapur","hi": "राजापूर","ml": "രാജാപൂർ","mr": "राजापूर","bn": "রাজাপুর","gu": "રાજાપુર","kn": "ರಾಜಾಪುರ","pa": "ਰਾਜਾਪੁਰ","ta": "ராஜாபூர்","te": "రాజాపూర్"},
+                {"id": "CHI","en": "Chiplun","hi": "चिपळूण","ml": "ചിപ്ലൂൺ","mr": "चिपळूण","bn": "চিপলুন","gu": "ચિપળૂણ","kn": "ಚಿಪ್ಲುಣ್","pa": "ਚਿਪਲੂਣ","ta": "சிப்லூன்","te": "చిప్లూన్"},
+                {"id": "GUH","en": "Guhagar","hi": "गुहागर","ml": "ഗുഹാഗർ","mr": "गुहागर","bn": "গুহাগড়","gu": "ગુહાગર","kn": "ಗುಹಾಗರ್","pa": "ਗੁਹਾਗਰ","ta": "குஹாகர்","te": "గుహాగర్"},
+                {"id": "DAP","en": "Dapoli","hi": "दापोली","ml": "ദാപോലി","mr": "दापोली","bn": "দাপোলি","gu": "દાપોલી","kn": "ದಾಪೋಲಿ","pa": "ਦਾਪੋਲੀ","ta": "தாபோலி","te": "దాపోలి"},
+                {"id": "MAN","en": "Mandangad","hi": "मंडणगड","ml": "മണ്ടൻഗഡ്","mr": "मंडणगड","bn": "মন্দনগড়","gu": "મંડણગડ","kn": "ಮಂಡಣಗಡ","pa": "ਮੰਡਨਗੜ੍ਹ","ta": "மண்டங்கட்","te": "మండన్‌గడ్"},
+                {"id": "KHE","en": "Khed","hi": "खेड","ml": "ഖേഡ്","mr": "खेड","bn": "খেড়","gu": "ખેડ","kn": "ಖೇಡ್","pa": "ਖੇੜ","ta": "கேட்","te": "ఖేడ్"},
+              ]
+            }
+          }
+        },
+        "GOA": {
+          "en": "Goa","hi": "गोवा","ml": "ഗോവ","mr": "गोवा","bn": "গোয়া","gu": "ગોવા","kn": "ಗೋವಾ","pa": "ਗੋਆ","ta": "கோவா","te": "గోవా",
+          "districts": {
+            "NGA": { 
+              "en": "North Goa","hi": "उत्तर गोवा","ml": "വടക്കൻ ഗോവ","mr": "उत्तर गोवा","bn": "উত্তর গোয়া","gu": "ઉત્તર ગોવા","kn": "ಉತ್ತರ ಗೋವಾ","pa": "ਉੱਤਰੀ ਗੋਆ","ta": "வட கோவா","te": "ఉత్తర గోవా",
+              "talukas": [
+                {"id": "BAR","en": "Bardez","hi": "बार्देज़","ml": "ബാർദേസ്","mr": "बारदेश","bn": "বার্দেজ","gu": "બાર્ડેઝ","kn": "ಬಾರ್ಡೆಜ್","pa": "ਬਾਰਦੇਜ਼","ta": "பார்தெஸ்","te": "బార్దేస్"},
+                {"id": "TIS","en": "Tiswadi","hi": "तिसवाड़ी","ml": "തിസ്വാദി","mr": "तिसवाडी","bn": "তিসওয়াড়ি","gu": "તિસવાડી","kn": "ತಿಸ್ವಾಡಿ","pa": "ਤਿਸਵਾੜੀ","ta": "திஸ்வாடி","te": "టిస్వాడి"},
+              ]
+            },
+            "SGA": { 
+              "en": "South Goa","hi": "दक्षिण गोवा","ml": "തെക്കൻ ഗോവ","mr": "दक्षिण गोवा","bn": "দক্ষিণ গোয়া","gu": "દક્ષિણ ગોવા","kn": "ದಕ್ಷಿಣ ಗೋವಾ","pa": "ਦੱਖਣੀ ਗੋਆ","ta": "தென் கோவா","te": "దక్షిణ గోవా",
+              "talukas": [
+                {"id": "SAL","en": "Salcete","hi": "साल्सेट","ml": "സാൽസെറ്റ്","mr": "साल्सेट","bn": "সালসেট","gu": "સાલ્સેટ","kn": "ಸಾಲ್ಸೆಟ್","pa": "ਸਾਲਸੇਟ","ta": "சால்செட்","te": "సాల్సెట్"},
+                {"id": "SAN","en": "Sanguem","hi": "सांगुएम","ml": "സാംഗ്യൂം","mr": "सांगुएम","bn": "সাঙ্গুয়েম","gu": "સંગુએમ","kn": "ಸಂಗುಯೆಂ","pa": "ਸਾਂਗੁਏਮ","ta": "சங்குயம்","te": "సంగూమ్"}
+              ]
+            }
+          }
+        }
+      },
+
+      "crop_suggestions": [
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "CEPU","land_area": "10acre","investment": "1lakh", "soil_score": "high", "suggested_crops": { "en": ["Rice","Bajra"],"hi": ["चावल","बाजरा/ज्वार"],"ml": ["അരിചോളം","ചോളം"],"mr": ["तांदूळ","बाजरी/नाचणी"],"bn": ["চাল","বাজরা"],"gu": ["ચોખા","બાજરી"],"kn": ["ಅಕ್ಕಿ","ರಾಗಿ/ಮಿಲೆಟ್"],"pa": ["ਚਾਵਲ","ਬਾਜਰਾ"],"ta": ["அரிசி","சிறுதானியம்"],"te": ["బియ్యం","చిరుధాన్యాలు"]}, },
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "CEPU","land_area": "10acre","investment": "1lakh", "soil_score": "medium", "suggested_crops": { "en": ["Fodder","Maize","Jowar"],"hi": ["चारा","मक्का","ज्वार"],"ml": ["കാലിത്തീറ്റ","ചോളം","ചോളം (ജോവാർ)"],"mr": ["चारा","मका","ज्वारी"],"bn": ["পশু খাদ্য","ভুট্টা","জোয়ার"],"gu": ["પશુ આહાર","મકાઈ","જુવાર"],"kn": ["ಮೇವು","ಮೆಕ್ಕೆ ಜೋಳ","ಜೋಳ"],"pa": ["ਚਾਵਲ","ਬਾਜਰਾ","ਜਵਾਰ"],"ta": ["தீவனம்","மக்காச்சோளம்","சோளம் (ஜோவார்)"],"te": ["పశుగ్రాసం","మొక్కజొన్న","జొన్న"]}, },
+  {"state": null,"district": null,"taluka": null,"month": "nov-apr","crop_type": "CEPU","land_area": "10acre","investment": "1lakh", "soil_score": "high", "suggested_crops": { "en": ["Wheat"],"hi": ["गेहूं"],"ml": ["ഗോതമ്പ്"],"mr": ["गहू"],"bn": ["গম"],"gu": ["ઘઉં"],"kn": ["ಗೋಧಿ"],"pa": ["ਕਣਕ"],"ta": ["கோதுமை"],"te": ["గోధుమ"]}, },
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "FRU","land_area": "1acre","investment": "10lakh","soil_score": "high","suggested_crops": {  "en": ["Banana", "Jackfruit"],  "hi": ["केला", "कटहल"],  "ml": ["വാഴ", "ചക്ക"],  "mr": ["केळी", "फणस"],  "bn": ["কলা", "কাঁঠাল"],  "gu": ["કેળા", "ફણસ"],  "kn": ["ಬಾಳೆ", "ಹಲಸು"],  "pa": ["ਕੇਲਾ", "ਕਠਲ"],  "ta": ["வாழை", "பலாப்பழம்"],  "te": ["అరటి", "పనసపండు"]}},{"id": 2,"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "FRU","land_area": "1acre","investment": "10lakh","soil_score": "medium","suggested_crops": {  "en": ["Apple"],  "hi": ["सेब"],  "ml": ["ആപ്പിൾ"],  "mr": ["सफरचंद"],  "bn": ["আপেল"],  "gu": ["સફરજન"],  "kn": ["ಸೇಬು"],  "pa": ["ਸੇਬ"],  "ta": ["ஆப்பிள்"],  "te": ["యాపిల్"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "FRU","land_area": "1acre","investment": "10lakh","soil_score": "high","suggested_crops": {  "en": ["Mango"],  "hi": ["आम"],  "ml": ["മാങ്ങ"],  "mr": ["आंबा"],  "bn": ["আম"],  "gu": ["કેરી"],  "kn": ["ಮಾವು"],  "pa": ["ਅੰਬ"],  "ta": ["மாம்பழம்"],  "te": ["మామిడి"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "FRU","land_area": "1acre","investment": "1lakh","soil_score": "medium","suggested_crops": {  "en": ["Guava", "Pineapple"],  "hi": ["अमरूद", "अनानास"],  "ml": ["പേരയ്ക്ക", "കൈതച്ചക്ക"],  "mr": ["पेरू", "अननस"],  "bn": ["পেয়ারা", "আনারস"],  "gu": ["જામફળ", "અનાનસ"],  "kn": ["ಪೇರಲ", "ಅನಾನಸ್"],  "pa": ["ਅਮਰੂਦ", "ਅਨਾਨਾਸ"],  "ta": ["கொய்யா", "அன்னாசி"],  "te": ["జామ", "అనాసపండు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "VEG","land_area": "1acre","investment": "1lakh","soil_score": "high","suggested_crops": {  "en": ["Spinach", "Carrot"],  "hi": ["पालक", "गाजर"],  "ml": ["ചീര", "കാരറ്റ്"],  "mr": ["पालक", "गाजर"],  "bn": ["পালং শাক", "গাজর"],  "gu": ["પાલક", "ગાજર"],  "kn": ["ಪಾಲಕ್ ಸೊಪ್ಪು", "ಗಜ್ಜರಿ"],  "pa": ["ਪਾਲਕ", "ਗਾਜਰ"],  "ta": ["பசலைக்கீரை", "கேரட்"],  "te": ["పాలకూర", "క్యారెట్"]}},
+  {"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "VEG","land_area": "10acre","investment": "1lakh","soil_score": "high","suggested_crops": {  "en": ["Cabbage"],  "hi": ["पत्ता गोभी"],  "ml": ["കാബേജ്"],  "mr": ["कोबी"],  "bn": ["বাঁধাকপি"],  "gu": ["કોબીજ"],  "kn": ["ಎಲೆಕೋಸು"],  "pa": ["ਬੰਦ ਗੋਭੀ"],  "ta": ["முட்டைக்கோஸ்"],  "te": ["క్యాబేజీ"]}},
+  {"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "VEG","land_area": "10acre","investment": "1lakh","soil_score": "medium","suggested_crops": {  "en": ["Potato", "Sweet potato"],  "hi": ["आलू", "शकरकंद"],  "ml": ["ഉരുളക്കിഴങ്ങ്", "മധുരക്കിഴങ്ങ്"],  "mr": ["बटाटा", "रताळे"],  "bn": ["আলু", "মিষ্টি আলু"],  "gu": ["બટાટા", "શક્કરિયા"],  "kn": ["ಆಲೂಗಡ್ಡೆ", "ಸಿಹಿ ಗೆಣಸು"],  "pa": ["ਆਲੂ", "ਸ਼ਕਰਕੰਦੀ"],  "ta": ["உருளைக்கிழங்கு", "சர்க்கரைவள்ளி கிழங்கு"],  "te": ["బంగాళదుంప", "చిలగడదుంప"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "VEG","land_area": "1acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Fenugreek"],  "hi": ["मेथी"],  "ml": ["ഉലുവ"],  "mr": ["मेथी"],  "bn": ["মেথি"],  "gu": ["મેથી"],  "kn": ["ಮೆಂತೆ"],  "pa": ["ਮੇਥੀ"],  "ta": ["வெந்தயம்"],  "te": ["మెంతికూర"]}},
+  {"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "CACO","land_area": "10acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Tobacco"],  "hi": ["तंबाकू"],  "ml": ["പുകയില"],  "mr": ["तंबाखू"],  "bn": ["তামাক"],  "gu": ["તમાકુ"],  "kn": ["ತಂಬಾಕು"],  "pa": ["ਤੰਬਾਕੂ"],  "ta": ["புகையிலை"],  "te": ["పొగాకు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "CACO","land_area": "10acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Indigo"],  "hi": ["नील"],  "ml": ["നീലമരി"],  "mr": ["नीळ"],  "bn": ["নীল"],  "gu": ["ગળી"],  "kn": ["ನೀಲಿ"],  "pa": ["ਨੀਲ"],  "ta": ["அவுரி"],  "te": ["నీలిమందు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "SPI","land_area": "1acre","investment": "10lakh","soil_score": "low","suggested_crops": {  "en": ["Saffron"],  "hi": ["केसर"],  "ml": ["കുങ്കുമപ്പൂവ്"],  "mr": ["केसर"],  "bn": ["জাফরান"],  "gu": ["કેસર"],  "kn": ["ಕುಂಕುಮ ಕೇಸರಿ"],  "pa": ["ਕੇਸਰ"],  "ta": ["குங்குமப்பூ"],  "te": ["కుంకుమపువ్వు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "CACO","land_area": "10acre","investment": "10lakh","soil_score": "high","suggested_crops": {  "en": ["Tea", "Coffee", "Sugarcane"],  "hi": ["चाय", "कॉफी", "गन्ना"],  "ml": ["ചായ", "കാപ്പി", "കരിമ്പ്"],  "mr": ["चहा", "कॉफी", "ऊस"],  "bn": ["চা", "কফি", "আখ"],  "gu": ["ચા", "કોફી", "શેરડી"],  "kn": ["ಚಹಾ", "ಕಾಫಿ", "ಕಬ್ಬು"],  "pa": ["ਚਾਹ", "ਕੌਫੀ", "ਗੰਨਾ"],  "ta": ["தேயிலை", "காபி", "கரும்பு"],  "te": ["తేయాకు", "కాఫీ", "చెరకు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "OIL","land_area": "10acre","investment": "1lakh","soil_score": "medium","suggested_crops": {  "en": ["Groundnut", "Sunflower", "Sesame"],  "hi": ["मूंगफली", "सूरजमुखी", "तिल"],  "ml": ["നിലക്കടല", "സൂര്യകാന്തി", "എള്ള്"],  "mr": ["भुईमूग", "सूर्यफूल", "तीळ"],  "bn": ["চিনাবাদাম", "সূর্যমুখী", "তিল"],  "gu": ["મગફળી", "સૂર્યમુખી", "તલ"],  "kn": ["ನೆಲಗಡಲೆ", "ಸೂರ್ಯಕಾಂತಿ", "ಎಳ್ಳು"],  "pa": ["ਮੂੰਗਫਲੀ","ਰਜਮੁਖੀ", "ਤਿਲ"],  "ta": ["நிலக்கடலை", "சூரியகாந்தி", "எள்"],  "te": ["వేరుశనగ", "సూర్యకాంతి", "నువ్వులు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "OIL","land_area": "10acre","investment": "10lakh","soil_score": "medium","suggested_crops": {  "en": ["Palm"],  "hi": ["ताड़"],  "ml": ["പന"],  "mr": ["ताड"],  "bn": ["তাল"],  "gu": ["તાડ"],  "kn": ["ತಾಳೆ"],  "pa": ["ਤਾਲ"],  "ta": ["பனை"],  "te": ["తాటి"]}},{"id": 15,"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "Oilseeds","land_area": "10acre","investment": "1lakh","soil_score": "medium","suggested_crops": {  "en": ["Mustard", "Rapeseed"],  "hi": ["सरसों", "तोरी"],  "ml": ["കടുക്", "റേപ്സീഡ്"],  "mr": ["मोहरी", "रेपसीड"],  "bn": ["সরিষা", "রেপসিড"],  "gu": ["રાઈ", "રાયડો"],  "kn": ["ಸಾಸಿವೆ", "ರೇಪ್ಸೀಡ್"],  "pa": ["ਸਰ੍ਹੋਂ", "ਤੋਰੀਆ"],  "ta": ["கடுகு", "ரேப்சீடு"],  "te": ["ఆవాలు", "రాప్సీడ్"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "SPI","land_area": "1acre","investment": "10lakh","soil_score": "medium","suggested_crops": {  "en": ["Black pepper", "Cardamom", "Clove", "Cinnamon"],  "hi": ["काली मिर्च", "इलायची", "लौंग", "दालचीनी"],  "ml": ["കുരുമുളക്", "ഏലം", "ഗ്രാമ്പൂ", "കറുവപ്പട്ട"],  "mr": ["काळी मिरी", "वेलची", "लवंग", "दालचिनी"],  "bn": ["গোলমরিচ", "এলাচ", "লবঙ্গ", "দারুচিনি"],  "gu": ["કાળા મરી", "ઈલાયચી", "લવિંગ", "તજ"],  "kn": ["ಕರಿಮೆಣಸು", "ಏಲಕ್ಕಿ", "ಲವಂಗ", "ದಾಲ್ಚಿನ್ನಿ"],  "pa": ["ਕਾਲੀ ਮਿਰਚ", "ਇਲਾਇਚੀ", "ਲੌਂਗ", "ਦਾਲਚੀਨੀ"],  "ta": ["மிளகு", "ஏலக்காய்", "கிராம்பு", "பட்டை"],  "te": ["మిరియాలు", "యాలకులు", "లవంగాలు", "దాల్చినచెక్క"]}},
+  {"state": null,"district": null,"taluka": null,"month": "jun-oct","crop_type": "NUT","land_area": "10acre","investment": "1lakh","soil_score": "medium","suggested_crops": {  "en": ["Cashew nut", "Coconut", "Betel Nut"],  "hi": ["काजू", "नारियल", "सुपारी"],  "ml": ["കശുവണ്ടി", "തേങ്ങ", "അടയ്ക്ക"],  "mr": ["काजू", "नारळ", "सुपारी"],  "bn": ["কাজু বাদাম", "নারকেল", "সুপারি"],  "gu": ["કાજુ", "નાળિયેર", "સોપારી"],  "kn": ["ಗೇರು ಬೀಜ", "ತೆಂಗಿನಕಾಯಿ", "ಅಡಿಕೆ"],  "pa": ["ਕਾਜੂ", "ਨਾਰੀਅਲ", "ਸੁਪਾਰੀ"],  "ta": ["முந்திரி", "தேங்காய்", "பாக்கு"],  "te": ["జీడిపప్పు", "కొబ్బరి", "పోక"]}},
+  {"state": null,"district": null,"taluka": null,"month": "nov-mar","crop_type": "NUT","land_area": "10acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Almonds", "Walnuts"],  "hi": ["बादाम", "अखरोट"],  "ml": ["ബദാം", "അണ്ടിപ്പരിപ്പ്"],  "mr": ["बदाम", "अक्रोड"],  "bn": ["কাঠবাদাম", "আখরোট"],  "gu": ["બદામ", "અખરોટ"],  "kn": ["ಬಾದಾಮಿ", "ಆಕ್ರೋಟ್"],  "pa": ["ਬਾਦਾਮ", "ਅਖਰੋਟ"],  "ta": ["பாதாம்", "வாதுமை"],  "te": ["బాదం", "అక్రోట్"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "FRU","land_area": "10acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Watermelon", "Muskmelon"],  "hi": ["तरबूज", "खरबूजा"],  "ml": ["തണ്ണിമത്തൻ", "ഷമാം"],  "mr": ["कलिंगड", "खरबूज"],  "bn": ["তরমুজ", "খরমুজ"],  "gu": ["તરબૂચ", "ટેટી"],  "kn": ["ಕಲ್ಲಂಗಡಿ", "ಕರ್ಬೂಜ"],  "pa": ["ਤਰਬੂਜ਼", "ਖਰਬੂਜ਼ਾ"],  "ta": ["தர்பூசணி", "முலாம் பழம்"],  "te": ["పుచ్చకాయ", "కర్బూజ"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "HOM","land_area": "1acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Aloevera", "Coriander", "Curry leaves"],  "hi": ["घृतकुमारी", "धनिया", "कढ़ी पत्ता"],  "ml": ["കറ്റാർവാഴ", "മല്ലിയില", "കറിവേപ്പില"],  "mr": ["कोरफड", "कोथिंबीर", "कढीपत्ता"],  "bn": ["ঘৃতকুমারী", "ধনেপাতা", "কড়িপাতা"],  "gu": ["કુંવારપાઠું", "કોથમીર", "મીઠો લીમડો"],  "kn": ["ಲೋಳೆಸರ", "ಕೊತ್ತಂಬರಿ", "ಕರಿಬೇವು"],  "pa": ["ਐਲੋਵੇਰਾ", "ਧਨੀਆ", "ਕੜੀ ਪੱਤਾ"],  "ta": ["சோற்றுக்கற்றாழை", "கொத்தமல்லி", "கறிவேப்பிலை"],  "te": ["కలబంద", "కొత్తిమీర", "కరివేపాకు"]}},
+  {"state": null,"district": null,"taluka": null,"month": "mar-jun","crop_type": "HOM","land_area": "10acre","investment": "1lakh","soil_score": "low","suggested_crops": {  "en": ["Marigold", "Lily"],  "hi": ["गेंदा", "लिली"],  "ml": ["ചെണ്ടുമല്ലി", "ലില്ലി"],  "mr": ["झेंडू", "लिली"],  "bn": ["গাঁদা", "লিলি"],  "gu": ["ગલગોટા", "પોષ"],  "kn": ["ಚೆಂಡು ಹೂವು", "ಲಿಲಿ"],  "pa": ["ਗੈਂਦਾ", "ਲਿਲੀ"],  "ta": ["சாமந்தி", "லில்லி"],  "te": ["బంతి పువ్వు", "లిల్లీ"]}}
+
+],
+
+    "crop_details": 
+{
+  "Rice": {
+    "en": {"title": "Rice Cultivation Steps (105 – 150 Days)",                "requirements": "Puddler, Leveller, Power Tiller, Nursery trays, Irrigation pump. Soil condition: Standing water, heavy clay or loamy soil.",                                        "steps": [  "Nursery sowing, 2. Transplanting to puddled fields, 3. Maintaining standing water, 4. Drainage and harvesting.",],                          "video_url": "https://www.youtube.com/embed/FW_bw9jdrlQ?si=VfjEuAIPGA5R1Mrk",},
+    "hi": {"title": "धान की खेती के चरण (105 – 150 दिन)",                       "requirements": "पडलर, लेवलर, पावर टिलर, नर्सरी ट्रे, सिंचाई पंप। मिट्टी: खड़ा पानी, भारी चिकनी या दोमट मिट्टी।",                                                                                    "steps": ["नर्सरी बुवाई, 2. पडलिंग किए गए खेतों में रोपाई, 3. खड़ा पानी बनाए रखना, 4. जल निकासी और कटाई।"],                                                        "video_url": "https://www.youtube.com/embed/N22nmq1L6iQ?si=8eZXBbugVI5lAyw4",},
+    "mr": {"title": "भात शेतीचे टप्पे (105 – 150 दिवस)",                           "requirements": "पडलर, लेवलर, पॉवर टिलर, नर्सरी ट्रे, सिंचन पंप. माती: साचलेले पाणी, भारी चिकनमाती किंवा लोमी माती.",                                                                              "steps": ["रोपवाटिका पेरणी, 2. चिखल केलेल्या शेतात लावणी, 3. साचलेले पाणी टिकवून ठेवणे, 4. पाण्याचा निचरा आणि कापणी."],                                              "video_url": "https://www.youtube.com/embed/OmOOR8N9xac?si=Sb0jjsbYwOj5XtU0",},
+    "ta": {"title": "நெல் சாகுபடி படிகள் (105 – 150 நாட்கள்)",             "requirements": "பட்லர், லெவலர், பவர் டில்லர், நாற்று தட்டுகள், நீர்ப்பாசன பம்ப். மண்: தேங்கி நிற்கும் நீர், கனமான களிமண் அல்லது வண்டல் மண்.",                    "steps": ["நாற்றங்கால் விதைப்பு, 2. சேற்று வயல்களில் நடவு செய்தல், 3. தேங்கி நிற்கும் நீரைப் பராமரித்தல், 4. வடிகால் மற்றும் அறுவடை."],    "video_url": "https://www.youtube.com/embed/7qsw9pjUrww?si=BbEiGvh0NEJCV7WZ",},
+    "bn": {"title": "ধান চাষের ধাপ (১০৫ – ১৫০ দিন)",                          "requirements": "পাডলার, লেভেলার, পাওয়ার টিলার, নার্সারি ট্রে, সেচ পাম্প। মাটির অবস্থা: দাঁড়ানো জল, ভারী এঁটেল বা দোআঁশ মাটি।",                                                             "steps": ["১. বীজতলায় বপন, ২. কর্দমাক্ত জমিতে চারা রোপণ, ৩. জমিতে জল ধরে রাখা, ৪. জল নিষ্কাশন ও ফসল কাটা।"],                                              "video_url": "https://www.youtube.com/embed/RKpx473PmaI?si=FX4XwF54D_pcB5Ib", },
+    "pa": {"title": "ਝੋਨੇ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (105 – 150 ਦਿਨ)",                       "requirements": "ਪਡਲਰ, ਲੈਵਲਰ, ਪਾਵਰ ਟਿੱਲਰ, ਨਰਸਰੀ ਟ੍ਰੇ, ਸਿੰਚਾਈ ਪੰਪ। ਮਿੱਟੀ: ਖੜ੍ਹਾ ਪਾਣੀ, ਭਾਰੀ ਚੀਕਣੀ ਜਾਂ ਦੋਮਟ ਮਿੱਟੀ।",                                                                               "steps": ["ਪਨੀਰੀ ਬੀਜਣਾ, 2. ਕੱਦੂ ਕੀਤੇ ਖੇਤਾਂ ਵਿੱਚ ਲੁਆਈ, 3. ਖੇਤ ਵਿੱਚ ਪਾਣੀ ਖੜ੍ਹਾ ਰੱਖਣਾ, 4. ਪਾਣੀ ਕੱਢਣਾ ਅਤੇ ਕਟਾਈ।"],                                                           "video_url": "https://www.youtube.com/embed/n_QM0jrHwI8?si=9FSlJC7NfzoLwl-M", },
+    "te": {"title": "వరి సాగు దశలు (105 - 150 రోజులు)",                      "requirements": "పడ్లర్, లెవెలర్, పవర్ టిల్లర్, నర్సరీ ట్రేలు, నీటి పంపు. నేల: నిల్వ ఉన్న నీరు, బంకమట్టి లేదా ఒండ్రు నేలలు.",                                                             "steps": ["నర్సరీ విత్తడం, 2. పొలంలో దమ్ము చేసి నాటడం, 3. నీటిని నిల్వ ఉంచడం, 4. నీటిని తీసివేసి కోత కోయడం।"],                                             "video_url": "https://www.youtube.com/embed/E7kulTuVItQ?si=ldrGQh2u4X9ha63E", },
+    "ml": {"title": "നെൽകൃഷി ഘട്ടങ്ങൾ (105 – 150 ദിവസം)",            "requirements": "പുഡ്‌ലർ, ലെവലർ, പവർ ടില്ലർ, നഴ്സറി ട്രേകൾ, ജലസേചന പമ്പ്. മണ്ണ്: കെട്ടിനിൽക്കുന്ന വെള്ളം, കളിമണ്ണ് അല്ലെങ്കിൽ ലോമി മണ്ണ്.",                       "steps": ["ഞാറുപാകൽ, 2. ചെളിനിറഞ്ഞ പാടത്തേക്ക് മാറ്റിനടീൽ, 3. വെള്ളം കെട്ടിനിർത്തുക, 4. വെള്ളം വാർന്നു കളയലും വിളവെടുപ്പും।"],        "video_url": "https://www.youtube.com/embed/S1ymif9uUf0?si=4fJke6i1_OczoPZc", },
+    "gu": {"title": "ડાંગરની ખેતીના તબક્કા (105 – 150 દિવસ)",                    "requirements": "પડલર, લેવલર, પાવર ટીલર, નર્સરી ટ્રે, સિંચાઈ પંપ. માટી: ભરાયેલું પાણી, ભારે ચીકણી અથવા ગોરાડુ જમીન.",                                                                       "steps": ["ધરૂવાડિયું બનાવવું, 2. ગારો કરેલા ખેતરમાં રોપણી, 3. પાણી ભરી રાખવું, 4. પાણીનો નિકાલ અને લણણી।"],                                                          "video_url": "https://www.youtube.com/embed/zc6eZhldQsA?si=Djcfgawu2AzAxcyJ", },
+    "kn": {"title": "ಭತ್ತದ ಬೇಸಾಯದ ಹಂತಗಳು (105 - 150 ದಿನಗಳು)",            "requirements": "ಪಡ್ಲರ್, ಲೆವೆಲರ್, ಪವರ್ ಟಿಲ್ಲರ್, ನರ್ಸರಿ ಟ್ರೇಗಳು, ನೀರಾವರಿ ಪಂಪ್. ಮಣ್ಣು: ನಿಂತ ನೀರು, ಜೇಡಿಮಣ್ಣು ಅಥವಾ ಕೆಂಪು ಮಿಶ್ರಿತ ಮಣ್ಣು.",                                           "steps": ["ಸಸಿಮಡಿ ಬಿತ್ತನೆ, 2. ಗದ್ದೆ ಹದ ಮಾಡಿ ನಾಟಿ ಮಾಡುವುದು, 3. ನೀರನ್ನು ನಿಲ್ಲಿಸುವುದು, 4. ನೀರು ಬಸಿದು ಕೊಯ್ಲು ಮಾಡುವುದು।"],                                   "video_url": "https://www.youtube.com/embed/-EJwp3qvuZU?si=V8JNqOPMZ5h-7RPp", }
+  },                                                                                                                                                                                                                                                                                                                                                                                                                                       
+  "Wheat": {
+    "en": {"title": "Wheat Cultivation Steps (105 – 150 Days)",               "requirements": "Rotavator, Seed Drill, Combine Harvester (for large scale). Cool weather, well-drained fertile loamy soil.",                                                   "steps": [  "Tilling and seed drilling, 2. Crown root irrigation, 3. Flowering/milking stage care, 4. Harvesting when grains are hard.",],                    "video_url": "https://www.youtube.com/embed/AonJkhqCRwk?si=880HyKl38ptsWpXu",  },
+    "hi": {"title": "गेहूं की खेती के चरण (105 – 150 दिन)",                       "requirements": "रोटावेटर, सीड ड्रिल, कंबाइन हार्वेस्टर। ठंडा मौसम, अच्छी जल निकासी वाली उपजाऊ दोमट मिट्टी।",                                                                                  "steps": ["जुताई और बीज ड्रिलिंग, 2. क्राउन रूट सिंचाई, 3. फूल/दूधिया अवस्था की देखभाल, 4. दाने सख्त होने पर कटाई।"],                                                     "video_url": "https://www.youtube.com/embed/ZkCSGoPxATE?si=0-fSOdj3sBVNZk60",},
+    "mr": {"title": "गहू शेतीचे टप्पे (105 – 150 दिवस)",                           "requirements": "रोटाव्हेटर, सीड ड्रिल, कंबाइन हार्वेस्टर. थंड हवामान, पाण्याचा निचरा होणारी सुपीक लोमी माती.",                                                                                    "steps": ["नांगरणी आणि पेरणी, 2. मुळांना पाणी देणे, 3. फुलोरा/चिकाची अवस्था असताना निगा, 4. दाणे कडक झाल्यावर कापणी."],                                                 "video_url": "https://www.youtube.com/embed/-cpg3--sehM?si=tJEGXMRXiyOObeh3",},
+    "ta": {"title": "கோதுமை சாகுபடி படிகள் (105 – 150 நாட்கள்)",       "requirements": "ரோட்டவேட்டர், சீட் டிரில், கம்பைன் ஹார்வெஸ்டர். குளிர்ந்த வானிலை, நல்ல வடிகால் வசதியுள்ள வளமான வண்டல் மண்.",                              "steps": ["உழுதல் மற்றும் விதைத்தல், 2. வேர் நீர்ப்பாசனம், 3. பூக்கும்/பால் பருவ பராமரிப்பு, 4. தானியங்கள் கடினமான பிறகு அறுவடை."],         "video_url": "https://www.youtube.com/embed/rq8uoSYer4s?si=ufnTSboG2I0HD2Nd",},
+    "bn": { "title": "গম চাষের ধাপ (১০৫ – ১৫০ দিন)",                         "requirements": "রোটাভেটর, সিড ড্রিল, কম্বাইন হারভেস্টার। ঠান্ডা আবহাওয়া, জল নিষ্কাশনযোগ্য উর্বর দোআঁশ মাটি।",                                                                            "steps": ["১. চাষ ও বীজ বপন, ২. প্রাথমিক সেচ, ৩. ফুল ফোটা/দুধালো অবস্থার যত্ন, ৪. দানা শক্ত হলে ফসল কাটা।"],                                                    "video_url": "https://www.youtube.com/embed/uJj-mPnL3c0?si=YVOTdTFlGLQk0oy-", },
+    "pa": { "title": "ਕਣਕ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (105 – 150 ਦਿਨ)",                    "requirements": "ਰੋਟਾਵੇਟਰ, ਸੀਡ ਡਰਿੱਲ, ਕੰਬਾਈਨ ਹਾਰਵੈਸਟਰ। ਠੰਡਾ ਮੌਸਮ, ਚੰਗੇ ਨਿਕਾਸ ਵਾਲੀ ਉਪਜਾਊ ਦੋਮਟ ਮਿੱਟੀ।",                                                                                       "steps": ["ਵਾਹੀ ਅਤੇ ਬਿਜਾਈ, 2. ਕੋਰ ਵਾਹ (ਪਹਿਲੀ ਸਿੰਚਾਈ), 3. ਫੁੱਲ ਆਉਣ ਸਮੇਂ ਸੰਭਾਲ, 4. ਦਾਣੇ ਸਖ਼ਤ ਹੋਣ 'ਤੇ ਕਟਾਈ।"],                                                          "video_url": "https://www.youtube.com/embed/C64tZ5oQipw?si=7hZ6DWM--wwppvlI", },
+    "te": { "title": "గోధుమ సాగు దశలు (105 - 150 రోజులు)",                  "requirements": "రోటవేటర్, సీడ్ డ్రిల్, కంబైన్ హార్వెస్టర్. చల్లని వాతావరణం, సారవంతమైన ఒండ్రు నేలలు.",                                                                                 "steps": ["దున్నడం మరియు విత్తడం, 2. వేరు వ్యవస్థ నీటి పారుదల, 3. పూత దశలో సంరక్షణ, 4. గింజ ముదిరిన తర్వాత కోయడం।"],                                   "video_url": "https://www.youtube.com/embed/swojd7FFUfg?si=n9ifZgh-LIiWXcVy", },
+    "ml": { "title": "ഗോതമ്പ് കൃഷി ഘട്ടങ്ങൾ (105 – 150 ദിവസം)",       "requirements": "റോട്ടവേറ്റർ, സീഡ് ഡ്രിൽ, കംബൈൻ ഹാർവെസ്റ്റർ. തണുപ്പുള്ള കാലാവസ്ഥ, ഫലഭൂയിഷ്ഠമായ ലോമി മണ്ണ്.",                                                "steps": ["നിലമൊരുക്കലും വിതയ്ക്കലും, 2. വേരുപടല നനയ്ക്കൽ, 3. പൂവിടുന്ന ഘട്ടത്തിലെ പരിചരണം, 4. ധാന്യങ്ങൾ കടുപ്പമാകുമ്പോൾ വിളവെടുപ്പ്।"],"video_url": "https://www.youtube.com/embed/WVNrPAoG1ww?si=RF5zpE93cTU4CbNy", },
+    "gu": { "title": "ઘઉંની ખેતીના તબક્કા (105 – 150 દિવસ)",                    "requirements": "રોટાવેટર, સીડ ડ્રિલ, કમ્બાઈન હાર્વેસ્ટર. ઠંડુ હવામાન, સારી નિકાસવાળી ફળદ્રુપ ગોરાડુ જમીન.",                                                                                    "steps": ["ખેડ અને વાવણી, 2. પિયત આપવું, 3. દૂધિયા અવસ્થાએ કાળજી, 4. દાણા કઠણ થાય ત્યારે લણણી।"],                                                              "video_url": "https://www.youtube.com/embed/j1DEi6e7Ty8?si=jZbIZ5tJm3K8g-0q", },
+    "kn": { "title": "ಗೋಧಿ ಬೇಸಾಯದ ಹಂತಗಳು (105 - 150 ದಿನಗಳು)",          "requirements": "ರೋಟವೇಟರ್, ಸೀಡ್ ಡ್ರಿಲ್, ಕಂಬೈನ್ ಹಾರ್ವೆಸ್ಟರ್. ತಂಪಾದ ವಾತಾವರಣ, ಫಲವತ್ತಾದ ಮಣ್ಣು.",                                                                               "steps": ["ಉಳುಮೆ ಮತ್ತು ಬಿತ್ತನೆ, 2. ಬೇರು ಹಂತದ ನೀರಾವರಿ, 3. ಹೂಬಿಡುವ ಹಂತದ ಆರೈಕೆ, 4. ಕಾಳುಗಳು ಗಟ್ಟಿಯಾದಾಗ ಕೊಯ್ಲು।"],                                     "video_url": "https://www.youtube.com/embed/pZiiDAHa0CA?si=DveBwkmYcPT4t8Al", }
+  },
+  "Bajra": {
+    "en": {"title": "Bajra Cultivation Steps (75 – 90 Day)",                  "requirements": "Harrow, basic hand tools for thinning. Arid/Semi-arid, sandy soil, low water requirement.",                                                                      "steps": [  "Deep plowing, 2. Sowing at shallow depth, 3. Thinning and weeding, 4. Harvesting when earheads dry.",],                                        "video_url": "https://www.youtube.com/embed/0C25VazpL7s?si=gkKauzd-dS-EHd4v", },
+    "mr": {"title": "गहू शेतीचे टप्पे (105 – 150 दिवस)",                           "requirements": "रोटाव्हेटर, सीड ड्रिल, कंबाइन हार्वेस्टर. थंड हवामान, पाण्याचा निचरा होणारी सुपीक लोमी माती.",                                                                                    "steps": ["नांगरणी आणि पेरणी, 2. मुळांना पाणी देणे, 3. फुलोरा/चिकाची अवस्था असताना निगा, 4. दाणे कडक झाल्यावर कापणी."],                                                 "video_url": "https://www.youtube.com/embed/EV8yc-J7Y70?si=-ydj0x80fZ3wIPrg", },
+    "hi": {"title": "बाजरा की खेती के चरण (75 – 90 दिन)",                       "requirements": "हैरो, विरलीकरण (thinning) के लिए बुनियादी उपकरण। शुष्क/अर्ध-शुष्क, रेतीली मिट्टी, कम पानी की आवश्यकता।",                                                                     "steps": ["गहरी जुताई, 2. उथली गहराई पर बुवाई, 3. विरलीकरण और निराई, 4. सिट्टे सूखने पर कटाई।"],                                                                   "video_url": "https://www.youtube.com/embed/WnwgSzqd6xc?si=WWNC1oN6xYfPIqqM", },
+    "ta": {"title": "கம்பு சாகுபடி படிகள் (75 – 90 நாட்கள்)",               "requirements": "ஹாரோ, செடி கலைப்பதற்கான அடிப்படை கருவிகள். வறண்ட/பாதி வறண்ட நிலம், மணல் மண், குறைந்த நீர் தேவை.",                                   "steps": ["ஆழமாக உழுதல், 2. ஆழமற்ற விதைப்பு, 3. செடி கலைத்தல் மற்றும் களை எடுத்தல், 4. கதிர்கள் காய்ந்ததும் அறுவடை."],                "video_url": "https://www.youtube.com/embed/ySr_xhGTyAU?si=cUZePAash5vAlk5m", },
+    "bn": { "title": "বাজরা চাষের ধাপ (৭৫ – ৯০ দিন)",                         "requirements": "হ্যারো, চারা পাতলা করার সরঞ্জাম। শুষ্ক আবহাওয়া, বেলে মাটি, কম জল।",                                                                                                   "steps": ["১. গভীর চাষ, ২. অল্প গভীরতায় বপন, ৩. চারা পাতলা করা ও নিড়ানি, ৪. শিষ শুকিয়ে গেলে সংগ্রহ।"],                                                      "video_url": "https://www.youtube.com/embed/3pz-T-V883g?si=k5RRXl35WrL8DLr8", },
+    "pa": { "title": "ਬਾਜਰੇ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (75 – 90 ਦਿਨ)",                       "requirements": "ਹੈਰੋ, ਵਿਰਲੀ ਕਰਨ ਲਈ ਸੰਦ। ਖੁਸ਼ਕ ਮੌਸਮ, ਰੇਤਲੀ ਮਿੱਟੀ, ਘੱਟ ਪਾਣੀ ਦੀ ਲੋੜ।",                                                                                                       "steps": ["ਡੂੰਘੀ ਵਾਹੀ, 2. ਘੱਟ ਡੂੰਘਾਈ 'ਤੇ ਬਿਜਾਈ, 3. ਵਿਰਲੀ ਕਰਨਾ ਅਤੇ ਗੋਡੀ, 4. ਸਿੱਟੇ ਸੁੱਕਣ 'ਤੇ ਕਟਾਈ।"],                                                                  "video_url": "https://www.youtube.com/embed/f4MRibcsch4?si=5v48_DXgC0kwUqS2", },
+    "te": { "title": "సజ్జల సాగు దశలు (75 - 90 రోజులు)",                      "requirements": "హారో, విత్తన పలుచదనానికి పనిముట్లు. ఎడారి/అర్ధ-ఎడారి వాతావరణం, ఇసుక నేలలు.",                                                                                    "steps": ["లోతుగా దున్నడం, 2. తక్కువ లోతులో విత్తడం, 3. మొక్కల సాంద్రత తగ్గించడం, 4. కంకులు ఎండిన తర్వాత కోయడం।"],                                      "video_url": "https://www.youtube.com/embed/ABl794HX-6I?si=5fH94fnbPvGOPdsq", },
+    "ml": { "title": "കമ്പ് കൃഷി ഘട്ടങ്ങൾ (75 – 90 ദിവസം)",             "requirements": "ഹാറോ, കൈക്കോട്ടുകൾ. വരണ്ട കാലാവസ്ഥ, മണൽ മണ്ണ്, കുറഞ്ഞ ജലത്തിന്റെ ആവശ്യകത.",                                                            "steps": ["ആഴത്തിൽ ഉഴുക, 2. കുറഞ്ഞ ആഴത്തിൽ വിതയ്ക്കുക, 3. കളപറിക്കൽ, 4. കതിരുകൾ ഉണങ്ങുമ്പോൾ വിളവെടുക്കുക।"],                  "video_url": "https://www.youtube.com/embed/mMdo39FPN_4?si=CHS2zqcQDc0InK9d", },
+    "gu": { "title": "બાજરીની ખેતીના તબક્કા (75 – 90 દિવસ)",                    "requirements": "દંતાર, કરબ. સૂકું હવામાન, રેતાળ જમીન, ઓછું પાણી.",                                                                                                                  "steps": ["ઊંડી ખેડ, 2. ઓછી ઊંડાઈએ વાવણી, 3. પારવણી અને નિંદામણ, 4. ડુંડા સુકાય ત્યારે લણણી।"],                                                                   "video_url": "https://www.youtube.com/embed/7-PrOMW0-hk?si=KArb5qeWAWUV9G5t", },
+    "kn": { "title": "ಸಜ್ಜೆ ಬೇಸಾಯದ ಹಂತಗಳು (75 - 90 ದಿನಗಳು)",              "requirements": "ಕುಂಟೆ, ವಿರಳೀಕರಣಕ್ಕೆ ಉಪಕರಣಗಳು. ಒಣ ಹವಾಮಾನ, ಮರಳು ಮಿಶ್ರಿತ ಮಣ್ಣು.",                                                                                           "steps": ["ಆಳವಾದ ಉಳುಮೆ, 2. ಕಡಿಮೆ ಆಳದಲ್ಲಿ ಬಿತ್ತನೆ, 3. ವಿರಳೀಕರಣ ಮತ್ತು ಕಳೆ ತೆಗೆಯುವುದು, 4. ತೆನೆಗಳು ಒಣಗಿದಾಗ ಕೊಯ್ಲು।"],                                     "video_url": "https://www.youtube.com/embed/QwDm3PNLBd0?si=FNBJPCvku9AITnrd", }
+  },
+  "banana": { 
+    "en": {"title": "Banana Cultivation Steps (10 – 15 Months)",              "requirements": "Drip Irrigation system, Propping sticks (Bamboo), Pitting tools. Tropical/Humid, deep well-drained soil, high water.",                                        "steps": ["1. Sucker/Tissue culture planting, 2. Propping (supporting the plant) , 3. Desuckering (removing side shoots), 4. Bunch harvesting.",],             "video_url": "https://www.youtube.com/embed/If9U6ME3ycQ?si=g6DVMUjKNaExrQqU",},
+    "hi": {"title": "केले की खेती के चरण (10 – 15 महीने)",                       "requirements": "ड्रिप सिंचाई प्रणाली, सहारा देने के लिए बांस, गड्ढे खोदने के उपकरण। उष्णकटिबंधीय/आर्द्र, गहरी उपजाऊ मिट्टी।",                                                                      "steps": ["शकर/टिशू कल्चर रोपण, 2. पौधों को सहारा देना, 3. अनावश्यक कल्लों को हटाना (desuckering), 4. घार की कटाई।"],                                                 "video_url": "https://www.youtube.com/embed/SsiCO4thYn4?si=0TEbv54UNGidyNh4",},
+    "mr": {"title": "केळी शेतीचे टप्पे (10 – 15 महिने)",                            "requirements": "ठिबक सिंचन प्रणाली, आधार देण्यासाठी बांबू, खड्डे खोदण्याची साधने. उष्णकटिबंधीय हवामान, खोल सुपीक माती.",                                                                      "steps": ["कंद/तिश्यू कल्चर लावणी, 2. झाडांना आधार देणे, 3. जास्तीचे फुटवे काढणे, 4. घड काढणी."],                                                                        "video_url": "https://www.youtube.com/embed/cLYkBleWdoc?si=Ln0ATurulES2i8QG",},
+    "ta": {"title": "வாழை சாகுபடி படிகள் (10 – 15 மாதங்கள்)",          "requirements": "சொட்டு நீர் பாசன அமைப்பு, முட்டுக்கொடுக்கும் மூங்கில் குச்சிகள், குழி தோண்டும் கருவிகள். வெப்பமண்டல/ஈரப்பதமான, ஆழமான வடிகால் மண்.",  "steps": ["கன்று/திசு வளர்ப்பு நடவு, 2. முட்டுக்கொடுத்தல் (செடிக்கு ஆதரவு), 3. பக்க கன்றுகளை அகற்றுதல், 4. தார் அறுவடை."],                    "video_url": "https://www.youtube.com/embed/Z2v3D7aGWl8?si=Nc4JMYvKLrDAy_al",},
+    "bn": { "title": "কলা চাষের ধাপ (১০ – ১৫ মাস)",                           "requirements": "ড্রিপ সেচ, বাঁশের খুঁটি, গর্ত খোঁড়ার সরঞ্জাম। উষ্ণ ও আর্দ্র আবহাওয়া, গভীর উর্বর মাটি।",                                                                                   "steps": ["১. চারা বা টিস্যু কালচার রোপণ, ২. বাঁশ দিয়ে ঠেস দেওয়া, ৩. অতিরিক্ত শোষক শাখা ছাঁটাই, ৪. কলার ছড়া সংগ্রহ।"],                                                "video_url": "https://www.youtube.com/embed/HIrgG8hbMRA?si=38iqdAITHN76z7Cm", },
+    "pa": { "title": "ਕੇਲੇ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (10 – 15 ਮਹੀਨੇ)",                       "requirements": "ਡਰਿੱਪ ਸਿੰਚਾਈ, ਬਾਂਸ ਦੀਆਂ ਸੋਟੀਆਂ, ਟੋਏ ਪੁੱਟਣ ਵਾਲੇ ਸੰਦ। ਗਰਮ ਮੌਸਮ, ਡੂੰਘੀ ਮਿੱਟੀ।",                                                                                               "steps": ["ਟਿਸ਼ੂ ਕਲਚਰ ਬੂਟੇ ਲਾਉਣਾ, 2. ਸਹਾਰਾ ਦੇਣਾ, 3. ਵਾਧੂ ਸ਼ਾਖਾਵਾਂ ਕੱਟਣਾ, 4. ਘੜ (Bunch) ਦੀ ਕਟਾਈ।"] ,                                                                     "video_url": "https://www.youtube.com/embed/_7CXR9Fss4M?si=RsWLpGdU8ifxZCc-",},
+    "te": { "title": "అరటి సాగు దశలు (10 - 15 నెలలు)",                     "requirements": "బిందు సేద్యం, మద్దతు కర్రలు, గుంటలు తవ్వే పరికరాలు. ఉష్ణమండల/తేమతో కూడిన వాతావరణం.",                                                                       "steps": ["పిలకలు/టిష్యూ కల్చర్ నాటడం, 2. మద్దతు ఇవ్వడం, 3. అదనపు పిలకలను తొలగించడం, 4. గెలల కోత।"],                                                    "video_url": "https://www.youtube.com/embed/T7i7qTeNGU0?si=Ib46u_f2rZlzF1Tc", },
+    "ml": { "title": "വാഴ കൃഷി ഘട്ടങ്ങൾ (10 – 15 മാസം)",               "requirements": "തുള്ളിനന സംവിധാനം, മുട്ടുകുറ്റികൾ, കുഴിയെടുക്കാനുള്ള ഉപകരണം. ഈർപ്പമുള്ള കാലാവസ്ഥ, ആഴമുള്ള മണ്ണ്.",                                         "steps": ["കന്ന്/ടിഷ്യു കൾച്ചർ നടീൽ, 2. താങ്ങ് കൊടുക്കൽ, 3. കന്നുകൾ നീക്കം ചെയ്യൽ, 4. കുല വെട്ടൽ।"],                                          "video_url": "https://www.youtube.com/embed/hAynBlxfD0M?si=pqtR71OLykEe2zaW", },
+    "gu": { "title": "કેળાની ખેતીના તબક્કા (10 – 15 મહિના)",                     "requirements": "ટપક સિંચાઈ, ટેકા માટે વાંસ, ખાડા ખોદવાના સાધનો. ઉષ્ણકટિબંધીય હવામાન, ફળદ્રુપ જમીન.",                                                                                  "steps": ["ટિશ્યુ કલ્ચર રોપણી, 2. ટેકા આપવા, 3. પિલાની છાંટણી, 4. લૂમ ઉતારવી।"],                                                                                     "video_url": "https://www.youtube.com/embed/NjZ8VPP9UfM?si=gmCBCE0020h9Hq1N", },
+    "kn": { "title": "ಬಾಳೆ ಬೇಸಾಯದ ಹಂತಗಳು (10 - 15 ತಿಂಗಳುಗಳು)",           "requirements": "ಹನಿ ನೀರಾವರಿ, ಬಿದಿರಿನ ಆಸರೆ, ಗುಂಡಿ ತೋಡುವ ಉಪಕರಣಗಳು. ಉಷ್ಣವಲಯದ ಹವಾಮಾನ, ಫಲವತ್ತಾದ ಮಣ್ಣು.",                                                             "steps": ["ಕಂದು ಅಥವಾ ಟಿಶ್ಯೂ ಕಲ್ಚರ್ ನಾಟಿ, 2. ಆಸರೆ ಕೊಡುವುದು, 3. ಸಕ್ಕರ್‌ಗಳನ್ನು ತೆಗೆಯುವುದು, 4. ಗೊನೆ ಕೊಯ್ಲು।"],                                                "video_url": "https://www.youtube.com/embed/CZ_ff_sa-Kg?si=TcCnApLlvIXA0qak", }
+  },
+  "Mango": {
+    "en": {"title": "Mango Cultivation Steps (4 – 5 Years)",                  "requirements": "Pruning shears, Tree sprayers, Grafting kits, Harvesting poles. Hot/Dry during flowering, adaptable to various soils.",                                        "steps": [  "Grafted sapling planting, 2. Pruning for structure, 3. Irrigation during fruit set, 4. Picking mature green fruits.",],                            "video_url": "https://www.youtube.com/embed/7cEStg9OA2Q?si=FITAsMQBh8VAPCmg",},
+    "hi": {"title": "आम की खेती के चरण (4 – 5 वर्ष)",                          "requirements": "छंटाई कैंची, स्प्रेयर, ग्राफ्टिंग किट, कटाई के डंडे। फूल आने के समय गर्म/शुष्क मौसम।",                                                                                          "steps": ["ग्राफ्टेड पौधों का रोपण, 2. आकार के लिए छंटाई, 3. फल आने के दौरान सिंचाई, 4. परिपक्व कच्चे फलों की तुड़ाई।"],                                                      "video_url": "https://www.youtube.com/embed/xmNIuikxmeI?si=TgV3HTr7XbJtc9XL",},
+    "mr": {"title": "आंबा शेतीचे टप्पे (4 – 5 वर्षे)",                               "requirements": "छाटणीची कात्री, फवारणी यंत्र, ग्राफ्टिंग किट, काढणीचा झेला. फुलोऱ्याच्या काळात उष्ण/कोरडे हवामान.",                                                                              "steps": ["कलमांची लावणी, 2. झाडांच्या आकारासाठी छाटणी, 3. फळधारणेच्या काळात सिंचन, 4. पक्व कैल्यांची काढणी."],                                                             "video_url": "https://www.youtube.com/embed/T_fUYfyZt2U?si=tMyUF4-Mn8golqQl",},
+    "ta": {"title": "மா சாகுபடி படிகள் (4 – 5 ஆண்டுகள்)",               "requirements": "கத்தரிக்கோல், தெளிப்பான்கள், ஒட்டுக்கட்டும் கருவிகள், அறுவடை குச்சிகள். பூக்கும் காலத்தில் வெப்பமான/வறண்ட வானிலை.",                        "steps": ["ஒட்டுக்கட்டிய கன்று நடவு, 2. கிளைகளைக் கத்தரித்தல், 3. காய் பிடிக்கும் போது நீர்ப்பாசனம், 4. முதிர்ந்த பச்சை மாங்காய்களைப் பறித்தல்."],"video_url": "https://www.youtube.com/embed/lcA6BPHJDxY?si=dQZon6AdYzkvdbxR",},
+    "bn": { "title": "আম চাষের ধাপ (৪ – ৫ বছর)",                             "requirements": "ছাঁটাই কাঁচি, স্প্রেয়ার, কলম করার কিট। মুকুল আসার সময় শুষ্ক আবহাওয়া।",                                                                                            "steps": ["১. কলম করা চারা রোপণ, ২. গাছের কাঠামোর জন্য ছাঁটাই, ৩. ফল ধরার সময় সেচ, ৪. পরিপক্ক কাঁচা ফল সংগ্রহ।"],                                                 "video_url": "https://www.youtube.com/embed/vjhX6MEkng4?si=lq51OeWkVaQf-VfO", },
+    "pa": { "title": "ਅੰਬ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (4 – 5 ਸਾਲ)",                          "requirements": "ਕਾਂਟ-ਛਾਂਟ ਵਾਲੀ ਕੈਂਚੀ, ਸਪ੍ਰੇਅਰ, ਗ੍ਰਾਫਟਿੰਗ ਕਿੱਟ। ਫੁੱਲ ਆਉਣ ਸਮੇਂ ਗਰਮ ਮੌਸਮ।",                                                                                                   "steps": ["ਕਲਮੀ ਬੂਟੇ ਲਾਉਣਾ, 2. ਕਾਂਟ-ਛਾਂਟ, 3. ਫਲ ਲੱਗਣ ਸਮੇਂ ਸਿੰਚਾਈ, 4. ਪੱਕੇ ਹੋਏ ਫਲ ਤੋੜਨਾ।"],                                                                             "video_url": "https://www.youtube.com/embed/Fm8zKx4Sm9o?si=iWUTvk7Oq-lDS1O7", },
+    "te": { "title": "మామిడి సాగు దశలు (4 - 5 సంవత్సరాలు)",                 "requirements": "కత్తిరింపు కత్తెరలు, స్ప్రేయర్లు, గ్రాఫ్టింగ్ కిట్లు. పూత సమయంలో వేడి/పొడి వాతావరణం.",                                                                                   "steps": ["అంటు మొక్కలను నాటడం, 2. కొమ్మల కత్తిరింపు, 3. కాయ దశలో నీటి పారుదల, 4. ముదిరిన కాయలను కోయడం।"],                                             "video_url": "https://www.youtube.com/embed/r3gEd_NAQR4?si=7epH_wnWhTwymuK0", },
+    "ml": { "title": "മാങ്ങ കൃഷി ഘട്ടങ്ങൾ (4 – 5 വർഷം)",               "requirements": "പ്രൂണിംഗ് കത്രിക, സ്പ്രേയറുകൾ, ഗ്രാഫ്റ്റിംഗ് കിറ്റുകൾ. പൂവിടുന്ന സമയത്ത് ചൂടുള്ള കാലാവസ്ഥ.",                                                       "steps": ["ഒട്ടുതൈകൾ നടീൽ, 2. പ്രൂണിംഗ് (കൊമ്പു കോതൽ), 3. കായ്ക്കുന്ന സമയത്തെ നനയ്ക്കൽ, 4. വിളഞ്ഞ പച്ചമാങ്ങകൾ പറിക്കൽ।"],           "video_url": "https://www.youtube.com/embed/ObK7SMMpSu8?si=Q1lNdc7Vgubc242A", },
+    "gu": { "title": "કેરીની ખેતીના તબક્કા (4 – 5 વર્ષ)",                         "requirements": "કાપણી માટેની કાતર, સ્પ્રેયર, કલમ કીટ. ફૂલ આવતી વખતે ગરમ/સૂકું હવામાન.",                                                                                                 "steps": ["કલમી રોપાનું વાવેતર, 2. આકાર માટે છાંટણી, 3. ફળ બેસતી વખતે પિયત, 4. પુખ્ત કાચી કેરી ઉતારવી।"],                                                             "video_url": "https://www.youtube.com/embed/xrg9d_4Ia7Y?si=Pe8m5X-LiNkZ0Lav", },
+    "kn": { "title": "ಮಾವಿನ ಬೇಸಾಯದ ಹಂತಗಳು (4 - 5 ವರ್ಷಗಳು)",           "requirements": "ಕತ್ತರಿಸುವ ಕತ್ತರಿ, ಸ್ಪ್ರೇಯರ್‌ಗಳು, ಗ್ರಾಫ್ಟಿಂಗ್ ಕಿಟ್. ಹೂಬಿಡುವ ಸಮಯದಲ್ಲಿ ಬಿಸಿ ಹವಾಮಾನ.",                                                                                 "steps": ["ಕಸಿ ಮಾಡಿದ ಸಸಿ ನಾಟಿ, 2. ಗಿಡದ ಆಕಾರಕ್ಕಾಗಿ ಕತ್ತರಿಸುವುದು, 3. ಕಾಯಿ ಕಟ್ಟುವಾಗ ನೀರಾವರಿ, 4. ಹಣ್ಣಾದ ಕಾಯಿಗಳ ಕೊಯ್ಲು।"],                                     "video_url": "https://www.youtube.com/embed/spk3kB6xgCc?si=6O_QPiJXWrgNh37J", }
+  },
+  "Spinach": {
+    "en": {"title": "Spinach Cultivation Steps (30 – 45 Days)",               "requirements": "Hand Hoe, Spades, Sprinklers or watering cans. Cool weather, rich organic soil, frequent watering.",                                                            "steps": [  "Bed preparation, 2. Line sowing, 3. Frequent light irrigation, 4. Leaves clipping for multiple harvests.",],                                       "video_url": "https://www.youtube.com/embed/gKi4Ls3XMYo?si=mvb7FcgAAum7BtJS",  },
+    "hi": {"title": "पालक की खेती के चरण (30 – 45 दिन)",                      "requirements": "खुरपी, फावड़ा, स्प्रिंकलर या हजारा। ठंडा मौसम, जैविक खाद युक्त मिट्टी, बार-बार सिंचाई।",                                                                                        "steps": ["क्यारी तैयार करना, 2. कतारों में बुवाई, 3. हल्की सिंचाई, 4. पत्तियों की कटाई।"],                                                                                   "video_url": "https://www.youtube.com/embed/moOFpWofFGo?si=9P-cLdOdinWeDwLn",},
+    "mr": {"title": "पालक शेतीचे टप्पे (30 – 45 दिवस)",                          "requirements": "खुरपे, फावडे, स्प्रिंकलर किंवा झारी. थंड हवामान, सेंद्रिययुक्त माती, वारंवार पाणी देणे.",                                                                                            "steps": ["वाफे तयार करणे, 2. ओळीत पेरणी, 3. हलके सिंचन, 4. पाने कापून काढणी."],                                                                                    "video_url": "https://www.youtube.com/embed/ZaDQiqmzv4c?si=sc-3g-bY55e79WCv",},
+    "ta": {"title": "பசலைக்கீரை சாகுபடி படிகள் (30 – 45 நாட்கள்)",     "requirements": "களைக்கொத்தி, மண்வெட்டி, தெளிப்பான்கள். குளிர்ந்த வானிலை, கரிம மண், அடிக்கடி நீர்ப்பாசனம்.",                                                     "steps": ["பாத்தி தயாரித்தல், 2. வரிசை விதைப்பு, 3. அடிக்கடி லேசான நீர்ப்பாசனம், 4. அறுவடைக்காக இலைகளைக் கிள்ளுதல்."],                     "video_url": "https://www.youtube.com/embed/-fH__hxjM44?si=YpEtaE-S6JqZgAM5",},
+    "bn": { "title": "পালং শাক চাষের ধাপ (৩০ – ৪৫ দিন)",                     "requirements": "নিড়ানি, কোদাল, ঝারি। ঠান্ডা আবহাওয়া, জৈব সার সমৃদ্ধ মাটি।",                                                                                                          "steps": ["১. বেড তৈরি, ২. সারিবদ্ধভাবে বপন, ৩. ঘনঘন হালকা সেচ, ৪. পাতা সংগ্রহ।"],                                                                               "video_url": "https://www.youtube.com/embed/BL0HlQ-LPl0?si=pUK_IglNjZA3AQyd", },
+    "pa": { "title": "ਪਾਲਕ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (30 – 45 ਦਿਨ)",                     "requirements": "ਖੁਰਪਾ, ਕਹੀ, ਫੁਹਾਰਾ। ਠੰਡਾ ਮੌਸਮ, ਜੈਵਿਕ ਮਿੱਟੀ।",                                                                                                                            "steps": ["ਕਿਆਰੀਆਂ ਤਿਆਰ ਕਰਨਾ, 2. ਲਾਈਨਾਂ ਵਿੱਚ ਬਿਜਾਈ, 3. ਹਲਕੀ ਸਿੰਚਾਈ, 4. ਪੱਤਿਆਂ ਦੀ ਕਟਾਈ।"],                                                                          "video_url": "https://www.youtube.com/embed/c6Bf3t7XvRM?si=adkrBBhAY2x9g__r", },
+    "te": { "title": "పాలకూర సాగు దశలు (30 - 45 రోజులు)",                   "requirements": "చేతి పార, తోటపని పనిముట్లు. చల్లని వాతావరణం, సేంద్రియ నేలలు.",                                                                                                 "steps": ["మళ్లు తయారు చేయడం, 2. వరుసలలో విత్తడం, 3. తక్కువ మోతాదులో నీరు పెట్టడం, 4. ఆకులను కోయడం।"],                                                  "video_url": "https://www.youtube.com/embed/7yQcpzsvlpA?si=xQpd-BfgrVo-Q7uG", },
+    "ml": { "title": "ചീര കൃഷി ഘട്ടങ്ങൾ (30 – 45 ദിവസം)",             "requirements": "കൈക്കോട്ട്, നനയ്ക്കാനുള്ള പാത്രങ്ങൾ. തണുപ്പുള്ള കാലാവസ്ഥ, ജൈവസമൃദ്ധമായ മണ്ണ്.",                                                                  "steps": ["തടമൊരുക്കൽ, 2. വരിയായി വിതയ്ക്കൽ, 3. ഇടയ്ക്കിടെയുള്ള നനയ്ക്കൽ, 4. ഇലകൾ മുറിച്ചെടുക്കൽ।"],                                      "video_url": "https://www.youtube.com/embed/dQg_Bj_EgyU?si=FDGjtIJ_YxXP79MF", },
+    "gu": { "title": "પાલકની ખેતીના તબક્કા (30 – 45 દિવસ)",                    "requirements": "ખરપિયો, પાવડો, ઝારો. ઠંડુ હવામાન, સેન્દ્રીય માટી.",                                                                                                                       "steps": ["ક્યારી બનાવવી, 2. હારમાં વાવણી, 3. હલકું પિયત, 4. પાનની લણણી।"],                                                                                      "video_url": "https://www.youtube.com/embed/moOFpWofFGo?si=_7hC6ugBgAuNww6H", },
+    "kn": { "title": "ಪಾಲಕ್ ಸೊಪ್ಪಿನ ಬೇಸಾಯದ ಹಂತಗಳು (30 - 45 ದಿನಗಳು)",   "requirements": "ಕುಡುಗೋಲು, ಪಿಕಾಸಿ, ನೀರುಣಿಸುವ ಡಬ್ಬಿ. ತಂಪಾದ ಹವಾಮಾನ, ಸಾವಯವ ಮಣ್ಣು.",                                                                                         "steps": ["ಮಡಿ ತಯಾರಿಕೆ, 2. ಸಾಲು ಬಿತ್ತನೆ, 3. ಲಘು ನೀರಾವರಿ, 4. ಎಲೆಗಳ ಕೊಯ್ಲು।"],                                                                             "video_url": "https://www.youtube.com/embed/u0XZtWdnFYU?si=PhzMU6EJ76M2kS44", }
+  },
+  "Potato": {
+    "en": {"title": "Potato Cultivation Steps (80 – 120 Days)",               "requirements": "Ridge Plough, Potato Planter/Digger, Cold storage access. Cool climate, loose sandy-loam soil (for tuber growth).",                                                "steps": [  "Seed tuber planting in ridges, 2. Earthing up (covering roots), 3. Dehaulming (cutting tops), 4. Tuber digging.",],                            "video_url": "https://www.youtube.com/embed/CEEiP-DfOfY?si=f5RtE5zimlJ0yk67",  },
+    "hi": {"title": "आलू की खेती के चरण (80 – 120 दिन)",                       "requirements": "रिज हल, आलू प्लांटर/डिगर, कोल्ड स्टोरेज। ठंडी जलवायु, ढीली बलुई दोमट मिट्टी।",                                                                                                "steps": ["मेड़ों पर कंद रोपना, 2. मिट्टी चढ़ाना, 3. पौधों के ऊपरी भाग को हटाना (dehaulming), 4. आलू खोदना।"],                                                           "video_url": "https://www.youtube.com/embed/LW5FCxJkFR0?si=gv-vcijN1QjlqIvU",},
+    "mr": {"title": "बटाटा शेतीचे टप्पे (80 – 120 दिवस)",                          "requirements": "नांगर, बटाटा प्लांटर/डिगर, कोल्ड स्टोरेजची सुविधा. थंड हवामान, भुसभुशीत वालुकामय माती.",                                                                                         "steps": ["वरंब्यांवर बटाटे लावणे, 2. भर देणे (मुळांना माती लावणे), 3. काढणीपूर्वी वेली कापणे, 4. बटाटे खोदणे."],                                                             "video_url": "https://www.youtube.com/embed/3nI6NCg-V-E?si=pzar57W2B7cFxbOG",},
+    "ta": {"title": "உருளைக்கிழங்கு சாகுபடி படிகள் (80 – 120 நாட்கள்)", "requirements": "ரிட்ஜ் உழுவி, உருளைக்கிழங்கு நடும்/தோண்டும் கருவி, குளிரூட்டப்பட்ட அறை. குளிர் காலநிலை, தளர்வான மணல் மண்.",                                  "steps": ["வரப்புகளில் விதை கிழங்கு நடவு, 2. மண் அணைத்தல், 3. மேல்பகுதியை அகற்றுதல், 4. கிழங்கு தோண்டி எடுத்தல்."],                      "video_url": "https://www.youtube.com/embed/VI7nKlQFzSk?si=iG0Epd1dH6O6ixqQ",},
+    "bn": { "title": "আলু চাষের ধাপ (৮০ – ১২০ দিন)",                         "requirements": "নাঙ্গল, আলু রোপণ ও তোলার যন্ত্র। ঠান্ডা জলবায়ু, বেলে-দোআঁশ মাটি।",                                                                                                     "steps": ["১. সারিতে বীজ আলু রোপণ, ২. গাছের গোড়ায় মাটি তুলে দেওয়া, ৩. ডগা কাটা, ৪. আলু তোলা।"],                                                              "video_url": "https://www.youtube.com/embed/YaTdVHuNiEw?si=WBNWwGSgYq_VydFW", },
+    "pa": { "title": "ਆਲੂ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (80 – 120 ਦਿਨ)",                     "requirements": "ਰਿਜ਼ ਹਲ, ਆਲੂ ਬੀਜਣ ਵਾਲੀ ਮਸ਼ੀਨ। ਠੰਡੀ ਜਲਵਾਯੂ, ਭੁਰਭੁਰੀ ਮਿੱਟੀ।",                                                                                                               "steps": ["ਵੱਟਾਂ 'ਤੇ ਬਿਜਾਈ, 2. ਮਿੱਟੀ ਚਾੜ੍ਹਨਾ, 3. ਪੱਤੇ ਕੱਟਣਾ, 4. ਆਲੂ ਪੁੱਟਣਾ।"],                                                                                           "video_url": "https://www.youtube.com/embed/0xzBHrRD0kk?si=7BGTAhE4M48enU3i",  },
+    "te": { "title": "ఉరులగడ్డ సాగు దశలు (80 - 120 రోజులు)",                "requirements": "నాగలి, ఆలుగడ్డ నాటే యంత్రం. చల్లని వాతావరణం, ఇసుకతో కూడిన నేలలు.",                                                                                             "steps": ["వరుసలలో విత్తన దుంపలు నాటడం, 2. మట్టిని ఎగదోయడం, 3. ఆకులను తొలగించడం, 4. దుంపలను తవ్వి తీయడం।"],                                       "video_url": "https://www.youtube.com/embed/4knSKxuEFcg?si=1Y3NH1YXV0riB5z3",  },
+    "ml": { "title": "ഉരുളക്കിഴങ്ങ് കൃഷി ഘട്ടങ്ങൾ (80 – 120 ദിവസം)",   "requirements": "നിലം ഉഴാനുള്ള കലപ്പ, ഉരുളക്കിഴങ്ങ് നടീൽ യന്ത്രം. തണുത്ത കാലാവസ്ഥ, ലോമി മണ്ണ്.",                                                                      "steps": ["വരമ്പുകളിൽ നടീൽ, 2. മണ്ണ് കയറ്റിക്കൊടുക്കൽ, 3. തണ്ട് മുറിച്ചുമാറ്റൽ, 4. കിഴങ്ങ് മാന്തിയെടുക്കൽ।"],                                      "video_url": "https://www.youtube.com/embed/yD-bO6KXtrw?si=SdMinv9Xfc763paI",  },
+    "gu": { "title": "બટાટાની ખેતીના તબક્કા (80 – 120 દિવસ)",                  "requirements": "હળ, બટાટા રોપવાનું યંત્ર. ઠંડી આબોહવા, રેતાળ ગોરાડુ જમીન.",                                                                                                              "steps": ["પાળ ઉપર વાવેતર, 2. માટી ચઢાવવી, 3. વેલા કાપવા, 4. બટાટા ખોદવા।"],                                                                                   "video_url": "https://www.youtube.com/embed/ODFllISmhWA?si=XJmKYNqOgo0sbWPK",  },
+    "kn": { "title": "ಆಲೂಗಡ್ಡೆ ಬೇಸಾಯದ ಹಂತಗಳು (80 - 120 ದಿನಗಳು)",       "requirements": "ನೇಗಿಲು, ಆಲೂಗಡ್ಡೆ ನಾಟಿ ಮಾಡುವ ಯಂತ್ರ. ತಂಪಾದ ಹವಾಮಾನ, ಮರಳು ಮಿಶ್ರಿತ ಮಣ್ಣು.",                                                                                    "steps": ["ಸಾಲುಗಳಲ್ಲಿ ಬಿತ್ತನೆ, 2. ಮಣ್ಣು ಏರಿಸುವುದು, 3. ಗಿಡದ ಮೇಲ್ಭಾಗ ತೆಗೆಯುವುದು, 4. ಗೆಡ್ಡೆಗಳ ಕೊಯ್ಲು।"],                                                         "video_url": "https://www.youtube.com/embed/sFXPFlSkveA?si=Awrxn5cKYRpTNivP",  }, 
+  },    
+  "Tobacco": {
+    "en": {"title": "Tobacco Cultivation Steps (110 – 130 Days)",             "requirements": "Curing Barns (for drying), Racks, Topping shears. Warm climate, light to medium textured soils.",                                                                   "steps": [  "Seedling nursery, 2. Transplanting and Topping (removing flower heads), 3. Desuckering, 4. Priming (leaf-by-leaf harvest).",],                 "video_url": "https://www.youtube.com/embed/IuNefvkyxC8?si=5w2TlooiJOv0nH16",  },
+    "hi": {"title": "तंबाकू की खेती के चरण (110 – 130 दिन)",                    "requirements": "क्यूरिंग बार्न (सुखाने के लिए), रैक, टॉपिंग कैंची। गर्म जलवायु, हल्की से मध्यम मिट्टी।",                                                                                                 "steps": ["नर्सरी तैयार करना, 2. रोपाई और 'टॉपिंग' (फूल हटाना), 3. सकर हटाना, 4. पत्तियों की तुड़ाई।"],                                                                  "video_url": "https://www.youtube.com/embed/nrql3gnRGVo?si=LiC8_8TeQDSCgzyT",  },
+    "mr": {"title": "तंबाखू शेतीचे टप्पे (110 – 130 दिवस)",                        "requirements": "क्युरिंग बार्न (सुकवण्यासाठी), रॅक, टॉपिंग कात्री. उष्ण हवामान, हलकी ते मध्यम माती.",                                                                                                "steps": ["रोपवाटिका, 2. लावणी आणि 'टॉपिंग' (फुले काढणे), 3. फुटवे काढणे, 4. पाने काढणे."],                                                                         "video_url": "https://www.youtube.com/embed/FBqMn71TDDI?si=v9Xy5jjXx7ipn1j0",  },
+    "ta": {"title": "புகையிலை சாகுபடி படிகள் (110 – 130 நாட்கள்)",     "requirements": "புகையிலை உலர்த்தும் கூடம், ரேக்குகள், கத்தரிக்கோல். வெப்பமான காலநிலை, லேசானது முதல் நடுத்தரமான மண்.",                                         "steps": ["நாற்றங்கால், 2. நடவு மற்றும் நுனி கிள்ளுதல், 3. பக்க கிளைகளை அகற்றுதல், 4. இலைகளை அறுவடை செய்தல்."],                       "video_url": "https://www.youtube.com/embed/mQvVFS1IjXU?si=xMtf0m5gS_rEakm1",  },
+    "bn": { "title": "তামাক চাষের ধাপ (১১০ – ১৩০ দিন)",                      "requirements": "কিউরিং ঘর, র্যাক, ছাঁটাই কাঁচি। উষ্ণ জলবায়ু, হালকা মাটি।",                                                                                                                   "steps": ["১. চারা নার্সারি, ২. রোপণ ও মাথা ছাঁটাই, ৩. সাকার ছাঁটাই, ৪. পাতা সংগ্রহ।"],                                                                             "video_url": "https://www.youtube.com/embed/ZfR6vHeWYls?si=IDQbIJHzbI62YZUv",   },
+    "pa": { "title": "ਤੰਬਾਕੂ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (110 – 130 ਦਿਨ)",                    "requirements": "ਸੁਕਾਉਣ ਵਾਲੀਆਂ ਭੱਠੀਆਂ, ਰੈਕ, ਕੈਂਚੀ। ਗਰਮ ਜਲਵਾਯੂ, ਹਲਕੀ ਮਿੱਟੀ।",                                                                                                                "steps": ["ਪਨੀਰੀ ਤਿਆਰ ਕਰਨਾ, 2. ਲੁਆਈ ਅਤੇ ਸਿਖਰ ਕੱਟਣਾ, 3. ਵਾਧੂ ਸ਼ਾਖਾਵਾਂ ਕੱਟਣਾ, 4. ਪੱਤਿਆਂ ਦੀ ਕਟਾਈ।"],                                                                   "video_url": "https://www.youtube.com/embed/uAoo4Zv7VVA?si=hbp1YsrI9pVrZcyD",   },
+    "te": { "title": "పొగాకు సాగు దశలు (110 - 130 రోజులు)",                  "requirements": "క్యూరింగ్ షెడ్లు, రాక్లు, కత్తెరలు. వేడి వాతావరణం, తేలికపాటి నేలలు.",                                                                                                        "steps": ["నర్సరీ పెంపకం, 2. నాటడం మరియు మొగ్గలు తుంచడం, 3. అదనపు పిలకల తొలగింపు, 4. ఆకులను కోయడం।"],                                           "video_url": "https://www.youtube.com/embed/RDT2ln0mDgs?si=QhNiCR3W5v4b2F5X",   },
+    "ml": { "title": "പുകയില കൃഷി ഘട്ടങ്ങൾ (110 – 130 ദിവസം)",      "requirements": "ക്യൂറിംഗ് യൂണിറ്റ്, റാക്കുകൾ, കത്രികകൾ. ചൂടുള്ള കാലാവസ്ഥ, ഭാരം കുറഞ്ഞ മണ്ണ്.",                                                                           "steps": ["നഴ്സറി ഒരുക്കൽ, 2. മാറ്റിനടീലും തലപ്പ് മുറിക്കലും, 3. വശങ്ങൾ മുറിക്കൽ, 4. ഇലകൾ പറിക്കൽ।"],                                          "video_url": "https://www.youtube.com/embed/_Ayi_HXeofk?si=rjHqMmO0utxfEDZW",   },
+    "gu": { "title": "તમાકુની ખેતીના તબક્કા (110 – 130 દિવસ)",                 "requirements": "ક્યુરિંગ બાર્ન, રેક્સ, કાતર. ગરમ આબોહવા, હલકી જમીન.",                                                                                                                       "steps": ["ધરૂવાડિયું બનાવવું, 2. રોપણી અને ટોચ કાપવી, 3. પીલા કાઢવા, 4. પાન ઉતારવા।"],                                                                          "video_url": "https://www.youtube.com/embed/YS57HUgShF8?si=51uFX7UoxgqqKBh_",   },
+    "kn": { "title": "ತಂಬಾಕು ಬೇಸಾಯದ ಹಂತಗಳು (110 - 130 ದಿನಗಳು)",        "requirements": "ಕ್ಯೂರಿಂಗ್ ಮನೆ, ಚರಣಿಗೆಗಳು, ಕತ್ತರಿಗಳು. ಬೆಚ್ಚನೆಯ ಹವಾಮಾನ, ಹಗುರವಾದ ಮಣ್ಣು.",                                                                                            "steps": ["ಸಸಿಮಡಿ ತಯಾರಿಕೆ, 2. ನಾಟಿ ಮತ್ತು ತುದಿ ಕತ್ತರಿಸುವುದು, 3. ಸಕ್ಕರ್‌ಗಳ ನಿರ್ವಹಣೆ, 4. ಎಲೆಗಳ ಕೊಯ್ಲು।"],                                                     "video_url": "https://www.youtube.com/embed/GtF4cxHz-q8?si=Gt6Jukq6B0pv_ZEF",   }
+  },
+  "Saffron": {
+    "en": {"title": "Saffron Cultivation Steps (3 – 4 Months)",               "requirements": "Trenching tools, Small baskets, Dehumidifier (for drying). Cold winter/Warm summer, well-drained sub-temperate soil.",                                                "steps": [  "Corm (bulb) planting in July, 2. Soil aeration, 3. Flower picking in Autumn, 4. Separation of red stigmas.",],                                  "video_url": "https://www.youtube.com/embed/gQaOSggFKQI?si=vmnYtfNoOWwSmN0B",  },
+    "hi": {"title": "केसर की खेती के चरण (3 – 4 महीने)",                       "requirements": "ट्रेंचिंग उपकरण, टोकरियाँ, डिह्युमिडिफायर (सुखाने के लिए)। ठंडी सर्दी/गर्म गर्मी, अच्छी जल निकासी वाली मिट्टी।",                                                                             "steps": ["जुलाई में कंद (बल्ब) रोपना, 2. मिट्टी का वातन (aeration), 3. शरद ऋतु में फूल चुनना, 4. लाल वर्तिकाग्र (stigmas) अलग करना।"],                                    "video_url": "https://www.youtube.com/embed/LXjzSvUzXlo?si=YYTeQe5WW_KqAeBo",  },
+    "mr": {"title": "केसर शेतीचे टप्पे (3 – 4 महिने)",                            "requirements": "चर खोदण्याची साधने, टोपल्या, डिह्युमिडिफायर. थंड हिवाळा/उष्ण उन्हाळा, पाण्याचा निचरा होणारी माती.",                                                                                     "steps": ["जुलैमध्ये कंदांची लावणी, 2. माती मोकळी करणे, 3. शरद ऋतूत फुले वेचणे, 4. लाल केसर (stigmas) वेगळे करणे."],                                                   "video_url": "https://www.youtube.com/embed/YUB8KUxqQiI?si=vFD1kxYWeT1eJe84",  },
+    "ta": {"title": "குங்குமப்பூ சாகுபடி படிகள் (3 – 4 மாதங்கள்)",       "requirements": "அகழி தோண்டும் கருவிகள், கூடை, உலர்த்தி. குளிர்ந்த குளிர்காலம்/வெப்பமான கோடை, வடிகால் வசதியுள்ள மண்.",                                             "steps": ["ஜூலை மாதத்தில் கிழங்கு நடவு, 2. மண்ணுக்குக் காற்றோட்டம் அளித்தல், 3. இலையுதிர் காலத்தில் பூப்பறித்தல், 4. சிவப்பு இழைகளைப் பிரித்தல்."],"video_url": "https://www.youtube.com/embed/uFhON2oWhrU?si=13SYnDpGyZv2t-eu",  },
+    "bn": { "title": "জাফরান চাষের ধাপ (৩ – ৪ মাস)",                        "requirements": "গর্ত করার সরঞ্জাম, ঝুড়ি, ডিহিউমিডিফায়ার। ঠান্ডা শীত ও উষ্ণ গ্রীষ্ম, উর্বর মাটি।",                                                                                                   "steps": ["১. জুলাইয়ে বাল্ব রোপণ, ২. মাটি ঝুরঝুরে করা, ৩. শরৎকালে ফুল তোলা, ৪. লাল কেশর আলাদা করা।"],                                                        "video_url": "https://www.youtube.com/embed/PtQZTGLyKRw?si=7O03fuvQ1k3vYH3D",   },
+    "pa": { "title": "ਕੇਸਰ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (3 – 4 ਮਹੀਨੇ)",                      "requirements": "ਟੋਏ ਪੁੱਟਣ ਵਾਲੇ ਸੰਦ, ਟੋਕਰੀਆਂ, ਡੀਹਿਊਮਿਡੀਫਾਇਰ। ਠੰਡੀਆਂ ਸਰਦੀਆਂ, ਉਪਜਾਊ ਮਿੱਟੀ।",                                                                                                        "steps": ["ਜੁਲਾਈ ਵਿੱਚ ਬਲਬ ਲਾਉਣਾ, 2. ਮਿੱਟੀ ਦੀ ਗੋਡੀ, 3. ਫੁੱਲ ਤੋੜਨਾ, 4. ਕੇਸਰ ਦੀਆਂ ਤਾਰਾਂ ਵੱਖ ਕਰਨਾ।"],                                                                     "video_url": "https://www.youtube.com/embed/eAnZy1WC1pk?si=3Y-qbfKAw5Pa6aLI",   },
+    "te": { "title": "కుంకుమపువ్వు సాగు దశలు (3 - 4 నెలలు)",               "requirements": "గుంటలు తీసే పరికరాలు, బుట్టలు, ఎండబెట్టే యంత్రం. చలికాలం/ఎండాకాలం సమతుల్యత.",                                                                                      "steps": ["జూలైలో దుంపలు నాటడం, 2. నేల వదులు చేయడం, 3. పూలను సేకరించడం, 4. కేసరాలను వేరు చేయడం।"],                                             "video_url": "https://www.youtube.com/embed/mIl5Yfn6e3I?si=emU0CTJmhQg_YUxW", },
+    "ml": { "title": "കുങ്കുമപ്പൂവ് കൃഷി ഘട്ടങ്ങൾ (3 – 4 മാസം)",        "requirements": "കുഴിയെടുക്കാനുള്ള ഉപകരണം, കൊട്ടകൾ, ഡ്രയർ. തണുപ്പുള്ള ശൈത്യകാലം, നല്ല നീർവാർച്ചയുള്ള മണ്ണ്.",                                                           "steps": ["ജൂലൈയിൽ കിഴങ്ങ് നടീൽ, 2. മണ്ണ് ഇളക്കിക്കൊടുക്കൽ, 3. പൂക്കൾ പറിക്കൽ, 4. ചുവന്ന കേസരങ്ങൾ വേർതിരിക്കൽ।"],                 "video_url": "https://www.youtube.com/embed/GnFvcxGf4EM?si=3SweDLz1oAEDXWI7",   },
+    "gu": { "title": "કેસરની ખેતીના તબક્કા (3 – 4 મહિના)",                     "requirements": "ખોદવાના સાધનો, ટોપલીઓ, ડીહ્યુમિડિફાયર. ઠંડો શિયાળો, ફળદ્રુપ જમીન.",                                                                                                             "steps": ["જુલાઈમાં કંદ રોપવા, 2. જમીન હળવી કરવી, 3. ફૂલોની લણણી, 4. લાલ કેસર અલગ કરવું।"],                                                                    "video_url": "https://www.youtube.com/embed/H7sdAf10bzc?si=b48b-X_fVYCGgdSU",   },
+    "kn": { "title": "ಕುಂಕುಮ ಕೇಸರಿ ಬೇಸಾಯದ ಹಂತಗಳು (3 - 4 ತಿಂಗಳುಗಳು)",   "requirements": "ಗುಂಡಿ ತೋಡುವ ಉಪಕರಣಗಳು, ಬುಟ್ಟಿಗಳು, ಡ್ರೈಯರ್. ಶೀತ ಹವಾಮಾನ, ಫಲವತ್ತಾದ ಮಣ್ಣು.",                                                                                      "steps": ["ಜುಲೈನಲ್ಲಿ ಗೆಡ್ಡೆ ನಾಟಿ, 2. ಮಣ್ಣಿನ ಗಾಳಿಯಾಡುವಿಕೆ, 3. ಹೂಬಿಡುವಾಗ ಕೊಯ್ಲು, 4. ಕೇಸರಿ ಎಳೆಗಳನ್ನು ಬೇರ್ಪಡಿಸುವುದು।"],                                       "video_url": "https://www.youtube.com/embed/Czioi6aqM8k?si=s0sJsb_Rhhcai0gN",   }
+  },
+  "Groundnut": {
+    "en": {"title": "Groundnut Cultivation Steps (100 – 120 Days)",           "requirements": "Groundnut Decorticator, Pegging tools, Harvester/Shaker. Tropical, sandy-loam soil (easy for pods to penetrate).",                                        "steps": [  "Shelled seed sowing, 2. Weed control during pegging, 3. Gypsum application, 4. Pulling out whole plants.",],                                                 "video_url": "https://www.youtube.com/embed/MyCBL5TK_jA?si=zGlZCZ5Q3ZWkhKJt",  },
+    "hi": {"title": "मूंगफली की खेती के चरण (100 – 120 दिन)",                   "requirements": "डिकॉर्टिकेटर, पेगिंग उपकरण, हार्वेस्टर। उष्णकटिबंधीय मौसम, भुरभुरी बलुई मिट्टी।",                                                                                          "steps": ["बीजों की बुवाई, 2. पेगिंग के दौरान खरपतवार नियंत्रण, 3. जिप्सम का प्रयोग, 4. पूरे पौधों को उखाड़ना।"],                                                                          "video_url": "https://www.youtube.com/embed/2VExufCZdcs?si=baBdZ-Wops3Hpv0C",  },
+    "mr": {"title": "भुईमूग शेतीचे टप्पे (100 – 120 दिवस)",                        "requirements": "डिहलर, पेगिंग साधने, हार्वेस्टर. उष्णकटिबंधीय हवामान, भुसभुशीत वालुकामय माती.",                                                                                         "steps": ["बियाणांची पेरणी, 2. आर्‍या सुटताना तण नियंत्रण, 3. जिप्समचा वापर, 4. झाडे उपटून काढणे."],                                                                                  "video_url": "https://www.youtube.com/embed/yat-LgBdyC8?si=k56NogjJZW-bUGbe",  },
+    "ta": {"title": "நிலக்கடலை சாகுபடி படிகள் (100 – 120 நாட்கள்)",     "requirements": "தோலுரிக்கும் கருவி, பெக்கிங் கருவிகள், அறுவடை இயந்திரம். வெப்பமண்டல பகுதி, மணல் கலந்த வண்டல் மண்.",                                 "steps": ["விதைப்பு, 2. விழுது இறங்கும் போது களை கட்டுப்பாடு, 3. ஜிப்சம் இடுதல், 4. செடியோடு பிடுங்குதல்."],                                                 "video_url": "https://www.youtube.com/embed/lwcnS2yhjyw?si=jTtVTBDDbZDdEa1I",  },
+    "bn": { "title": "চিনাবাদাম চাষের ধাপ (১০০ – ১২০ দিন)",                    "requirements": "খোসা ছাড়ানোর যন্ত্র, আগাছা নাশক যন্ত্র, হারভেস্টার। উষ্ণ আবহাওয়া, বেলে-দোআঁশ মাটি।",                                                                              "steps": ["১. বীজ বপন, ২. পেগিংয়ের সময় আগাছা দমন, ৩. জিপসাম প্রয়োগ, ৪. সম্পূর্ণ গাছ তোলা।"],                                                                             "video_url": "https://www.youtube.com/embed/Lmmzj9Ih0pI?si=IYhjo093fpAGRWBU",   },
+    "pa": { "title": "ਮੂੰਗਫਲੀ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (100 – 120 ਦਿਨ)",                  "requirements": "ਮੂੰਗਫਲੀ ਛਿੱਲਣ ਵਾਲੀ ਮਸ਼ੀਨ, ਹਾਰਵੈਸਟਰ। ਗਰਮ ਮੌਸਮ, ਰੇਤਲੀ-ਦੋਮਟ ਮਿੱਟੀ।",                                                                                                 "steps": ["ਬਿਜਾਈ, 2. ਗੋਡੀ, 3. ਜਿਪਸਮ ਪਾਉਣਾ, 4. ਬੂਟੇ ਪੁੱਟਣਾ।"],                                                                                                                 "video_url": "https://www.youtube.com/embed/jq0Pw5U7seI?si=0Z2KiPDEkHI_xVLI",   },
+    "te": { "title": "వేరుశనగ సాగు దశలు (100 - 120 రోజులు)",                "requirements": "వేరుశనగ వొలిచే యంత్రం, పెగ్గింగ్ పరికరాలు, హార్వెస్టర్. ఇసుకతో కూడిన నేలలు.",                                                                                   "steps": ["విత్తనాలు విత్తడం, 2. కలుపు నివారణ, 3. జిప్సం వేయడం, 4. మొక్కలను పీకడం।"],                                                                                    "video_url": "https://www.youtube.com/embed/pnYM_lFHpjo?si=q3BTV_8NFYeDtOSN",   },
+    "ml": { "title": "നിലക്കടല കൃഷി ഘട്ടങ്ങൾ (100 – 120 ദിവസം)",    "requirements": "ഡീകോർട്ടിക്കേറ്റർ, പെഗ്ഗിംഗ് ടൂൾസ്, ഹാർവെസ്റ്റർ. ട്രോപ്പിക്കൽ കാലാവസ്ഥ, മണൽ ലോമി മണ്ണ്.",                                                      "steps": ["വിത്ത് വിതയ്ക്കൽ, 2. കളനിയന്ത്രണം, 3. ജിപ്സം പ്രയോഗം, 4. ചെടികൾ പിഴുതെടുക്കൽ।"],                                                                "video_url": "https://www.youtube.com/embed/2jukwl0G1Xo?si=GRifrMTl9LmAHA2M",   },
+    "gu": { "title": "મગફળીની ખેતીના તબક્કા (100 – 120 દિવસ)",                "requirements": "મગફળી ફોલવાનું યંત્ર, હાર્વેસ્ટર. ઉષ્ણકટિબંધીય હવામાન, રેતાળ જમીન.",                                                                                                  "steps": ["બીજ વાવણી, 2. નિંદામણ, 3. જીપ્સમનો ઉપયોગ, 4. છોડ ઉખેડીને લણણી।"],                                                                                               "video_url": "https://www.youtube.com/embed/walBCmcklCw?si=jAth8ZkZRI4AQPX1",   },
+    "kn": { "title": "ನೆಲಗಡಲೆ ಬೇಸಾಯದ ಹಂತಗಳು (100 - 120 ದಿನಗಳು)",        "requirements": "ನೆಲಗಡಲೆ ಸುಲಿಯುವ ಯಂತ್ರ, ಪೆಗ್ಗಿಂಗ್ ಉಪಕರಣಗಳು, ಹಾರ್ವೆಸ್ಟರ್. ಮರಳು ಮಿಶ್ರಿತ ಮಣ್ಣು.",                                                                          "steps": ["ಬಿತ್ತನೆ, 2. ಕಳೆ ನಿಯંત્રણ, 3. ಜಿಪ್ಸಮ್ ಬಳಕೆ, 4. ಗಿಡಗಳನ್ನು ಕಿತ್ತುವುದು।"],                                                                                               "video_url": "https://www.youtube.com/embed/XgS2VcVSFqA?si=IgbWfBWJxDPHoLgH",   }
+  },
+  "Sunflower": {
+    "en": {"title": "Sunflower Cultivation Steps (90 – 105 Days)",           "requirements": "Oil Press (if processing), Thresher, Bird nets. Sun-exposed fields, adaptable but prefers fertile soil.",                                                  "steps": [  "Seed bed preparation, 2. Precision sowing, 3. Irrigation at head formation, 4. Harvesting when head turns yellow.",],                                      "video_url": "https://www.youtube.com/embed/GVTtUcuvff8?si=ZsE09bwPySqWLxZE",  },
+    "hi": {"title": "सूरजमुखी की खेती के चरण (90 – 105 दिन)",                   "requirements": "तेल प्रेस (यदि प्रसंस्करण करना हो), थ्रेशर, पक्षी जाल। धूप वाले खेत, उपजाऊ मिट्टी।",                                                                                      "steps": ["क्यारी तैयार करना, 2. सटीक बुवाई, 3. फूल आने पर सिंचाई, 4. फूल पीला पड़ने पर कटाई।"],                                                                                 "video_url": "https://www.youtube.com/embed/DZvbhgcPGVs?si=ZKaLpV28W9GpdGdT",  },
+    "mr": {"title": "सूर्यफूल शेतीचे टप्पे (90 – 105 दिवस)",                        "requirements": "तेल घाणा, थ्रेशर, पक्षी संरक्षण जाळी. सूर्यप्रकाश असलेले शेत, सुपीक माती.",                                                                                              "steps": ["वाफे तयार करणे, 2. टोकण पद्धतीने पेरणी, 3. फुलधारणेच्या वेळी सिंचन, 4. फुलांचा मागचा भाग पिवळा झाल्यावर काढणी."],                                                          "video_url": "https://www.youtube.com/embed/FzSaY-KlJjU?si=Qn7LPDHfy_KQR8Jp",  },
+    "ta": {"title": "சூரியகாந்தி சாகுபடி படிகள் (90 – 105 நாட்கள்)",     "requirements": "எண்ணெய் பிழிந்தெடுக்கும் கருவி, கதிர் அடிக்கும் இயந்திரம், பறவை வலைகள். சூரிய வெளிச்சம் உள்ள நிலம், வளமான மண்.",                    "steps": ["நிலம் தயாரித்தல், 2. துல்லியமான விதைப்பு, 3. பூப்பிடிக்கும் போது நீர்ப்பாசனம், 4. பூ மஞ்சள் நிறமானதும் அறுவடை."],                               "video_url": "https://www.youtube.com/embed/QBlGKCenuq4?si=fgdZVtUSVMWJiKJs",  },
+    "bn": { "title": "সূর্যমুখী চাষের ধাপ (৯০ – ১০৫ দিন)",                      "requirements": "তেল নিষ্কাশন যন্ত্র, থ্রেশার, পাখির জাল। রৌদ্রোজ্জ্বল জমি, উর্বর মাটি।",                                                                                               "steps": ["১. জমি তৈরি, ২. বীজ বপন, ৩. ফুল আসার সময় সেচ, ৪. ফুল হলুদ হলে সংগ্রহ।"],                                                                                    "video_url": "https://www.youtube.com/embed/D8OneieraTg?si=YiN_aIA3f6hjbZEm",   },
+    "pa": { "title": "ਸੂਰਜਮੁਖੀ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (90 – 105 ਦਿਨ)",                  "requirements": "ਤੇਲ ਕੱਢਣ ਵਾਲੀ ਮਸ਼ੀਨ, ਥਰੈਸ਼ਰ, ਜਾਲ। ਧੁੱਪ ਵਾਲੇ ਖੇਤ, ਉਪਜਾਊ ਮਿੱਟੀ।",                                                                                                    "steps": ["ਕਿਆਰੀਆਂ ਤਿਆਰ ਕਰਨਾ, 2. ਬਿਜਾਈ, 3. ਸਿੰਚਾਈ, 4. ਫੁੱਲ ਪੀਲੇ ਹੋਣ 'ਤੇ ਕਟਾਈ।"],                                                                                             "video_url": "https://www.youtube.com/embed/6BrR7TZsXXA?si=YtIpQDPdB5gDJtxX",   },
+    "te": { "title": "సూర్యకాంతి సాగు దశలు (90 - 105 రోజులు)",               "requirements": "ఆయిల్ ప్రెస్, థ్రెషర్, పక్షుల నుంచి రక్షణ వలలు. సారవంతమైన నేలలు.",                                                                                        "steps": ["నేల తయారీ, 2. విత్తడం, 3. పూత సమయంలో నీటి పారుదల, 4. పువ్వులు పసుపు రంగులోకి మారినప్పుడు కోయడం।"],                                                     "video_url": "https://www.youtube.com/embed/nUyFpglmAeE?si=wPBgr1Pc7Z7Mqso6",   },
+    "ml": { "title": "സൂര്യകാന്തി കൃഷി ഘട്ടങ്ങൾ (90 – 105 ദിവസം)",     "requirements": "ഓയിൽ പ്രസ്സ്, ത്രഷർ, പക്ഷിവല. നല്ല വെയിൽ ലഭിക്കുന്ന സ്ഥലം, ഫലഭൂയിഷ്ഠമായ മണ്ണ്.",                                                           "steps": ["തടമൊരുക്കൽ, 2. വിതയ്ക്കൽ, 3. പൂവിടുന്ന സമയത്തെ നനയ്ക്കൽ, 4. പൂക്കൾ മഞ്ഞയാകുമ്പോൾ വിളവെടുക്കൽ।"],                                    "video_url": "https://www.youtube.com/embed/aVp570R9et8?si=U6vxbwNRiUsJ62ic",   },
+    "gu": { "title": "સૂર્યમુખીની ખેતીના તબક્કા (90 – 105 દિવસ)",                  "requirements": "તેલ કાઢવાનું યંત્ર, થ્રેશર, પક્ષીઓ માટે જાળી. સૂર્યપ્રકાશવાળી ફળદ્રુપ જમીન.",                                                                                           "steps": ["ક્યારી બનાવવી, 2. ચોકસાઈથી વાવણી, 3. ફૂલ બેસતી વખતે પિયત, 4. ફૂલ પીળા પડે ત્યારે લણણી।"],                                                                           "video_url": "https://www.youtube.com/embed/_0yjbDxwfzk?si=jQr-8KdHhkYFVlyR",   },
+    "kn": { "title": "ಸೂರ್ಯಕಾಂತಿ ಬೇಸಾಯದ ಹಂತಗಳು (90 - 105 ದಿನಗಳು)",     "requirements": "ಎಣ್ಣೆ ಗಾಣ, ಒಕ್ಕಣೆ ಯಂತ್ರ, ಹಕ್ಕಿಗಳ ತಡೆಗೆ ಬಲೆ. ಬಿಸಿಲಿರುವ ಹೊಲಗಳು, ಫಲವತ್ತಾದ ಮಣ್ಣು.",                                                                        "steps": ["ಮಡಿ ತಯಾರಿಕೆ, 2. ನಿಖರ ಬಿತ್ತನೆ, 3. ಹೂಬಿಡುವಾಗ ನೀರಾವರಿ, 4. ಹೂವು ಹಳದಿ ಬಣ್ಣಕ್ಕೆ ಬಂದಾಗ ಕೊಯ್ಲು।"],                                                               "video_url": "https://www.youtube.com/embed/5kALP0TrCjs?si=FjoUjHJ2Mp2Xb3Tk",   }
+  },
+  "Blackpepper": {
+    "en": {"Black Pepper": "Black Pepper Cultivation Steps (3 Years)",        "requirements": "Living Supports (Silver oak/Erythrina trees), Ladders. High rainfall, Humid-Tropical, forest-like soil.",                                                 "steps": [  "Propagation via cuttings near support trees; 2. Mulching; 3. Annual pruning; 4. Drying spikes when berries turn red.",],                                    "video_url": "https://www.youtube.com/embed/KD8s_l3eaEQ?si=-v40uELVrHajsjjz",  },
+    "hi": {"title": "काली मिर्च की खेती के चरण (3 वर्ष)",                         "requirements": "जीवित सहारा (सिल्वर ओक/पंगारा), सीढ़ियाँ। भारी वर्षा, आर्द्र-उष्णकटिबंधीय मौसम।",                                                                                        "steps": ["कटिंग्स द्वारा प्रसार, 2. मल्चिंग (आच्छादन), 3. वार्षिक छंटाई, 4. फल लाल होने पर सुखाना।"],                                                                                 "video_url": "https://www.youtube.com/embed/m5yT2b5b56o?si=ylpDm-zyo6kZycQq",  },
+    "mr": {"title": "काळी मिरी शेतीचे टप्पे (3 वर्षे)",                              "requirements": "आधार देणारी झाडे (सिल्व्हर ओक/पांगारा), शिड्या. मुसळधार पाऊस, दमट हवामान.",                                                                                      "steps": ["छाट कलमांद्वारे लागवड, 2. आच्छादन (mulching), 3. वार्षिक छाटणी, 4. फळे लाल झाल्यावर सुकवणे."],                                                                         "video_url": "https://www.youtube.com/embed/0ivPQH-oADs?si=-glr8wBeFx26eqKE",  },
+    "ta": {"title": "மிளகு சாகுபடி படிகள் (3 ஆண்டுகள்)",                "requirements": "தாங்கு மரங்கள் (சில்வர் ஓக்), ஏணிகள். அதிக மழைப்பொழிவு, ஈரப்பதமான வெப்பமண்டல பகுதி.",                                                 "steps": ["போத்துகள் மூலம் இனப்பெருக்கம், 2. மூடாக்கு இடுதல், 3. ஆண்டுதோறும் கத்தரித்தல், 4. பழங்கள் சிவந்ததும் உலர்த்துதல்."],                           "video_url": "https://www.youtube.com/embed/W9cURUtztyM?si=5AMyF_6OZx35kiGa",  },
+    "bn": { "title": "গোলমরিচ চাষের ধাপ (৩ বছর)",                           "requirements": "সিলভার ওক বা পানজারা গাছ, মই। অধিক বৃষ্টিপাত, উষ্ণ ও আর্দ্র আবহাওয়া।",                                                                                        "steps": ["১. কাটিং রোপণ, ২. মালচিং, ৩. বার্ষিক ছাঁটাই, ৪. ফল লাল হলে সংগ্রহ।"],                                                                                             "video_url": "https://www.youtube.com/embed/9C9Wt6MJEFA?si=PDVcisAS4pb-r0MQ",   },
+    "pa": { "title": "ਕਾਲੀ ਮਿਰਚ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (3 ਸਾਲ)",                       "requirements": "ਸਹਾਰਾ ਦੇਣ ਵਾਲੇ ਦਰੱਖਤ, ਪੌੜੀਆਂ। ਭਾਰੀ ਮੀਂਹ, ਨਮੀ ਵਾਲਾ ਮੌਸਮ।",                                                                                                        "steps": ["ਕਲਮਾਂ ਲਾਉਣਾ, 2. ਮਲਚਿੰਗ, 3. ਸਾਲਾਨਾ ਕਾਂਟ-ਛਾਂਟ, 4. ਫਲ ਲਾਲ ਹੋਣ 'ਤੇ ਸੁਕਾਉਣਾ।"],                                                                                          "video_url": "https://www.youtube.com/embed/ViouzQVF9mQ?si=GOeey-WYbjanEU6k",   },
+    "te": { "title": "మిరియాల సాగు దశలు (3 సంవత్సరాలు)",                  "requirements": "ఆధార వృక్షాలు (సిల్వర్ ఓక్), నిచ్చెనలు. అధిక వర్షపాతం, తేమతో కూడిన వాతావరణం.",                                                                           "steps": ["కొమ్మల ద్వారా ప్రవర్ధనం, 2. మల్చింగ్, 3. వార్షిక కత్తిరింపు, 4. పండ్లు ఎరుపు రంగులోకి మారినప్పుడు కోయడం।"],                                                            "video_url": "https://www.youtube.com/embed/wBIdh7-fxjc?si=9C4NI9VegzECWKwu",   },
+    "ml": { "title": "കുരുമുളക് കൃഷി ഘട്ടങ്ങൾ (3 വർഷം)",             "requirements": "താങ്ങ് മരങ്ങൾ (സിൽവർ ഓക്ക്), ഏണി. നല്ല മഴയുള്ള ഈർപ്പമുള്ള കാലാവസ്ഥ.",                                                                    "steps": ["കട്ടിംഗുകൾ നടീൽ, 2. പുതയിടൽ (Mulching), 3. വാർഷിക പ്രൂണിംഗ്, 4. തിരികൾ പഴുക്കുമ്പോൾ വിളവെടുക്കൽ।"],                                      "video_url": "https://www.youtube.com/embed/_Iy4UlWVGQM?si=onyyyjjFaXSvb_NS",   },
+    "gu": { "title": "કાળા મરીની ખેતીના તબક્કા (3 વર્ષ)",                       "requirements": "આધાર આપતા વૃક્ષો, સીડી. વધુ વરસાદ, ભેજવાળું હવામાન.",                                                                                                          "steps": ["કટિંગ્સ દ્વારા રોપણી, 2. મલ્ચિંગ, 3. વાર્ષિક છાંટણી, 4. ફળ લાલ થાય ત્યારે સુકવણી।"],                                                                                       "video_url": "https://www.youtube.com/embed/veCuyikRcIA?si=0ACXy6al8Aoh_4oX",   },
+    "kn": { "title": "ಕರಿಮೆಣಸಿನ ಬೇಸಾಯದ ಹಂತಗಳು (3 ವರ್ಷಗಳು)",            "requirements": "ಆಧಾರ ಮರಗಳು (ಸಿಲ್ವರ್ ಓಕ್), ಏಣಿಗಳು. ಅತಿ ಹೆಚ್ಚು ಮಳೆ, ಆರ್ದ್ರ ಹವಾಮಾನ.",                                                                                  "steps": ["ಕಟಿಂಗ್ಸ್ ಮೂಲಕ ಪ್ರಸರಣ, 2. ಹೊದಿಕೆ (ಮಲ್ಚಿಂಗ್), 3. ವಾರ್ಷಿಕ ಕತ್ತರಿಸುವುದು, 4. ಕಾಳುಗಳು ಕೆಂಪಾದಾಗ ಕೊಯ್ಲು।"],                                                         "video_url": "https://www.youtube.com/embed/B_K6EI0Y24o?si=BfM0LQnz6mH6GiKT",   }
+  },
+  "Fennel": {
+    "en": {"title": "Fennel Cultivation Steps (150 – 180 Days)",              "requirements": "Winnowing fans, Sickles for harvesting umbels. Cool/Dry climate, loamy soil with good lime content.",                                                  "steps": [  "Sowing in fertile soil, 2. Regular weeding, 3. Irrigation at flowering, 4. Harvesting umbels before they shatter.",],                                          "video_url": "https://www.youtube.com/embed/EU-q6M1bQNo?si=-XVhQwr1lJyJbThV",  },
+    "hi": {"title": "सौंफ की खेती के चरण (150 – 180 दिन)",                      "requirements": "ओसाई पंखे, दरांती। ठंडा/शुष्क जलवायु, चूना युक्त दोमट मिट्टी।",                                                                                                    "steps": ["उपजाऊ मिट्टी में बुवाई, 2. नियमित निराई, 3. फूल आने पर सिंचाई, 4. गुच्छों की तुड़ाई।"],                                                                                       "video_url": "https://www.youtube.com/embed/PElsSVsc6MM?si=JgjqAWvd-U393wDp",  },
+    "mr": {"title": "बडीशेप शेतीचे टप्पे (150 – 180 दिवस)",                        "requirements": "पाखडण्यासाठी पंखे, विळा. थंड/कोरडे हवामान, चुनखडीयुक्त लोमी माती.",                                                                                            "steps": ["सुपीक जमिनीत पेरणी, 2. नियमित खुरपणी, 3. फुलोऱ्याच्या वेळी सिंचन, 4. बोंडे काढणी."],                                                                                        "video_url": "https://www.youtube.com/embed/1aliPGX9HyI?si=NeuSpgXqwYFIOsNC",  },
+    "ta": {"title": "சோம்பு சாகுபடி படிகள் (150 – 180 நாட்கள்)",           "requirements": "தூற்றும் விசிறிகள், அரிவாள். குளிர்ந்த/வறண்ட காலநிலை, சுண்ணாம்பு கலந்த வண்டல் மண்.",                                                  "steps": ["வளமான மண்ணில் விதைப்பு, 2. வழக்கமான களை எடுத்தல், 3. பூக்கும் போது நீர்ப்பாசனம், 4. அறுவடை செய்தல்."],                                     "video_url": "https://www.youtube.com/embed/k7jYjVT4vxI?si=8LD-ngg7Dlnf7dJL",  },
+    "bn": { "title": "মৌরি চাষের ধাপ (১৫০ – ১৮০ দিন)",                        "requirements": "পাখা, কাস্তে। ঠান্ডা ও শুষ্ক জলবায়ু, চুনযুক্ত দোআঁশ মাটি।",                                                                                                     "steps": ["১. উর্বর মাটিতে বপন, ২. নিয়মিত নিড়ানি, ৩. ফুল ফোটার সময় সেচ, ৪. বীজ সংগ্রহ।"],                                                                                   "video_url": "https://www.youtube.com/embed/ECrRjY9aNjs?si=J_pHmw0B3BHpdGMB",   },
+    "pa": { "title": "ਸੌਂਫ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (150 – 180 ਦਿਨ)",                      "requirements": "ਪੰਖੇ, ਦਾਤਰੀ। ਠੰਡਾ/ਖੁਸ਼ਕ ਮੌਸਮ, ਉਪਜਾਊ ਮਿੱਟੀ।",                                                                                                                   "steps": ["ਬਿਜਾਈ, 2. ਗੋਡੀ, 3. ਫੁੱਲ ਆਉਣ 'ਤੇ ਸਿੰਚਾਈ, 4. ਕਟਾਈ।"],                                                                                                               "video_url": "https://www.youtube.com/embed/de0cy7Ph0OE?si=rrJ3jBnFUpx25mPZ",   },
+    "te": { "title": "సోంపు సాగు దశలు (150 - 180 రోజులు)",                   "requirements": "విత్తన శుద్ధి పరికరాలు, కొడవళ్లు. చల్లని/పొడి వాతావరణం, ఒండ్రు నేలలు.",                                                                                      "steps": ["సారవంతమైన నేలలో విత్తడం, 2. క్రమం తప్పకుండా కలుపు తీయడం, 3. పూత సమయంలో నీరు పెట్టడం, 4. గింజల కోత।"],                                                  "video_url": "https://www.youtube.com/embed/Tm-W1vwMZDY?si=n6T5P25zy_-5lhR3",   },
+    "ml": { "title": "പെരുംജീരകം കൃഷി ഘട്ടങ്ങൾ (150 – 180 ദിവസം)",  "requirements": "വിനോവിംഗ് ഫാൻ, അരിവാൾ. തണുത്ത വരണ്ട കാലാവസ്ഥ, ലോമി മണ്ണ്.",                                                                       "steps": ["വിത്തുവിതയ്ക്കൽ, 2. കളപറിക്കൽ, 3. പൂവിടുന്ന സമയത്തെ നനയ്ക്കൽ, 4. കതിരുകൾ കൊയ്യൽ।"],                                                        "video_url": "https://www.youtube.com/embed/DNGNIPFFYqU?si=Sndbd_h-Y1RmkKUf",   },
+    "gu": { "title": "વરિયાળીની ખેતીના તબક્કા (150 – 180 દિવસ)",                "requirements": "ઉપણવા માટે પંખા, દાતરડું. ઠંડુ/સૂકું હવામાન, ફળદ્રુપ જમીન.",                                                                                                     "steps": ["ફળદ્રુપ જમીનમાં વાવણી, 2. નિયમિત નિંદામણ, 3. ફૂલ આવતી વખતે પિયત, 4. લણણી।"],                                                                                      "video_url": "https://www.youtube.com/embed/_asiJfB4Zrw?si=oXHrAbmTx8c9fIhu",   },
+    "kn": { "title": "ಸೋಂಪು ಬೇಸಾಯದ ಹಂತಗಳು (150 - 180 ದಿನಗಳು)",         "requirements": "ತೂರುಯಂತ್ರ, ಕುಡುಗೋಲು. ಒಣ ಹವಾಮಾನ, ಫಲವತ್ತಾದ ಮಣ್ಣು.",                                                                                           "steps": ["ಫಲವತ್ತಾದ ಮಣ್ಣಿನಲ್ಲಿ ಬಿತ್ತನೆ, 2. ನಿಯಮಿತ ಕಳೆ ತೆಗೆಯುವುದು, 3. ಹೂಬಿಡುವಾಗ ನೀರಾವರಿ, 4. ಕೊಯ್ಲು।"],                                                                    "video_url": "https://www.youtube.com/embed/FVM2T0eOXJA?si=j1mc_izL9mdUUBEx",   }
+  },
+  "Almonds": {
+    "en": {"title": "Almonds Cultivation Steps (3 – 4 Years)",                "requirements": "Nut Huller, Shaking equipment (commercial), Sorting trays. Mediterranean climate (hot summer/cold winter), deep soil.",                              "steps": [  "Planting grafted trees, 2. Winter pruning, 3. Bee pollination, 4. Harvesting when the outer hull splits open.",],                                                "video_url": "https://www.youtube.com/embed/IG0bCUHlO_A?si=W5-wLK_IV6dyrle3",  },
+    "hi": {"title": "बादाम की खेती के चरण (3-4 वर्ष))",                          "requirements": "अखरोट छीलने की मशीन, हिलाने का उपकरण (व्यावसायिक), छँटाई ट्रे। भूमध्यसागरीय जलवायु (गर्मियाँ गर्म/सर्दी ठंडी), गहरी मिट्टी।",                                            "steps": ["1. ग्राफ्टेड पेड़ों की रोपण, 2. शीतकालीन छंटाई, 3. मधुमक्खी परागण, 4. बाहरी छिलका फटने पर कटाई।"],                                                                             "video_url": "https://www.youtube.com/embed/yLI9btjxYNQ?si=hsYkVt4BxOSWstxc",  },
+    "mr": {"title": "बदाम शेतीचे टप्पे (3 – 4 वर्षे)",                              "requirements": "बदाम फोडण्याचे यंत्र, सॉर्टिंग ट्रे. भूमध्यसागरीय हवामान, खोल माती.",                                                                                                "steps": ["कलमे लावणे, 2. हिवाळी छाटणी, 3. मधमाशांद्वारे परागीकरण, 4. बाहेरील कवच फाटल्यावर काढणी."],                                                                                 "video_url": "https://www.youtube.com/embed/QVlau2sRRtA?si=keEcwDKZ3pMiVdtr",  },
+    "ta": {"title": "பாதாம் சாகுபடி படிகள் (3 – 4 ஆண்டுகள்)",          "requirements": "தோலுரிக்கும் இயந்திரம், தரம் பிரிக்கும் தட்டுகள். மத்திய தரைக்கடல் காலநிலை, ஆழமான மண்.",                                              "steps": ["ஒட்டுக்கட்டிய மரங்களை நடுதல், 2. குளிர்கால கத்தரிப்பு, 3. தேனீ மகரந்தச் சேர்க்கை, 4. வெளிக்கோடு பிளந்ததும் அறுவடை."],                           "video_url": "https://www.youtube.com/embed/KFunEcdEBTk?si=YvhWib025Ym4ZMHw",  },
+    "bn": { "title": "কাঠবাদাম চাষের ধাপ (৩ – ৪ বছর)",                       "requirements": "খোসা ছাড়ানোর যন্ত্র, ছাঁটাই কাঁচি। ভূমধ্যসাগরীয় জলবায়ু, গভীর মাটি।",                                                                                           "steps": ["১. কলম করা গাছ লাগানো, ২. শীতকালীন ছাঁটাই, ৩. মৌমাছি পরাগায়ণ, ৪. খোলা ফেটে গেলে সংগ্রহ।"],                                                                         "video_url": "https://www.youtube.com/embed/cJkVRSZenjw?si=KVt3itqbCQOW1yJm",   },
+    "pa": { "title": "ਬਾਦਾਮ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (3 – 4 ਸਾਲ)",                       "requirements": "ਬਾਦਾਮ ਛਿੱਲਣ ਵਾਲੀ ਮਸ਼ੀਨ, ਕੈਂਚੀ। ਖੁਸ਼ਕ ਮੌਸਮ, ਡੂੰਘੀ ਮਿੱਟੀ।",                                                                                                        "steps": ["ਕਲਮੀ ਬੂਟੇ ਲਾਉਣਾ, 2. ਕਾਂਟ-ਛਾਂਟ, 3. ਪਰਾਗਣ, 4. ਫਲ ਪੱਕਣ 'ਤੇ ਕਟਾਈ।"],                                                                                                     "video_url": "https://www.youtube.com/embed/1u0jtBa7WcY?si=wtz9BKS_h4AkjaX_",   },
+    "te": { "title": "బాదం సాగు దశలు (3 - 4 సంవత్సరాలు)",                "requirements": "తొక్క తీసే యంత్రం, గ్రేడింగ్ తట్టలు. మధ్యధరా వాతావరణం, లోతైన నేలలు.",                                                                                    "steps": ["అంటు మొక్కలు నాటడం, 2. శీతాకాల కత్తిరింపు, 3. తేనెటీగల ద్వారా పరాగ సంపర్కం, 4. తొక్క పగిలినప్పుడు కోయడం।"],                                                      "video_url": "https://www.youtube.com/embed/sjGrcck2Y_4?si=kZTS0AsipzCZClkc",   },
+    "ml": { "title": "ബദാം കൃഷി ഘട്ടങ്ങൾ (3 – 4 വർഷം)",              "requirements": "നട്ട് ഹള്ളർ, സോർട്ടിംഗ് ട്രേകൾ. തണുപ്പുള്ള ശൈത്യകാലം, ആഴമുള്ള മണ്ണ്.",                                                                      "steps": ["ഒട്ടുതൈകൾ നടീൽ, 2. ശൈത്യകാല പ്രൂണിംഗ്, 3. തേനീച്ച പരാഗണം, 4. പുറംതോട് വിള്ളുമ്പോൾ വിളവെടുക്കൽ।"],                                        "video_url": "https://www.youtube.com/embed/f6zEJ5pkZ2o?si=Cx3TBZ7J1r_9cqk6",   },
+    "gu": { "title": "બદામની ખેતીના તબક્કા (3 – 4 વર્ષ)",                       "requirements": "બદામ ફોલવાનું યંત્ર, સોર્ટિંગ ટ્રે. મધ્યધરાઈ આબોહવા, ઊંડી જમીન.",                                                                                               "steps": ["કલમી રોપા વાવવી, 2. શિયાળુ છાંટણી, 3. પરાગનયન, 4. ફળ ફાટે ત્યારે લણણી।"],                                                                                              "video_url": "https://www.youtube.com/embed/t6BRQDaO27Y?si=datO6EHjygBCXpEf",   },
+    "kn": { "title": "ಬಾದಾಮಿ ಬೇಸಾಯದ ಹಂತಗಳು (3 - 4 ವರ್ಷಗಳು)",         "requirements": "ಸಿಪ್ಪೆ ಸುಲಿಯುವ ಯಂತ್ರ, ವರ್ಗೀಕರಣದ ತಟ್ಟೆಗಳು. ಬೆಚ್ಚನೆಯ ಹವಾಮಾನ, ಆಳವಾದ ಮಣ್ಣು.",                                                                       "steps": ["ಕಸಿ ಮಾಡಿದ ಮರಗಳ ನಾಟಿ, 2. ಚಳಿಗಾಲದ ಕತ್ತರಿಸುವಿಕೆ, 3. ಪರಾಗಸ್ಪರ್ಶ, 4. ಹೊರಕವಚ ಬಿರಿದಾಗ ಕೊಯ್ಲು।"],                                                                 "video_url": "https://www.youtube.com/embed/K4ggGmH37qc?si=_RUA4H8DpRNL0-13",   }
+  },
+  "BetelNut": {
+    "en": {"title": "Betel Nut Cultivation Steps (5 – 8 Years)",            "requirements": "Areca Huskers, Climbing equipment, Drying yard. High humidity, heavy rainfall, deep well-drained soil.",                                                 "steps": [  "Raising seedlings; 2. Deep pit planting in shade; 3. Heavy mulching/organic feeding; 4. Picking orange-yellow nuts.",],                                          "video_url": "https://www.youtube.com/embed/DicenQ15DC4?si=gL6HR-xu85UM4cCG",  },
+    "hi": {"title": "सुपारी की खेती के चरण (5 – 8 वर्ष)",                       "requirements": "हस्कर, चढ़ने के उपकरण, सुखाने का यार्ड। उच्च आर्द्रता, भारी वर्षा।",                                                                                                  "steps": ["पौध तैयार करना, 2. छाया में रोपण, 3. मल्चिंग/जैविक खाद, 4. नारंगी-पीले फलों की तुड़ाई।"],                                                                                      "video_url": "https://www.youtube.com/embed/DE6ZD0k06i0?si=IYiJvjdcHNIdpR_w",  },
+    "mr": {"title": "सुपारी शेतीचे टप्पे (5 – 8 वर्षे)",                            "requirements": "हस्कर, झाडावर चढण्याचे साधन, सुकवण्याची जागा. जास्त आर्द्रता, मुसळधार पाऊस.",                                                                                      "steps": ["रोपे तयार करणे, 2. सावलीत खोल खड्डे घेऊन लागवड, 3. आच्छादन/सेंद्रिय खत, 4. नारंगी-पिवळी फळे काढणी."],                                                                       "video_url": "https://www.youtube.com/embed/PUriRHtQWpw?si=UYSkRw6SZtL_sTXJ",  },
+    "ta": {"title": "பாக்கு சாகுபடி படிகள் (5 – 8 ஆண்டுகள்)",          "requirements": "பாக்கு உரிக்கும் கருவி, ஏறும் உபகரணங்கள், உலர்த்தும் தளம். அதிக ஈரப்பதம், பலத்த மழை.",                                                    "steps": ["நாற்று வளர்த்தல், 2. நிழலில் நடுதல், 3. மூடாக்கு/கரிம உரமிடுதல், 4. ஆரஞ்சு-மஞ்சள் பழங்களைப் பறித்தல்."],                                             "video_url": "https://www.youtube.com/embed/pthxiI_LIu4?si=-v_G-Ua6VG5RALuL",  },
+    "bn": { "title": "সুপারি চাষের ধাপ (৫ – ৮ বছর)",                         "requirements": "খোসা ছাড়ানোর যন্ত্র, মই, শুকানোর চাতাল। অধিক আর্দ্রতা, ভারী বৃষ্টিপাত।",                                                                                           "steps": ["১. চারা উৎপাদন, ২. ছায়ায় রোপণ, ৩. মালচিং ও সার প্রয়োগ, ৪. হলুদ-কমলা ফল সংগ্রহ।"],                                                                                "video_url": "https://www.youtube.com/embed/z7jJKTiw4Js?si=Xg90T06JOQaVRNz-",   },
+    "pa": { "title": "ਸੁਪਾਰੀ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (5 – 8 ਸਾਲ)",                     "requirements": "ਛਿੱਲਣ ਵਾਲੀ ਮਸ਼ੀਨ, ਪੌੜੀਆਂ, ਸੁਕਾਉਣ ਵਾਲੀ ਥਾਂ। ਨਮੀ ਵਾਲਾ ਮੌਸਮ, ਭਾਰੀ ਮੀਂਹ।",                                                                                               "steps": ["ਪਨੀਰੀ ਤਿਆਰ ਕਰਨਾ, 2. ਛਾਂ ਵਿੱਚ ਲੁਆਈ, 3. ਖਾਦ ਪਾਉਣਾ, 4. ਪੱਕੇ ਫਲ ਤੋੜਨਾ।"],                                                                                               "video_url": "",   },
+    "te": { "title": "పోక సాగు దశలు (5 - 8 సంవత్సరాలు)",                 "requirements": "వొలిచే యంత్రం, నిచ్చెనలు, ఎండబెట్టే యార్డ్. అధిక తేమ, భారీ వర్షపాతం.",                                                                                       "steps": ["నర్సరీ పెంపకం, 2. నీడలో నాటడం, 3. మల్చింగ్/సేంద్రియ ఎరువులు, 4. పసుపు-నారింజ పండ్ల కోత।"],                                                                     "video_url": "https://www.youtube.com/embed/2KmnlNmu6wY?si=MSlpnKHcWaY0puzm",   },
+    "ml": { "title": "അടയ്ക്ക കൃഷി ഘട്ടങ്ങൾ (5 – 8 വർഷം)",         "requirements": "അടയ്ക്ക പൊളിക്കുന്ന യന്ത്രം, ഏണി, ഡ്രയിംഗ് യാർഡ്. ഉയർന്ന ആർദ്രത, കനത്ത മഴ.",                                                             "steps": ["നഴ്സറി ഒരുക്കൽ, 2. തണലിൽ നടീൽ, 3. പുതയിടലും വളപ്രയോഗവും, 4. വിളഞ്ഞ അടയ്ക്ക പറിക്കൽ।"],                                                      "video_url": "https://www.youtube.com/embed/FG0fPkLOokk?si=YNhiGmbZjxqjUfSF",   },
+    "gu": { "title": "સોપારીની ખેતીના તબક્કા (5 – 8 વર્ષ)",                     "requirements": "સોપારી ફોલવાનું યંત્ર, નિસરણી, સુકવણી યાર્ડ. વધુ ભેજ, ભારે વરસાદ.",                                                                                                 "steps": ["ધરૂવાડિયું બનાવવું, 2. છાયામાં રોપણી, 3. મલ્ચિંગ/સન્દ્રીય ખાતર, 4. સોપારી ઉતારવી।"],                                                                                         "video_url": "https://www.youtube.com/embed/pMg-BmnOD_A?si=RfOT3KL1F3QMF6y9",   },
+    "kn": { "title": "ಅಡಿಕೆ ಬೇಸಾಯದ ಹಂತಗಳು (5 - 8 ವರ್ಷಗಳು)",           "requirements": "ಅಡಿಕೆ ಸುಲಿಯುವ ಯಂತ್ರ, ಏಣಿಗಳು, ಒಣಗಿಸುವ ಅಂಗಳ. ಅತಿ ಹೆಚ್ಚು ಮಳೆ, ಆಳವಾದ ಮಣ್ಣು.",                                                                        "steps": ["ಸಸಿಮಡಿ ಸಿದ್ಧತೆ, 2. ನೆರಳಿನಲ್ಲಿ ನಾಟಿ, 3. ಮಲ್ಚಿಂಗ್/ಸಾವಯವ ಗೊಬ್ಬರ, 4. ಹಣ್ಣಾದ ಅಡಿಕೆಗಳ ಕೊಯ್ಲು।"],                                                                      "video_url": "https://www.youtube.com/embed/OM-yM6gBbgk?si=tLwJ7E6Z0Morf8R4",   }
+  },
+  "Aloevera": {
+    "en": {"title": "Aloe Vera Cultivation Steps (8 – 12 Months)",        "requirements": "Plastic crates for transport, sharp Knives. Dry/Warm, well-drained sandy soil, very low water.",                                                            "steps": ["Root sucker planting; 2. Minimal watering; 3. Offshoot management; 4. Cutting outer mature leaves.",],                                                           "video_url": "https://www.youtube.com/embed/QDx3s9eg2u8?si=WPcPPo2DcE6XUyIC",  },
+    "hi": {"title": "घृतकुमारी (एलोवेरा) की खेती के चरण (8 – 12 महीने)",       "requirements": "प्लास्टिक क्रेट्स, तेज चाकू। शुष्क/गर्म मौसम, रेतीली मिट्टी, बहुत कम पानी।",                                                                                                "steps": ["छोटे पौधों का रोपण, 2. न्यूनतम सिंचाई, 3. ऑफशूट प्रबंधन, 4. बाहरी परिपक्व पत्तियों की कटाई।"],                                                                                   "video_url": "https://www.youtube.com/embed/jkpR-P1AeIU?si=shBIipRGC4GR36Zl",  },
+    "mr": {"title": "कोरफड शेतीचे टप्पे (8 – 12 महिने)",                      "requirements":"प्लास्टिक क्रेट्स, धारदार चाकू. कोरडे/उष्ण हवामान, वालुकामय माती, कमी पाणी.",                                                                                            "steps": ["रोपांची लागवड, 2. कमी पाणी देणे, 3. जास्तीचे कोंब काढणे, 4. बाहेरची पक्व पाने कापणे."],                                                                                        "video_url": "https://www.youtube.com/embed/h7kUeKsapp0?si=724g3yeuTMS96eWn",  },
+    "ta": {"title": "கற்றாழை சாகுபடி படிகள் (8 – 12 மாதங்கள்)",    "requirements": "பிளாஸ்டிக் கூடைகள், கூர்மையான கத்திகள். வறண்ட/வெப்பமான வானிலை, மணல் மண், குறைந்த நீர்.",                                             "steps": ["பக்கக் கன்றுகள் நடுதல், 2. குறைந்த நீர்ப்பாசனம், 3. கன்றுகளைப் பராமரித்தல், 4. முதிர்ந்த இலைகளை வெட்டுதல்."],                                      "video_url": "https://www.youtube.com/embed/2IvhsUrvE1c?si=2aSaCci_LAWA8pBb",  },
+    "bn": { "title": "ঘৃতকুমারী চাষের ধাপ (৮ – ১২ মাস)",                   "requirements": "ক্রেট, ধারালো ছুরি। শুষ্ক ও উষ্ণ আবহাওয়া, বেলে মাটি।",                                                                                                             "steps": ["১. চারা রোপণ, ২. সামান্য জল সেচ, ৩. শাখা ছাঁটাই, ৪. পরিপক্ক পাতা সংগ্রহ।"],                                                                                           "video_url": "https://www.youtube.com/embed/O4QH_uVtxg8?si=KnnbyUYGjL8HURVg",   },
+    "pa": { "title": "ਐਲੋਵੇਰਾ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (8 – 12 ਮਹੀਨੇ)",                "requirements": "ਕਰੇਟ, ਤੇਜ਼ ਚਾਕੂ। ਗਰਮ ਮੌਸਮ, ਰੇਤਲੀ ਮਿੱਟੀ।",                                                                                                                         "steps": ["ਪਨੀਰੀ ਲਾਉਣਾ, 2. ਘੱਟ ਪਾਣੀ, 3. ਵਾਧੂ ਸ਼ਾਖਾਵਾਂ ਦੀ ਸੰਭਾਲ, 4. ਪੱਤੇ ਕੱਟਣਾ।"],                                                                                                       "video_url": "https://www.youtube.com/embed/nTlFLXqBIcA?si=B7WoetQ3x4p1NhFY",   },
+    "te": { "title": "కలబంద సాగు దశలు (8 - 12 నెలలు)",                "requirements": "క్రేట్లు, పదునైన కత్తులు. పొడి వాతావరణం, ఇసుక నేలలు.",                                                                                                       "steps": ["పిలకల నాటడం, 2. తక్కువ నీరు పెట్టడం, 3. రెమ్మల నిర్వహణ, 4. ముదిరిన ఆకులను కోయడం।"],                                                                          "video_url": "https://www.youtube.com/embed/NPhF5dAWWWU?si=XiZHNXaGTHhLv1nV",   },
+    "ml": { "title": "കറ്റാർവാഴ കൃഷി ഘട്ടങ്ങൾ (8 – 12 മാസം)",      "requirements": "പ്ലാസ്റ്റിക് ക്രേറ്റുകൾ, മൂർച്ചയുള്ള കത്തി. വരണ്ട കാലാവസ്ഥ, മണൽ മണ്ണ്.",                                                                             "steps": ["തൈകൾ നടീൽ, 2. കുറഞ്ഞ അളവിൽ നനയ്ക്കൽ, 3. ശാഖകളുടെ പരിപാലനം, 4. പുറം ഇലകൾ മുറിച്ചെടുക്കൽ।"],                                           "video_url": "https://www.youtube.com/embed/01xjExO-Hvo?si=VEV4addNFqbK3-T8",   },
+    "gu": { "title": "કુંવારપાઠાની ખેતીના તબક્કા (8 – 12 મહિના)",              "requirements": "પ્લાસ્ટિક ક્રેટ્સ, ધારદાર છરી. સૂકું હવામાન, રેતાળ જમીન.",                                                                                                            "steps": ["રોપાની રોપણી, 2. ઓછું પિયત, 3. પીલાઓની જાળવણી, 4. પાન કાપવા।"],                                                                                                    "video_url": "https://www.youtube.com/embed/zTa83Zx2Ubo?si=l-zSM-VOC6TX6v9O",   },
+    "kn": { "title": "ಲೋಳೆಸರ ಬೇಸಾಯದ ಹಂತಗಳು (8 - 12 ತಿಂಗಳುಗಳು)",   "requirements": "ಕ್ರೇಟ್‌ಗಳು, ಚೂಪಾದ ಚಾಕುಗಳು. ಒಣ ಹವಾಮಾನ, ಮರಳು ಮಿಶ್ರಿತ ಮಣ್ಣು.",                                                                                           "steps": ["ಸಸಿ ನಾಟಿ, 2. ಕನಿಷ್ಠ ನೀರಾವರಿ, 3. ಸಸಿಗಳ ನಿರ್ವಹಣೆ, 4. ಎಲೆಗಳ ಕೊಯ್ಲು।"],                                                                                              "video_url": "https://www.youtube.com/embed/HzdFzA2IxP8?si=QHtFYbBFOOlKw6Is",   }
+  },
+  "Curry": {
+    "en": {"title": "Curry Leaves Cultivation Steps (1-2 months)",         "requirements": "Secateurs (for pruning), Nitrogen-rich fertilizer. Tropical to Sub-tropical, adaptable soil.",                                                            "steps": [  "Seed/cutting planting; 2. Regular stem pruning; 3. Nitrogen feeding; 4. Leaf picking after branch establishment.",],                                              "video_url": "https://www.youtube.com/embed/qjim9kOx0W0?si=jL_6ZpSK9RHPpm0Q",  },
+    "hi": {"title": "कढ़ी पत्ता की खेती के चरण (1 – 2 वर्ष)",                  "requirements": "छंटाई कैंची, नाइट्रोजन युक्त उर्वरक। उष्णकटिबंधीय जलवायु।",                                                                                                            "steps": ["बीज या कटिंग लगाना, 2. तने की नियमित छंटाई, 3. नाइट्रोजन खाद देना, 4. टहनियां स्थापित होने पर तुड़ाई।"],                                                                          "video_url": "https://www.youtube.com/embed/SrVzAEtjBW0?si=PNYVnzW_AZACsYYg",  },
+    "mr": {"title": "कढीपत्ता शेतीचे टप्पे (1 – 2 वर्षे)",                         "requirements": "छाटणीची कात्री, नत्रयुक्त खत. उष्णकटिबंधीय हवामान.",                                                                                                                "steps": ["बिया किंवा फांदी लावणी, 2. नियमित छाटणी, 3. खत देणे, 4. पाने वेचणे."],                                                                                                      "video_url": "https://www.youtube.com/embed/jDaaRUq8idc?si=tQCvFAadlvdxkSyN",  },
+    "ta": {"title": "கறிவேப்பிலை சாகுபடி படிகள் (1 – 2 ஆண்டுகள்)","requirements": "கத்தரிக்கோல், நைட்ரஜன் உரம். வெப்பமண்டல பகுதி.",                                                                                                "steps": ["விதை/குச்சி நடுதல், 2. வழக்கமான கத்தரிப்பு, 3. உரமிடுதல், 4. கிளைகள் வளர்ந்த பிறகு இலைகளைப் பறித்தல்."],                                           "video_url": "https://www.youtube.com/embed/2m2PNWpigV0?si=yi3Y7LxerR16x3IZ",  },
+    "bn": { "title": "কড়িপাতা চাষের ধাপ (১ – ২ বছর)",                     "requirements": "ছাঁটাই কাঁচি, সার। উষ্ণ আবহাওয়া।",                                                                                                                            "steps": ["১. চারা বা কাটিং রোপণ, ২. নিয়মিত ডাল ছাঁটাই, ৩. সার প্রয়োগ, ৪. পাতা সংগ্রহ।"],                                                                                           "video_url": "https://www.youtube.com/embed/STUd_lMiGLk?si=2MqWE1JEHJPIGHT7",   },
+    "pa": { "title": "ਕੜੀ ਪੱਤੇ ਦੀ ਖੇਤੀ ਦੇ ਪੜਾਅ (1 – 2 ਸਾਲ)",                   "requirements": "ਕੈਂਚੀ, ਖਾਦ। ਗਰਮ ਮੌਸਮ।",                                                                                                                                      "steps": ["ਬੀਜ/ਕਲਮਾਂ ਲਾਉਣਾ, 2. ਕਾਂਟ-ਛਾਂਟ, 3. ਖਾਦ ਪਾਉਣਾ, 4. ਪੱਤੇ ਤੋੜਨਾ।"],                                                                                                            "video_url": "https://www.youtube.com/embed/u9pdnaGI37k?si=QwaL90AR3hbHCOE8",   },
+    "te": { "title": "కరివేపాకు సాగు దశలు (1 - 2 సంవత్సరాలు)",           "requirements": "కత్తెరలు, ఎరువులు. ఉష్ణమండల వాతావరణం.",                                                                                                                  "steps": ["విత్తనం/కొమ్మ నాటడం, 2. క్రమం తప్పకుండా కొమ్మల కత్తిరింపు, 3. ఎరువులు వేయడం, 4. ఆకులను కోయడం।"],                                                                "video_url": "https://www.youtube.com/embed/RauKhGko4Gs?si=LeeV4ou_aUAilJOH",   },
+    "ml": { "title": "കറിവേപ്പില കൃഷി ഘട്ടങ്ങൾ (1 – 2 വർഷം)",    "requirements": "പ്രൂണിംഗ് കത്രിക, വളം. ഉഷ്ണമേഖലാ കാലാവസ്ഥ.",                                                                                                      "steps": ["തൈ/കട്ടിംഗ് നടീൽ, 2. കൃത്യമായ ഇടവേളകളിൽ പ്രൂണിംഗ്, 3. വളപ്രയോഗം, 4. ഇലകൾ പറിക്കൽ।"],                                                         "video_url": "https://www.youtube.com/embed/7g8VQqvlZdQ?si=OWF2ct6CykrWaBfz",   },
+    "gu": { "title": "મીઠા લીમડાની ખેતીના તબક્કા (1 – 2 વર્ષ)",                "requirements": "છાંટણીની કાતર, ખાતર. ઉષ્ણકટિબંધીય હવામાન.",                                                                                                                  "steps": ["બીજ/કટિંગ રોપણી, 2. નિયમિત છાંટણી, 3. ખાતર આપવું, 4. પાન ઉતારવા।"],                                                                                                  "video_url": "https://www.youtube.com/embed/ZZIIoFs0Ru8?si=3tHaYcFFrSUsH1O1",   },
+    "kn": { "title": "ಕರಿಬೇವಿನ ಬೇಸಾಯದ ಹಂತಗಳು (1 - 2 ವರ್ಷಗಳು)",       "requirements": "ಕತ್ತರಿಸುವ ಕತ್ತರಿ, ಗೊಬ್ಬರ. ಉಷ್ಣವಲಯದ ಹವಾಮಾನ.",                                                                                                          "steps": ["ಬಿತ್ತನೆ ಅಥವಾ ಸಸಿ ನಾಟಿ, 2. ನಿಯಮಿತ ಕತ್ತರಿಸುವಿಕೆ, 3. ಗೊಬ್ಬರ ಹಾಕುವುದು, 4. ಎಲೆಗಳ ಕೊಯ್ಲು।"],                                                                          "video_url": "https://www.youtube.com/embed/05RkmrqVjP8?si=N5XLBYj6hQ5Rt0hz",   }
+  }
+ }    
+};
+
+    let currentLang = "en";
+
+    function updateLabels() {
+      for (const key in languageData.labels) {
+        const el = document.getElementById(key);
+        if (el) {
+            // Use textContent for labels (like <label>)
+            // Use innerText for elements that hold text (like <button>)
+            if (key.startsWith('button')) {
+                el.innerText = languageData.labels[key][currentLang];
+            } else {
+                el.textContent = languageData.labels[key][currentLang];
+            }
+        }
+      }
+    }
+
+    function populateSelect(id, items) {
+      const select = document.getElementById(id);
+      select.innerHTML = "";
+      items.forEach(item => {
+      let opt = document.createElement("option");
+      opt.value = item.id;
+      opt.textContent = item[currentLang] || item['en'];
+      select.appendChild(opt);
+      });
+    }
+
+    function loadStates() {
+      const stateSelect = document.getElementById("stateSelect");
+      stateSelect.innerHTML = "";
+      
+      let defaultOpt = document.createElement("option");
+      defaultOpt.value = "";
+      defaultOpt.textContent = "--- Select State ---";
+      defaultOpt.disabled = true;
+      defaultOpt.selected = true;
+      stateSelect.appendChild(defaultOpt);
+      
+      for (const [id, state] of Object.entries(languageData.states)) {
+        let opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = state[currentLang];
+        stateSelect.appendChild(opt);
+      }
+      if (stateSelect.options.length > 1) {
+          stateSelect.selectedIndex = 1;
+          loadDistricts(stateSelect.value);
+      }
+    }
+
+    function loadDistricts(stateId) {
+      const districtSelect = document.getElementById("districtSelect");
+      districtSelect.innerHTML = "";
+      if (!stateId || !languageData.states[stateId]) return;
+
+      let defaultDistOpt = document.createElement("option");
+      defaultDistOpt.value = "";
+      defaultDistOpt.textContent = "--- Select District ---";
+      defaultDistOpt.disabled = true;
+      defaultDistOpt.selected = true;
+      districtSelect.appendChild(defaultDistOpt);
+
+      const state = languageData.states[stateId];
+      for (const [id, dist] of Object.entries(state.districts)) {
+        let opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = dist[currentLang];
+        districtSelect.appendChild(opt);
+      }
+      document.getElementById("talukaSelect").innerHTML = ""; 
+    }
+
+    function loadTalukas(stateId, districtId) {
+      const talukaSelect = document.getElementById("talukaSelect");
+      talukaSelect.innerHTML = "";
+      if (!stateId || !districtId || !languageData.states[stateId] || !languageData.states[stateId].districts[districtId]) return;
+
+      const talukas = languageData.states[stateId].districts[districtId].talukas;
+
+      let defaultTalOpt = document.createElement("option");
+      defaultTalOpt.value = "";
+      defaultTalOpt.textContent = "--- Select Taluka ---";
+      defaultTalOpt.disabled = true;
+      defaultTalOpt.selected = true;
+      talukaSelect.appendChild(defaultTalOpt);
+      
+      talukas.forEach(t => {
+        let opt = document.createElement("option");
+        opt.value = t.id;
+        opt.textContent = t[currentLang];
+        talukaSelect.appendChild(opt);
+      });
+    }
+
+    function loadOptions() {
+      populateSelect("monthSelect", languageData.options.months);
+      populateSelect("cropTypeSelect", languageData.options.crop_types);
+      populateSelect("landAreaSelect", [{"id": "1acre","en": "1 Acre","hi": "1 एकड़","ml": "1 ഏക്കർ","mr": "1 एकर","bn": "1 একর","gu": "1 એકર","kn": "1 ಎಕರೆ","pa": "1 ਏਕੜ","ta": "1 ஏக்கர்","te": "1 ఎకరం"},{"id": "10acre","en": "1 Acre - 10 Acre","hi": "1 एकड़ - 10 एकड़","ml": "1 ഏക്കർ - 10 ഏക്കർ","mr": "1 एकर - 10 एकर","bn": "1 একর - 10 একর","gu": "1 એકર - 10 એકર","kn": "1 ಎಕರೆ - 10 ಎಕರೆ","pa": "1 ਏਕੜ - 10 ਏਕੜ","ta": "1 ஏக்கர் - 10 ஏக்கர்","te": "1 ఎకరం - 10 ఎకరాలు"},]); 
+      populateSelect("investmentSelect", [{"id": "1lakh","en": "1 Thousand - 1 Lakh","hi": "1 हज़ार - 1 लाख","ml": "1 ആയിരം - 1 ലക്ഷം","mr": "1 हजार - 1 लाख","bn": "1 হাজার - 1 লক্ষ","gu": "1 હજાર - 1 લાખ","kn": "1 ಸಾವಿರ - 1 ಲಕ್ಷ","pa": "1 ਹਜ਼ਾਰ - 1 ਲੱਖ","ta": "1 ஆயிரம் - 1 லட்சம்","te": "1 వేయి - 1 లక్ష"},{"id": "10lakh","en": "1 Lakh - 10 Lakh","hi": "1 लाख - 10 लाख","ml": "1 ലക്ഷം - 10 ലക്ഷം","mr": "1 लाख - 10 लाख","bn": "1 লক্ষ - 10 লক্ষ","gu": "1 લાખ - 10 લાખ","kn": "1 ಲಕ್ಷ - 10 ಲಕ್ಷ","pa": "1 ਲੱਖ - 10 ਲੱਖ","ta": "1 லட்சம் - 10 லட்சம்","te": "1 లక్ష - 10 లక్షలు"},]);
+      populateSelect("soilScoreSelect", [{"id": "high","en": "High","hi": "उच्च","ml": "ഉയർന്നത്","mr": "उच्च","bn": "উচ্চ","gu": "ઉચ્ચ","kn": "ಹೆಚ್ಚು","pa": "ਉੱਚ","ta": "அதிக","te": "ఎక్కువ"},{"id": "medium","en": "Medium","hi": "मध्यम","ml": "മധ്യമം","mr": "मध्यम","bn": "মাঝারি","gu": "મધ્યમ","kn": "ಮಧ್ಯಮ","pa": "ਦਰਮਿਆਨਾ","ta": "நடுத்தர","te": "మధ్యస్థం"},{"id": "low","en": "Low","hi": "कम","ml": "കുറഞ്ഞത്","mr": "कमी","bn": "নিম্ন","gu": "નીચું","kn": "ಕಡಿಮೆ","pa": "ਘੱਟ","ta": "குறைந்த","te": "తక్కువ"}]);
+    }
+
+    function loadCropOptions() {
+      populateSelect("cropTypeSelect2", languageData.options.crop_types);
+      loadCropNames(document.getElementById("cropTypeSelect2").value);
+      document.getElementById("cropTypeSelect2").addEventListener("change", function() {
+        loadCropNames(this.value);
+      });
+    }
+
+    function loadCropNames(typeId) {
+      populateSelect("cropNameSelect", languageData.options.crop_names[typeId] || []);
+    }
+
+    // 🌾 Handle form submission for crop suggestions
+    document.getElementById("cropForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Get all user selections
+      const state = document.getElementById('stateSelect').value;
+      const district = document.getElementById('districtSelect').value;
+      const taluka = document.getElementById('talukaSelect').value;
+      const month = document.getElementById('monthSelect').value;
+      const cropType = document.getElementById('cropTypeSelect').value;
+      const landArea = document.getElementById('landAreaSelect').value;
+      const investment = document.getElementById('investmentSelect').value;
+      const soilScore = document.getElementById('soilScoreSelect').value;
+
+      // Custom matching function (this is the key change)
+      const matchFound = languageData.crop_suggestions.find(item => {
+        
+        // Check Geographic Fields (Only match if the data record is NOT null)
+        const stateMatch = item.state === null || item.state === state;
+        const districtMatch = item.district === null || item.district === district;
+        
+        // Taluka match (handles both single string and array for taluka)
+        const talukaMatch = item.taluka === null || 
+                            (Array.isArray(item.taluka) ? item.taluka.includes(taluka) : item.taluka === taluka);
+
+        // 2. Check all non-geographic fields
+        const monthMatch = item.month === month;
+        const cropTypeMatch = item.crop_type === cropType;
+        const landAreaMatch = item.land_area === landArea;
+        const investmentMatch = item.investment === investment;
+        const soilScoreMatch = item.soil_score === soilScore;
+
+        // The result is a match if all parts are true
+        return stateMatch && districtMatch && talukaMatch && monthMatch && cropTypeMatch && landAreaMatch && investmentMatch && soilScoreMatch;
+      });
+
+
+      const resultList = document.getElementById('cropResults');
+      resultList.innerHTML = '';
+
+      if (matchFound) {
+        // Use the matching result
+        matchFound.suggested_crops[currentLang].forEach(crop => {
+          const li = document.createElement('li');
+          li.textContent = crop;
+          resultList.appendChild(li);
+        });
+      } else {
+        // Fallback message
+        const li = document.createElement('li');
+        li.textContent =
+            currentLang === 'hi'
+            ? 'कोई फसल सुझाव नहीं मिला। कृपया अपने चयन बदलें।'
+            : currentLang === 'ml'
+            ? 'പറ്റിയ വിള കണ്ടെത്താനായില്ല. ദയവായി നിങ്ങളുടെ തിരഞ്ഞെടുപ്പുകൾ മാറ്റുക.'
+            : currentLang === 'mr'
+            ? 'जुळणाऱ्या पिकांच्या सूचना सापडल्या नाहीत. वेगवेगळ्या निवडी वापरून पहा.'
+            : currentLang === 'pa'
+            ? 'ਕੋਈ ਮੇਲ ਖਾਂਦੀਆਂ ਫਸਲਾਂ ਦੇ ਸੁਝਾਅ ਨਹੀਂ ਮਿਲੇ। ਵੱਖ-ਵੱਖ ਚੋਣਾਂ ਅਜ਼ਮਾਓ।'
+            : currentLang === 'bn'
+            ? 'ফসলের সাথে মিলে যাওয়ার কোনও পরামর্শ পাওয়া যায়নি। বিভিন্ন ধরণের ফসলের পরামর্শ চেষ্টা করে দেখুন।'
+            : currentLang === 'gu'
+            ? 'પાકના કોઈ મેળ ખાતા સૂચનો મળ્યાં નથી. વિવિધ પસંદગીઓ અજમાવી જુઓ.'
+            : currentLang === 'kn'
+            ? 'ಹೊಂದಾಣಿಕೆಯಾಗುವ ಬೆಳೆಗಳ ಸಲಹೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ಬೇರೆ ಆಯ್ಕೆಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ.'
+            : currentLang === 'ta'
+            ? 'பொருத்தமான பயிர் பரிந்துரைகள் எதுவும் கிடைக்கவில்லை. வெவ்வேறு தேர்வுகளை முயற்சிக்கவும்.'
+            : currentLang === 'te'
+            ? 'సరిపోలే పంటల సూచనలు ఏవీ కనుగొనబడలేదు. విభిన్న ఎంపికలను ప్రయత్నించండి.'
+            : 'No matching crop suggestions found. Try different selections.';
+        resultList.appendChild(li);
+      }
+      document.getElementById('resultBox').classList.remove('hidden'); 
+    });
+    
+    // Event listeners
+    document.getElementById("languageSelector").addEventListener("change", function() {
+      currentLang = this.value;
+      updateLabels();
+      loadStates();
+      loadOptions();
+      loadCropOptions();
+    });
+
+    document.getElementById("stateSelect").addEventListener("change", function() {
+      loadDistricts(this.value);
+    });
+
+    document.getElementById("districtSelect").addEventListener("change", function() {
+      loadTalukas(document.getElementById("stateSelect").value, this.value);
+    });
+
+    // Initialize
+    updateLabels();
+    loadStates();
+    loadOptions();
+    loadCropOptions();
+
+    // Switch options
+    function showOption(optionId) {
+      document.getElementById('option1').classList.add('hidden');
+      document.getElementById('option2').classList.add('hidden');
+      document.getElementById(optionId).classList.remove('hidden');
+    }
+
+// --- New function to handle Option 2 submission ---
+   // --- Updated function to handle Option 2 submission and language change ---
+    function getCropSteps(cropId) {
+      const resultBox = document.getElementById('stepsResultBox');
+      const requirementsSpan = document.getElementById('minRequirements');
+      const stepsList = document.getElementById('cultivationSteps');
+      const resultHeader = document.getElementById('resultHeader2'); // Target the header
+      const videoContainer = document.getElementById('videoContainer');
+      stepsList.innerHTML = '';
+      requirementsSpan.textContent = '---';
+      videoContainer.innerHTML = '';
+      const cropDetails = languageData.crop_details[cropId];
+      
+      // Update the main Result Header text using the translation data
+      resultHeader.textContent = languageData.labels.resultHeader2[currentLang] || 'Result:';
+
+      if (cropDetails) {
+        // Try to get details for the current language, default to 'en' if not found
+        const details = cropDetails[currentLang] || cropDetails['en']; 
+        
+        if (details) {
+            resultHeader.textContent = details.title || (languageData.labels.resultHeader2[currentLang] || 'Result:');
+            requirementsSpan.textContent = details.requirements;
+            
+            details.steps.forEach(step => {
+              const li = document.createElement('li');
+              li.textContent = step;
+              stepsList.appendChild(li);
+            });
+
+            if (details.video_url) {
+                const iframe = document.createElement('iframe');
+                iframe.src = details.video_url + "?controls=1&showinfo=0&rel=0"; // Add parameters for clean display
+                iframe.width = "100%";
+                iframe.height = "315";
+                iframe.setAttribute("frameborder", "0");
+                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+                iframe.setAttribute("allowfullscreen", "");
+                
+                // Optional: Add a heading for the video
+                const videoTitle = document.createElement('h4');
+                videoTitle.textContent = (currentLang === 'hi' ? 'संबंधित वीडियो:' : currentLang === 'ml' ? 'ബന്ധപ്പെട്ട വീഡിയോ:' : currentLang === 'mr' ? 'संबंधित व्हिडिओ:' : currentLang === 'pa' ? 'ਸੰਬੰਧਿਤ ਵੀਡੀਓ:' : currentLang === 'bn' ? 'সম্পর্কিত ভিডিও:' : currentLang === 'gu' ? 'સંબંધિત વિડિઓ:' : currentLang === 'kn' ? 'ಸಂಬಂಧಿತ ವೀಡಿಯೊ:' : currentLang === 'ta' ? 'தொடர்புடைய வீடியோ:' : currentLang === 'te' ? 'సంబంధిత వీడియో:' : 'Related Video:');
+                videoTitle.style.marginTop = '15px';
+                videoTitle.style.marginBottom = '10px';
+
+                videoContainer.appendChild(videoTitle);
+                videoContainer.appendChild(iframe);
+            }
+
+            resultBox.classList.remove('hidden');
+            return; // Exit if details were found and displayed
+        }
+      }
+      
+      // Fallback if no details or language-specific details are missing
+      resultHeader.textContent = languageData.labels.resultHeader2[currentLang] || 'Result:';
+      requirementsSpan.textContent = 
+        currentLang === 'hi' 
+          ? 'इस फसल के लिए खेती के विवरण उपलब्ध नहीं हैं'
+          : currentLang === 'ml'
+          ? 'ഈ വിളയുടെ കൃഷിരീതികൾ ലഭ്യമല്ല'
+          : currentLang === 'mr'
+          ? 'या पिकाच्या लागवडीची माहिती उपलब्ध नाही.'
+          : currentLang === 'bn'
+          ? 'ഈ വിളയുടെ এই ফসলের চাষের বিস্তারিত তথ্য পাওয়া যায় না।'
+          : currentLang === 'gu'
+          ? 'આ પાકની ખેતીની વિગતો ઉપલબ્ધ નથી.'
+          : currentLang === 'pa'
+          ? 'ਇਸ ਫਸਲ ਦੀ ਕਾਸ਼ਤ ਦੇ ਵੇਰਵੇ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।'
+          : currentLang === 'kn'
+          ? 'ഈ വിളയുടെ ಈ ಬೆಳೆಯ ಸಾಗುವಳಿ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ.'
+          : currentLang === 'ta'
+          ? 'ഈ വിളയുടെ இந்தப் பயிரின் சாகுபடி விவரங்கள் கிடைக்கவில்லை.'
+          : currentLang === 'te'
+          ? 'ఈ పంట సాగు వివరాలు అందుబాటులో లేవు.'
+          : 'Cultivation details for this crop are not available';
+      stepsList.innerHTML = ''; // Clear steps if using fallback
+      resultBox.classList.remove('hidden');
+    }
+
+    document.getElementById("cropStepsForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const cropName = document.getElementById('cropNameSelect').value;
+      
+      if (cropName) {
+        getCropSteps(cropName);
+      } else {
+        alert(currentLang === 'hi' ? 'कृपया एक फसल चुनें' : currentLang === 'ml' ? 'ഒരു വിള തിരഞ്ഞെടുക്കുക' : currentLang === 'mr' ? 'कृपया एक पीक निवडा' : currentLang === 'gu' ? 'કૃપા કરીને એક પાક પસંદ કરો' : currentLang === 'bn' ? 'একটি ফসল নির্বাচন করুন' : currentLang === 'pa' ? 'ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਫਸਲ ਚੁਣੋ' : currentLang === 'kn' ? 'ದಯವಿಟ್ಟು ಒಂದು ಬೆಳೆ ಆಯ್ಕೆಮಾಡಿ' : currentLang === 'ta' ? 'ஒரு பயிர் தேர்ந்தெடுக்கவும்' : currentLang === 'te' ? 'దయచేసి ఒక పంటను ఎంచుకోండి' : 'Please select a crop');
+      }
+    });
+
+    // Make sure you call getCropSteps() whenever the language changes, 
+    // IF option 2 is currently visible AND a crop is already selected.
+    document.getElementById("languageSelector").addEventListener("change", function() {
+      // ... (your existing language change logic) ...
+      
+      // NEW: Re-run getCropSteps if the form is visible and a crop is selected
+      if (!document.getElementById('option2').classList.contains('hidden')) {
+          const selectedCrop = document.getElementById('cropNameSelect').value;
+          if (selectedCrop) {
+              getCropSteps(selectedCrop);
+          }
+      }
+    });
+    // --- Add translation for the new element in the results box ---
+    languageData.labels.resultHeader2 = {
+  "en": "Result:",
+  "hi": "परिणाम:",
+  "ml": "ഫലം:",
+  "mr": "परिणाम:",
+  "bn": "ফলাফল:",
+  "pa": "ਨਤੀਜਾ:",
+  "ta": "முடிவு:",
+  "te": "ఫలితం:",
+  "kn": "ಫಲಿತಾಂಶ:",
+  "gu": "પરિણામ:",
+};
+    updateLabels(); 
+</script>
+</body>
+</html>
