@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Yield = require("../models/Yield");
-const Bid = require("../models/bid");
-const User = require("../models/user");
+const Bid = require("../models/Bid");
+const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
