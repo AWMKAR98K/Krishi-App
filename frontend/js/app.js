@@ -20,6 +20,9 @@ async function login() {
         });
 
         const result = await res.json();
+        
+        // DEBUG: This will show you exactly what the backend sent
+        console.log("Server Response:", result);
 
         if (!res.ok) {
             alert(result.error || "Login failed");
@@ -29,12 +32,25 @@ async function login() {
         // Store Token
         localStorage.setItem("token", result.token);
         
-        // Redirect based on role
-        if (result.role === "farmer") window.location.href = "farmer.html";
-        else if (result.role === "wholesaler") window.location.href = "wholesaler.html";
-        else window.location.href = "admin.html";
+        // Store user details for dashboard personalization
+        localStorage.setItem("userName", result.name);
+
+        // --- IMPROVED REDIRECTION LOGIC ---
+        // We use .toLowerCase() and .trim() to ensure a perfect match
+        const userRole = result.role ? result.role.toLowerCase().trim() : "";
+
+        if (userRole === "farmer") {
+            window.location.href = "farmer.html";
+        } else if (userRole === "wholesaler") {
+            window.location.href = "wholesaler.html";
+        } else if (userRole === "admin") {
+            window.location.href = "admin.html";
+        } else {
+            alert("Role not recognized: " + result.role);
+        }
 
     } catch (err) {
+        console.error("Login Error:", err);
         alert("Server connection failed");
     }
 }
