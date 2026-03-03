@@ -39,11 +39,12 @@ app.get("/", (req, res) => {
 });
 
 // 6. Database Connection
-const dbURI = "mongodb+srv://atharvmerz_db_user:DDn.JoGL3S0iMoOt5@clustere.emtbvrf.mongodb.net/KrishiDB?retryWrites=true&w=majority&appName=Cluster";
+// This defines the variable so the error disappears
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://atharvmerz_db_user:DDnJoGL3S0iMoOt5@clustere.emtbvrf.mongodb.net/KrishiDB?retryWrites=true&w=majority";
 
-mongoose.connect(dbURI)
-  .then(() => console.log("✅ Connected to MongoDB Atlas Cloud!"))
-  .catch((err) => console.log("❌ Connection Error: ", err));
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("✅ Database Connected Successfully!"))
+  .catch(err => console.log("❌ Connection Error:", err));
 
 mongoose.connect(MONGO_URI)
   .then(() => {
