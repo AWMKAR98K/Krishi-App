@@ -1,4 +1,4 @@
-const API = "https://krishi-backend.onrender.com/api";
+const API = "https://krishi-backend-vwux.onrender.com/api";
 
 /***********************
  * NAVIGATION & AUTH

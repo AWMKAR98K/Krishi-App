@@ -14,7 +14,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await fetch('https://krishi-backend.onrender.com/api/market/add-product', {
+        const response = await fetch('https://krishi-backend-vwux.onrender.com/api/market/add-product', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productData)
@@ -32,7 +32,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
 async function loadWholesalerOrders() {
     try {
         // Fetching all orders for the presentation
-        const res = await fetch('https://krishi-backend.onrender.com/api/market/seller/orders/all');
+        const res = await fetch('https://krishi-backend-vwux.onrender.com/api/market/seller/orders/all');
         const orders = await res.json();
         
         const container = document.getElementById('ordersList');
@@ -75,7 +75,7 @@ async function verifyOrder(orderId) {
     const inputCode = document.getElementById(`code-${orderId}`).value.toUpperCase();
     
     try {
-        const res = await fetch('https://krishi-backend.onrender.com/api/market/verify-order', {
+        const res = await fetch('https://krishi-backend-vwux.onrender.com/api/market/verify-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderId, inputCode })
