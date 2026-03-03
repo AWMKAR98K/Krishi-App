@@ -4,7 +4,7 @@
 async function loadMarketplace() {
     console.log("Fetching market products...");
     try {
-        const response = await fetch('http://localhost:5000/api/market/products');
+        const response = await fetch('https://krishi-backend.onrender.com/api/market/products');
         const products = await response.json();
         const grid = document.getElementById('product-grid');
         if (!grid) return;
@@ -57,7 +57,7 @@ window.buyProduct = async function(productId, price) {
 };
 
 async function completeOrder(productId, method) {
-    const res = await fetch('http://localhost:5000/api/market/place-order', {
+    const res = await fetch('https://krishi-backend.onrender.com/api/market/place-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -78,7 +78,7 @@ async function processOrder(productId, method) {
     const farmerId = localStorage.getItem("userId") || "65e123456789012345678901"; // Fallback for testing
 
     try {
-        const res = await fetch('http://localhost:5000/api/market/place-order', {
+        const res = await fetch('https://krishi-backend.onrender.com/api/market/place-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

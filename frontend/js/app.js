@@ -1,4 +1,4 @@
-const API = "http://localhost:5000/api";
+const API = "https://krishi-backend.onrender.com/api";
 
 /***********************
  * NAVIGATION & AUTH
