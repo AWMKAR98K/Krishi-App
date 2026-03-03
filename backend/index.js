@@ -7,9 +7,10 @@ const cors = require('cors');
 
 const app = express();
 
+// Remove the specific origin for a moment to test
 app.use(cors({
-    origin: 'https://awmkar98k.github.io', // Your frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
