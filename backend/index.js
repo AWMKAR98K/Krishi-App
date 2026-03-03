@@ -1,7 +1,14 @@
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
+const cors = require('cors');
+
+// This tells the backend to allow requests from your specific GitHub site
+app.use(cors({
+    origin: 'https://awmkar98k.github.io', // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 const app = express();
 
 app.use(cors());
