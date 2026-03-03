@@ -244,24 +244,62 @@
         };
 
         // Payment function
+        // Updated Payment function
         window.payPlatformFee = async (yieldId, feeAmount) => {
-            if (!document.getElementById(`check_${yieldId}`).checked) return alert("Agree to terms!");
-            const options = {
-                "key": "rzp_test_SKPtLfkPGRDzPw",
-                "amount": Math.round(feeAmount * 100),
-                "currency": "INR",
-                "name": "Krishi Auction Platform",
-                "handler": async function (response) {
-                    await fetch(`https://krishi-backend-vwux.onrender.com/api/yield/verify-payment/${yieldId}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-                        body: JSON.stringify({ paymentId: response.razorpay_payment_id })
-                    });
-                    location.reload();
+            // 1. Check the checkbox
+            const checkbox = document.getElementById(`check_${yieldId}`);
+            if (!checkbox || !checkbox.checked) {
+                return alert("Please agree to the terms and conditions first!");
+            }
+
+            // 2. Validate feeAmount
+            if (!feeAmount || isNaN(feeAmount) || feeAmount <= 0) {
+                return alert("Invalid payment amount. Please refresh the page.");
+            }
+
+            try {
+                const options = {
+                    "key": "rzp_test_SKPtLfkPGRDzPw",
+                    "amount": Math.round(parseFloat(feeAmount) * 100), // Ensure it's a number
+                    "currency": "INR",
+                    "name": "Krishi Auction Platform",
+                    "description": "Auction Platform Fee",
+                    "handler": async function (response) {
+                        try {
+                            const verifyRes = await fetch(`https://krishi-backend-vwux.onrender.com/api/yield/verify-payment/${yieldId}`, {
+                                method: "POST",
+                                headers: { 
+                                    "Content-Type": "application/json", 
+                                    "Authorization": "Bearer " + token 
+                                },
+                                body: JSON.stringify({ paymentId: response.razorpay_payment_id })
+                            });
+                            
+                            if (verifyRes.ok) {
+                                alert("Payment Successful!");
+                                location.reload();
+                            } else {
+                                alert("Verification failed. Please contact support.");
+                            }
+                        } catch (err) {
+                            alert("Server error during verification.");
+                        }
+                    },
+                    "theme": { "color": "#27ae60" }
+                };
+
+                // 3. Use the Window-bound constructor
+                if (typeof window.Razorpay === 'undefined') {
+                    return alert("Razorpay SDK not loaded. Please check your internet connection.");
                 }
-            };
-            var rzp1 = new window.Razorpay(options); 
-rzp1.open();
+
+                const rzp = new window.Razorpay(options);
+                rzp.open();
+
+            } catch (err) {
+                console.error("Razorpay Error:", err);
+                alert("Could not open payment gateway.");
+            }
         };
 
         // PDF Generation
