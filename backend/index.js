@@ -50,7 +50,7 @@ app.get("/", (req, res) => {
 
 // 6. Database Connection
 // This defines the variable so the error disappears
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://atharvmerz_db_user:DDnJoGL3S0iMoOt5@clustere.emtbvrf.mongodb.net/KrishiDB?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://atharvmerz_db_user:krishi123@clustere.emtbvrf.mongodb.net/KrishiDB?retryWrites=true&w=majority";
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ Database Connected Successfully!"))
