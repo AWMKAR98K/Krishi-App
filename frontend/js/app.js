@@ -36,9 +36,9 @@ async function login() {
 
         if (role === "farmer") {
             window.location.replace("farmer.html");
-        } else if (role === "wholesaler") {
-    console.log("Found wholesaler! Redirecting now...");
-    window.location.href = "./wholesaler.html"; // TEMPORARY TEST
+        }  else if (role === "wholesaler") {
+    console.log("Redirecting to test page...");
+    window.location.href = "test.html"; 
 }
          else {
             alert("Success, but role '" + role + "' has no page!");
