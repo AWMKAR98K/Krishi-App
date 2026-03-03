@@ -21,37 +21,30 @@ async function login() {
 
         const result = await res.json();
         
-        // DEBUG: This will show you exactly what the backend sent
-        console.log("Server Response:", result);
+        // This popup will tell us exactly what the database sent back
+        alert("Server says role is: " + (result.role || "MISSING"));
 
         if (!res.ok) {
             alert(result.error || "Login failed");
             return;
         }
 
-        // Store Token
         localStorage.setItem("token", result.token);
         
-        // Store user details for dashboard personalization
-        localStorage.setItem("userName", result.name);
+        // Final check: exactly match 'wholesaler' from your MongoDB screenshot
+        const role = String(result.role).toLowerCase().trim();
 
-        // --- IMPROVED REDIRECTION LOGIC ---
-        // We use .toLowerCase() and .trim() to ensure a perfect match
-        const userRole = result.role ? result.role.toLowerCase().trim() : "";
-
-        if (userRole === "farmer") {
-            window.location.href = "farmer.html";
-        } else if (userRole === "wholesaler") {
-            window.location.href = "wholesaler.html";
-        } else if (userRole === "admin") {
-            window.location.href = "admin.html";
+        if (role === "farmer") {
+            window.location.replace("farmer.html");
+        } else if (role === "wholesaler") {
+            window.location.replace("wholesaler.html");
         } else {
-            alert("Role not recognized: " + result.role);
+            alert("Success, but role '" + role + "' has no page!");
         }
 
     } catch (err) {
-        console.error("Login Error:", err);
-        alert("Server connection failed");
+        console.error(err);
+        alert("Check Console for error details");
     }
 }
 
