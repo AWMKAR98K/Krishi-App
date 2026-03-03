@@ -563,9 +563,12 @@ async function loadLabourJobs() {
 }
 
   window.logout = async function() {
-    await signOut(auth);
-    window.location.href = 'index.html';
-  }
+  await signOut(auth); // Firebase sign out
+  localStorage.removeItem('signedIn');
+  localStorage.removeItem('userRole');
+  // Instead of hardcoding login.html, go back to the app home
+  window.location.href = 'index.html'; 
+}
 
 </script>
     <script>
