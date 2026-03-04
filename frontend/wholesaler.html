@@ -182,10 +182,11 @@
 
                     // FIX: Check if image path starts with 'uploads/'
                     const imagePath = y.image.startsWith('uploads') ? y.image : `uploads/${y.image}`;
+                    const finalImageUrl = `${BASE_URL}/${imagePath}`.replace(/([^:]\/)\/+/g, "$1"); // This prevents double slashes //
 
                     card.innerHTML = `
                         ${y.hasUserBidded ? `<div style="position: absolute; top: 10px; right: 10px; background: #2ecc71; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">✅ Bid Placed</div>` : ''}
-                        <img src="${BASE_URL}/${imagePath}" onerror="this.src='https://via.placeholder.com/320x160?text=Crop+Image'" style="width:100%; height:160px; object-fit:cover; border-radius:8px;">
+                        <img src="${finalImageUrl}" onerror="this.src='https://via.placeholder.com/320x160?text=Crop+Image'">
                         <div style="margin-top: 10px;">
                             <p style="margin: 5px 0;"><b>Farmer:</b> ${y.farmer ? y.farmer.name : "N/A"}</p>
                             <p style="margin: 5px 0;"><b>Crop:</b> ${y.cropType}</p>
@@ -243,35 +244,47 @@
             }
         };
 
-        window.payPlatformFee = async (yieldId, feeAmount) => {
-            const checkbox = document.getElementById(`check_${yieldId}`);
-            if (!checkbox || !checkbox.checked) return alert("Please agree to the terms first!");
+        window.payPlatformFee = async function(yieldId, feeAmount) {
+    console.log("Pay button clicked for:", yieldId, "Amount:", feeAmount); // 
 
-            const options = {
-                "key": "rzp_test_SKPtLfkPGRDzPw",
-                "amount": Math.round(parseFloat(feeAmount) * 100),
-                "currency": "INR",
-                "name": "Krishi Auction Platform",
-                "handler": async function (response) {
-                    await fetch(`${BASE_URL}/api/yield/verify-payment/${yieldId}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-                        body: JSON.stringify({ paymentId: response.razorpay_payment_id })
-                    });
-                    alert("Payment Verified!");
-                    location.reload();
+    const checkbox = document.getElementById(`check_${yieldId}`);
+    if (!checkbox || !checkbox.checked) {
+        return alert("Please agree to the terms first!");
+    }
+
+    if (!feeAmount || isNaN(feeAmount)) {
+        return alert("Error: Payment amount not found. Please refresh.");
+    }
+
+    const options = {
+        "key": "rzp_test_SKPtLfkPGRDzPw",
+        "amount": Math.round(parseFloat(feeAmount) * 100),
+        "currency": "INR",
+        "name": "Krishi Auction Platform",
+        "description": "Auction Platform Fee",
+        "handler": async function (response) {
+            const verifyRes = await fetch(`${BASE_URL}/api/yield/verify-payment/${yieldId}`, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "Authorization": "Bearer " + token 
                 },
-                "theme": { "color": "#27ae60" }
-            };
+                body: JSON.stringify({ paymentId: response.razorpay_payment_id })
+            });
+            alert("Payment Verified!");
+            location.reload();
+        },
+        "theme": { "color": "#27ae60" }
+    };
 
-            if (typeof window.Razorpay === 'undefined') {
-                return alert("Razorpay is still loading. Please wait 5 seconds and try again.");
-            }
-            
-            const rzp = new window.Razorpay(options);
-            rzp.open();
-        };
-
+    try {
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+    } catch (e) {
+        console.error("Razorpay error:", e);
+        alert("Payment gateway failed to open.");
+    }
+};
         window.logout = () => { localStorage.clear(); window.location.href = "login.html"; };
 
         window.generateReceipt = (yieldId, quotedPrice, platformFee) => {
