@@ -132,19 +132,19 @@
 
     <script>
         const token = localStorage.getItem("token");
+        const BASE_URL = "https://krishi-backend-vwux.onrender.com"; // Define once for easy changes
         let userData = {};
 
         if (!token) window.location.href = "login.html";
 
-        // --- UNIFIED INITIALIZATION ---
         window.onload = async function() {
-            await initDashboard(); // Load user profile
-            if (typeof loadWholesalerOrders === "function") loadWholesalerOrders(); // Load Market Orders
+            await initDashboard();
+            if (typeof loadWholesalerOrders === "function") loadWholesalerOrders();
         };
 
         async function initDashboard() {
             try {
-                const userRes = await fetch("https://krishi-backend-vwux.onrender.com/api/auth/me", {
+                const userRes = await fetch(`${BASE_URL}/api/auth/me`, {
                     headers: { "Authorization": "Bearer " + token }
                 });
                 if (!userRes.ok) throw new Error("Auth failed");
@@ -157,10 +157,9 @@
             }
         }
 
-        // --- AUCTION SYSTEM LOGIC ---
         async function loadAuctions() {
             try {
-                const res = await fetch("https://krishi-backend-vwux.onrender.com/api/yield/with-bidders", {
+                const res = await fetch(`${BASE_URL}/api/yield/with-bidders`, {
                     headers: { "Authorization": "Bearer " + token }
                 });
                 const yields = await res.json();
@@ -181,9 +180,12 @@
                     card.className = "card";
                     card.style = `border: 2px solid ${y.hasUserBidded ? '#2ecc71' : '#eee'}; padding: 15px; width: 320px; border-radius: 12px; background: #fff; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 10px;`;
 
+                    // FIX: Check if image path starts with 'uploads/'
+                    const imagePath = y.image.startsWith('uploads') ? y.image : `uploads/${y.image}`;
+
                     card.innerHTML = `
                         ${y.hasUserBidded ? `<div style="position: absolute; top: 10px; right: 10px; background: #2ecc71; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;">✅ Bid Placed</div>` : ''}
-                        <img src="https://krishi-backend-vwux.onrender.com/${y.image}" style="width:100%; height:160px; object-fit:cover; border-radius:8px;">
+                        <img src="${BASE_URL}/${imagePath}" onerror="this.src='https://via.placeholder.com/320x160?text=Crop+Image'" style="width:100%; height:160px; object-fit:cover; border-radius:8px;">
                         <div style="margin-top: 10px;">
                             <p style="margin: 5px 0;"><b>Farmer:</b> ${y.farmer ? y.farmer.name : "N/A"}</p>
                             <p style="margin: 5px 0;"><b>Crop:</b> ${y.cropType}</p>
@@ -207,8 +209,7 @@
                                 <button onclick="placeSingleBid('${y._id}')" style="width: 100%; margin-top: 8px; background: #27ae60; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Submit Bid</button>`;
                         }
                     } else {
-                        // Winner Logic (Same as yours, but styled)
-                        fetch(`https://krishi-backend-vwux.onrender.com/api/yield/result/${y._id}`, { headers: { "Authorization": "Bearer " + token }})
+                        fetch(`${BASE_URL}/api/yield/result/${y._id}`, { headers: { "Authorization": "Bearer " + token }})
                         .then(r => r.json()).then(result => {
                             if (result.isWinner) {
                                 bottomAction.innerHTML = result.isPaid ? 
@@ -225,13 +226,12 @@
             } catch (err) { console.error("Fetch error:", err); }
         }
 
-        // Bidding function
         window.placeSingleBid = async (yieldId) => {
             const amount = document.getElementById(`bid_${yieldId}`).value;
             if(!amount || amount <= 0) return alert("Enter valid bid");
-            if (confirm(`Confirm your bid of ₹${amount}? This cannot be changed.`)) {
+            if (confirm(`Confirm your bid of ₹${amount}?`)) {
                 try {
-                    const res = await fetch(`https://krishi-backend-vwux.onrender.com/api/bid/${yieldId}`, {
+                    const res = await fetch(`${BASE_URL}/api/bid/${yieldId}`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
                         body: JSON.stringify({ amount: Number(amount) })
@@ -243,80 +243,88 @@
             }
         };
 
-        // Payment function
-        // Updated Payment function
         window.payPlatformFee = async (yieldId, feeAmount) => {
-            // 1. Check the checkbox
             const checkbox = document.getElementById(`check_${yieldId}`);
-            if (!checkbox || !checkbox.checked) {
-                return alert("Please agree to the terms and conditions first!");
+            if (!checkbox || !checkbox.checked) return alert("Please agree to the terms first!");
+
+            const options = {
+                "key": "rzp_test_SKPtLfkPGRDzPw",
+                "amount": Math.round(parseFloat(feeAmount) * 100),
+                "currency": "INR",
+                "name": "Krishi Auction Platform",
+                "handler": async function (response) {
+                    await fetch(`${BASE_URL}/api/yield/verify-payment/${yieldId}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+                        body: JSON.stringify({ paymentId: response.razorpay_payment_id })
+                    });
+                    alert("Payment Verified!");
+                    location.reload();
+                },
+                "theme": { "color": "#27ae60" }
+            };
+
+            if (typeof window.Razorpay === 'undefined') {
+                return alert("Razorpay is still loading. Please wait 5 seconds and try again.");
             }
-
-            // 2. Validate feeAmount
-            if (!feeAmount || isNaN(feeAmount) || feeAmount <= 0) {
-                return alert("Invalid payment amount. Please refresh the page.");
-            }
-
-            try {
-                const options = {
-                    "key": "rzp_test_SKPtLfkPGRDzPw",
-                    "amount": Math.round(parseFloat(feeAmount) * 100), // Ensure it's a number
-                    "currency": "INR",
-                    "name": "Krishi Auction Platform",
-                    "description": "Auction Platform Fee",
-                    "handler": async function (response) {
-                        try {
-                            const verifyRes = await fetch(`https://krishi-backend-vwux.onrender.com/api/yield/verify-payment/${yieldId}`, {
-                                method: "POST",
-                                headers: { 
-                                    "Content-Type": "application/json", 
-                                    "Authorization": "Bearer " + token 
-                                },
-                                body: JSON.stringify({ paymentId: response.razorpay_payment_id })
-                            });
-                            
-                            if (verifyRes.ok) {
-                                alert("Payment Successful!");
-                                location.reload();
-                            } else {
-                                alert("Verification failed. Please contact support.");
-                            }
-                        } catch (err) {
-                            alert("Server error during verification.");
-                        }
-                    },
-                    "theme": { "color": "#27ae60" }
-                };
-
-                // 3. Use the Window-bound constructor
-                if (typeof window.Razorpay === 'undefined') {
-                    return alert("Razorpay SDK not loaded. Please check your internet connection.");
-                }
-
-                const rzp = new window.Razorpay(options);
-                rzp.open();
-
-            } catch (err) {
-                console.error("Razorpay Error:", err);
-                alert("Could not open payment gateway.");
-            }
-        };
-
-        // PDF Generation
-        window.generateReceipt = (yieldId, quotedPrice, platformFee) => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFillColor(39, 174, 96); doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255); doc.setFontSize(20); doc.text("KRISHI AUCTION RECEIPT", 20, 25);
-            doc.setTextColor(0); doc.setFontSize(12);
-            doc.text(`Transaction ID: TXN-${yieldId.substring(0,8)}`, 20, 60);
-            doc.text(`Crop Quote: Rs. ${quotedPrice}`, 20, 70);
-            doc.text(`Platform Fee: Rs. ${platformFee}`, 20, 80);
-            doc.text(`Status: PAID`, 20, 90);
-            doc.save(`Receipt_${yieldId.substring(0,5)}.pdf`);
+            
+            const rzp = new window.Razorpay(options);
+            rzp.open();
         };
 
         window.logout = () => { localStorage.clear(); window.location.href = "login.html"; };
+
+        window.generateReceipt = (yieldId, quotedPrice, platformFee) => {
+    // 1. Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // 2. Add Branding (Header)
+    doc.setFillColor(39, 174, 96); // Krishi Green
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(22);
+    doc.text("KRISHI AUCTION RECEIPT", 105, 25, { align: "center" });
+
+    // 3. Transaction Details
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    const date = new Date().toLocaleDateString();
+    
+    doc.text(`Date: ${date}`, 20, 60);
+    doc.text(`Transaction ID: TXN-${yieldId.substring(0, 10).toUpperCase()}`, 20, 70);
+    
+    // 4. Billing Table Header
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 80, 190, 80);
+    doc.setFont("helvetica", "bold");
+    doc.text("Description", 25, 90);
+    doc.text("Amount (INR)", 150, 90);
+    doc.setFont("helvetica", "normal");
+    doc.line(20, 95, 190, 95);
+
+    // 5. Billing Table Rows
+    doc.text("Crop Winning Bid Amount", 25, 105);
+    doc.text(`Rs. ${quotedPrice}`, 150, 105);
+
+    doc.text("Platform Service Fee (1%)", 25, 115);
+    doc.text(`Rs. ${platformFee}`, 150, 115);
+
+    // 6. Total Section
+    doc.line(140, 125, 190, 125);
+    doc.setFont("helvetica", "bold");
+    doc.text("Total Paid:", 120, 135);
+    doc.text(`Rs. ${platformFee}`, 150, 135); // Wholesaler only pays the fee to the platform
+
+    // 7. Footer
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("This is a computer-generated receipt and does not require a signature.", 105, 160, { align: "center" });
+    doc.text("Thank you for using Krishi Auction Platform.", 105, 165, { align: "center" });
+
+    // 8. Save/Download
+    doc.save(`Receipt_Auction_${yieldId.substring(0, 5)}.pdf`);
+};
     </script>
         <script>
         function googleTranslateElementInit() {
